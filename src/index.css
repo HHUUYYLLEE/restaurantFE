@@ -1,0 +1,168 @@
+@import '../node_modules/slick-carousel/slick/slick.css';
+@import '../node_modules/slick-carousel/slick/slick-theme.css';
+@import url('https://fonts.googleapis.com/css2?family=Andika&family=Lato&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=ABeeZee:ital@1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,500;9..40,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'BloodDrip';
+  src: url(./asset/font/plasdrip.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'GodOfWar';
+  src: url(./asset/font/GODOFWAR.TTF) format('truetype');
+}
+
+#homepage-animation2 {
+  animation-delay: -15s;
+}
+.adminlogo {
+  background: linear-gradient(135deg, #868cff 0%, #4318ff 100%);
+}
+
+.animation404 {
+  animation-fill-mode: both;
+}
+
+.pswp__img {
+  object-fit: contain !important;
+}
+.pswp__img--placeholder {
+  display: none !important;
+}
+.rainbow-text {
+  background: linear-gradient(to right, #6666ff, #0099ff, #00ff00, #ff3399, #6666ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 400% 100%;
+}
+.font-blooddrip {
+  font-family: BloodDrip;
+}
+.font-inter-400 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+}
+.font-inter-500 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+}
+.font-inter-700 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+}
+.font-andika {
+  font-family: 'Andika', sans-serif;
+}
+.font-lato {
+  font-family: 'Lato', sans-serif;
+}
+.font-montserrat-700 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+}
+.font-montserrat-500 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+}
+.font-poppins-400 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+}
+.font-poppins-500 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+}
+.font-poppins-600 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+}
+.font-poppins-700 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+}
+.font-poppins-800 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+}
+.font-ibm-plex-serif-400 {
+  font-family: 'IBM Plex Serif', serif;
+  font-weight: 400;
+}
+.font-ibm-plex-serif-700 {
+  font-family: 'IBM Plex Serif', serif;
+  font-weight: 700;
+}
+.font-abeezee {
+  font-family: 'ABeeZee', sans-serif;
+}
+.font-roboto {
+  font-family: 'Roboto', sans-serif;
+}
+.font-dmsans-500 {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+}
+.font-dmsans-700 {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+}
+/* .active {
+  @apply text-blue-600;
+} */
+/* Hide scrollbar for Chrome, Safari and Opera */
+.example::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.example {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.fix_hover::after {
+  content: '';
+  position: absolute;
+  width: 10%;
+  height: 100%;
+  top: 0px;
+  left: -20px;
+  background: transparent;
+}
+
+.modal,
+.overlay {
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: fixed;
+  z-index: 26;
+}
+
+.overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+  position: absolute;
+  z-index: 27;
+  top: 50%;
+  left: 50%;
+  height: auto;
+  transform: translate(-50%, -50%);
+  padding: 80px 70px;
+  border-radius: 6px;
+}
