@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { getAllRooms } from '../../api/rooms.api'
+import { getAllRooms } from '../../api/food.api'
 import Room from './Room'
 import useQueryConfig from '../../hooks/useQueryConfig'
 import { useContext, useEffect, useRef, useState } from 'react'

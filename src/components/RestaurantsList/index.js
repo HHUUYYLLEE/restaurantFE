@@ -1,2 +1,2 @@
-import RestaurantList from './RestaurantList'
-export default RestaurantList
+import RestaurantsList from './RestaurantsList'
+export default RestaurantsList

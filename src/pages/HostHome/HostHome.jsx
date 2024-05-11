@@ -3,11 +3,8 @@ import Banner from '../../components/Banner'
 import HostNavFilter from '../../components/HostNavFilter'
 import HostRoomsList from '../../components/HostRoomsList'
 import HostSidebarFilter from '../../components/HostSidebarFilter'
-import { webName } from '../../utils/env'
+
 export default function Home() {
-  useEffect(() => {
-    document.getElementsByTagName('title')[0].textContent = webName
-  }, [])
   return (
     <>
       <div>
