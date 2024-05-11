@@ -1,8 +1,5 @@
-import http from '../utils/http'
+import { applicationJSONInstance, multipartFormInstance } from '../utils/headers'
 
-export const getAllRestaurants = (params) => http.get(`restaurant`, { params })
-export const getRoom = (id) => http.get(`room/${id}`)
-export const getRandomRoom = () => http.get(`room/randomRoom/random`)
-export const checkARoom = (formData) => http.patch('room/checkRoom/check', formData)
-export const getAllRoomsHost = (params) => http.get('room/getRoom/getRoomHost', { params })
-export const updateARoom = (formData) => http.put('room/updateRoom/update', formData)
+export const getAllRestaurants = (params) => applicationJSONInstance.get(`restaurant`, { params })
+export const getRestaurant = (id) => applicationJSONInstance.get(`restaurant/${id}`)
+export const createARestaurant = (formData) => multipartFormInstance.post('restaurant', formData)

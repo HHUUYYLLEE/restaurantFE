@@ -1,4 +1,4 @@
-import http from '../utils/http'
+import { applicationJSONInstance, multipartFormInstance } from '../utils/headers'
 
-export const loginAccount = (body) => http.post('host/login', body)
-export const logoutAccount = () => http.post('host/logout')
+export const loginAccount = (body) => applicationJSONInstance.post('user/login', body)
+export const signInAccount = (body) => applicationJSONInstance.post('user/register', body)

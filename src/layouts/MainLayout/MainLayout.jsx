@@ -1,6 +1,5 @@
 import Footer from '../../components/Footer'
 import Header from '../../components/Header'
-import PopUpAddress from '../../components/PopUpAddress'
 
 function Mainlayout({ children }) {
   return (

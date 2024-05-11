@@ -12,7 +12,7 @@ import Modal from 'react-modal'
 import { TailSpin } from 'react-loader-spinner'
 import { getInfoFromLS } from '../../utils/auth'
 import { isAxiosUnprocessableEntityError } from '../../utils/utils'
-export default function LoginModal({ closeModalLogin }) {
+export default function SignupModal({ closeModalSignup }) {
   const { setIsAuthenticated, setInfo, isAuthenticated } = useContext(AppContext)
   const navigate = useNavigate()
   console.log(isAuthenticated)

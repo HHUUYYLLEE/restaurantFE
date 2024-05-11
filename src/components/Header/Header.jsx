@@ -5,11 +5,11 @@ import { useQuery } from '@tanstack/react-query'
 import Ava from '../../asset/img/ava.png'
 import { AppContext } from '../../contexts/app.context'
 import { useEffect, useRef, useState, useContext } from 'react'
-import { logoutAccount } from '../../api/auth.api'
 import { useMutation } from '@tanstack/react-query'
 import Modal from 'react-modal'
 import { useForm } from 'react-hook-form'
 import { omit } from 'lodash'
+import googleDriveURL from '../../constants/googledriveURL'
 
 import { TailSpin } from 'react-loader-spinner'
 
@@ -26,6 +26,7 @@ export default function Header() {
   const navigate = useNavigate()
   const [modalLogin, setModalLogin] = useState(false)
   const [logoutModal, setLogoutModal] = useState(false)
+  const [signupModal, setSignupModal] = useState(false)
   const { isAuthenticated, setIsAuthenticated, info, setInfo } = useContext(AppContext)
 
   const openModalLogin = () => {
@@ -34,24 +35,12 @@ export default function Header() {
   const closeModalLogin = () => {
     setModalLogin(false)
   }
-
-  const logoutMutation = useMutation({
-    mutationFn: logoutAccount,
-    onSuccess: () => {
-      setIsAuthenticated(false)
-      setInfo(null)
-      setLogoutModal(false)
-    },
-    onError: () => {
-      setLogoutModal(false)
-    }
-  })
-
-  const handleLogout = () => {
-    logoutMutation.mutate()
+  const openModalSignup = () => {
+    setSignupModal(true)
   }
-
-  const path = useLocation()
+  const closeModalSignup = () => {
+    setSignupModal(false)
+  }
 
   const [isOpen, setIsOpen] = useState(false)
   const refDropDown = useRef()
@@ -171,19 +160,13 @@ export default function Header() {
                  block rounded-xl mt-[0.5vh] h-[0.1rem] mx-auto bg-white'
               />
             </div>
-            <NavLink
-              onClick={() => this.forceUpdate}
-              to='/signup'
-              className={`group text-lg transition duration-300 ${
-                path.pathname.includes('/room') ? 'text-black' : 'text-white'
-              }`}
-            >
+            <div onClick={() => this.forceUpdate} className='group text-lg transition duration-300 text-white'>
               Đăng ký
               <span
                 className='max-w-0 group-hover:max-w-[80%] transition-all duration-500
                 block rounded-xl mt-[0.5vh] h-[0.1rem] mx-auto bg-white'
               />
-            </NavLink>
+            </div>
           </div>
         </div>
         <div
@@ -192,9 +175,9 @@ export default function Header() {
         >
           <div onClick={toggleMenu} className='flex items-center gap-2'>
             <div className='bg-gray-300 rounded-full w-[3rem] h-[3rem] flex items-center justify-center'>
-              <img src={Ava} alt='' className='w-[2rem] h-[2rem]' />
+              <img src={googleDriveURL(info?.avatar_url)} alt='' className='w-[2rem] h-[2rem]' />
             </div>
-            <div className='font-semibold text-white'>{info?.user_name}</div>
+            <div className='font-semibold text-white'>{info?.username}</div>
           </div>
           {isOpen && (
             <div className='absolute z-10 mt-4 w-[10vw] rounded-lg shadow-lg border-[1px] border-black focus:outline-none bg-white/80'>
@@ -244,38 +227,25 @@ export default function Header() {
         isOpen={logoutModal}
         onRequestClose={() => setLogoutModal(false)}
       >
-        {logoutMutation.isPending ? (
-          <>
-            <div className='text-[#4FA94D] font-dmsans-700 mb-[5vh] text-3xl'>Đang đăng xuất...</div>
-            <TailSpin
-              height='200'
-              width='200'
-              color='#4fa94d'
-              ariaLabel='tail-spin-loading'
-              radius='5'
-              visible={true}
-              wrapperStyle={{ display: 'flex', justifyContent: 'center' }}
-            />
-          </>
-        ) : (
-          <>
-            <div className='font-inter-700 text-4xl'>Bạn có muốn đăng xuất?</div>
-            <div className='mt-[8vh] flex justify-between'>
-              <button
-                onClick={handleLogout}
-                className='w-[10vw] h-[8vh] flex justify-center items-center bg-[#0366FF] hover:bg-green-700 text-white font-inter-700 rounded-lg text-xl'
-              >
-                Đăng xuất
-              </button>
-              <button
-                onClick={() => setLogoutModal(false)}
-                className='w-[10vw] h-[8vh] flex justify-center items-center bg-[#DD1A1A] hover:bg-red-900 text-white font-inter-700 rounded-lg text-xl'
-              >
-                Huỷ
-              </button>
-            </div>
-          </>
-        )}
+        <div className='font-inter-700 text-4xl'>Bạn có muốn đăng xuất?</div>
+        <div className='mt-[8vh] flex justify-between'>
+          <button
+            onClick={() => {
+              setIsAuthenticated(false)
+              setInfo(null)
+              setLogoutModal(false)
+            }}
+            className='w-[10vw] h-[8vh] flex justify-center items-center bg-[#0366FF] hover:bg-green-700 text-white font-inter-700 rounded-lg text-xl'
+          >
+            Đăng xuất
+          </button>
+          <button
+            onClick={() => setLogoutModal(false)}
+            className='w-[10vw] h-[8vh] flex justify-center items-center bg-[#DD1A1A] hover:bg-red-900 text-white font-inter-700 rounded-lg text-xl'
+          >
+            Huỷ
+          </button>
+        </div>
       </Modal>
     </>
   )
