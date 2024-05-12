@@ -18,11 +18,6 @@ export const schemaSignup = yup.object({
   avatar: yup.mixed().required('Cần ảnh đại diện')
 })
 
-export const schemaEditRoom = yup.object({
-  name: yup.string().required('Bắt buộc'),
-  describe: yup.string().required('Bắt buộc'),
-  number_or_people: yup.string().required('Bắt buộc'),
-  area: yup.string().required('Bắt buộc'),
-  price: yup.string().required('Bắt buộc'),
-  address: yup.string().required('Bắt buộc')
+export const schemaEditUserProfile = yup.object({
+  phone_number: yup.string().matches(/^\d+$/, 'Số điện thoại không hợp lệ')
 })

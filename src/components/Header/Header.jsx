@@ -1,4 +1,4 @@
-import { Link, createSearchParams, useNavigate } from 'react-router-dom'
+import { Link, createSearchParams, useNavigate, NavLink } from 'react-router-dom'
 import LoginModal from '../LoginModal'
 import useQueryConfig from '../../hooks/useQueryConfig'
 import { AppContext } from '../../contexts/app.context'
@@ -9,14 +9,7 @@ import { omit } from 'lodash'
 import { clearAccessTokenFromLS } from '../../utils/auth'
 import { toast } from 'react-toastify'
 
-import { TailSpin } from 'react-loader-spinner'
 import SignupModal from '../SignupModal/SignupModal'
-
-// const headerItems = [
-//   { id: 1, name: 'Trang chủ', path: '/' },
-//   { id: 2, name: 'Đăng nhập', path: '/login' },
-//   { id: 3, name: 'Đăng ký', path: '/signup' }
-// ]
 
 export default function Header() {
   const { register, handleSubmit } = useForm({})
@@ -186,7 +179,9 @@ export default function Header() {
           {isOpen && (
             <div className='absolute z-10 mt-4 w-[10vw] rounded-lg shadow-lg border-[1px] border-black focus:outline-none bg-white/80'>
               <div className='py-1 divide-y-[1px] divide-gray-400'>
-                <button className='inline-flex w-full justify-center px-4 py-3 text-lg -mt-0.5'>Tài khoản</button>
+                <NavLink to='/profile'>
+                  <button className='inline-flex w-full justify-center px-4 py-3 text-lg -mt-0.5'>Tài khoản</button>
+                </NavLink>
                 <button
                   onClick={() => {
                     setIsOpen(false)

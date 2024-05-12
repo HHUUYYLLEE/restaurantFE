@@ -1,6 +1,5 @@
 import Restaurant from './Restaurant'
 import useQueryConfig from '../../hooks/useQueryConfig'
-import { useContext, useEffect, useRef, useState } from 'react'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { getAllRestaurants } from '../../api/restaurants.api'
 

@@ -48,6 +48,10 @@
 .font-blooddrip {
   font-family: BloodDrip;
 }
+.font-inter-100 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 100;
+}
 .font-inter-400 {
   font-family: 'Inter', sans-serif;
   font-weight: 400;

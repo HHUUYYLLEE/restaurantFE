@@ -2,7 +2,7 @@ export const saveAccessTokenToLS = (access_token) => {
   localStorage.setItem('access_token', access_token)
 }
 
-export const saveInfoFromLS = (info) => {
+export const saveInfoToLS = (info) => {
   const json = JSON.stringify(info)
   localStorage.setItem('keyInfo', json)
 }

@@ -1,11 +1,11 @@
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import HttpStatusCode from '../constants/httpStatusCode.enum'
-import { clearAccessTokenFromLS, getAccessTokenFromLS, saveAccessTokenToLS, saveInfoFromLS } from './auth'
+import { clearAccessTokenFromLS, getAccessTokenFromLS, saveAccessTokenToLS, saveInfoToLS } from './auth'
 import { envConfig } from './env'
 
 const applicationJSONInstance = axios.create({
-  baseURL: envConfig.deployURL,
+  baseURL: envConfig.baseURL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
@@ -13,7 +13,7 @@ const applicationJSONInstance = axios.create({
 })
 
 const multipartFormInstance = axios.create({
-  baseURL: envConfig.deployURL,
+  baseURL: envConfig.baseURL,
   timeout: 10000,
   headers: {
     'Content-Type': 'multipart/form-data'
@@ -43,13 +43,15 @@ applicationJSONInstance.interceptors.response.use(
     console.log(response)
     const { url } = response.config
 
-    if (url === '/user/login' || url === '/user/loginGoogle') {
+    if (url === '/user/login' || url === '/user/loginGoogle' || url === '/user/register') {
       // console.log(url)
 
       accessToken = response.data.data.accessToken
       //console.log(accessToken)
-      saveInfoFromLS(response.data.data.user)
+      saveInfoToLS(response.data.data.user)
       saveAccessTokenToLS(accessToken)
+    } else if (url.includes('user')) {
+      saveInfoToLS(response.data.user)
     }
 
     return response
@@ -94,13 +96,15 @@ multipartFormInstance.interceptors.response.use(
     console.log(response)
     const { url } = response.config
 
-    if (url === 'user/register') {
+    if (url === '/user/login' || url === '/user/loginGoogle' || url === '/user/register') {
       // console.log(url)
 
       accessToken = response.data.data.accessToken
       //console.log(accessToken)
-      saveInfoFromLS(response.data.data.user)
+      saveInfoToLS(response.data.data.user)
       saveAccessTokenToLS(accessToken)
+    } else if (url.includes('user')) {
+      saveInfoToLS(response.data.user)
     }
 
     return response

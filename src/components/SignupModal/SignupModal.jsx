@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { schemaSignup } from '../../utils/rules'
-import { signUpAccount, loginGoogleAccount } from '../../api/auth.api'
+import { signUpAccount, loginGoogleAccount } from '../../api/user.api'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 import Modal from 'react-modal'
@@ -24,7 +24,6 @@ export default function SignupModal({ closeModalSignup }) {
     register,
     handleSubmit,
     setError,
-    setValue,
     formState: { errors }
   } = useForm({
     mode: 'all',
@@ -68,7 +67,7 @@ export default function SignupModal({ closeModalSignup }) {
     })
   })
   function onSubmitGoogle(credential) {
-    console.log(credential)
+    // console.log(credential)
     loginGoogleAccontMutation.mutate(credential, {
       onSuccess: () => {
         toast.success('Đăng nhập Google thành công !') //。(20)
@@ -185,7 +184,10 @@ export default function SignupModal({ closeModalSignup }) {
               <span className='text-[#0038FF] underline cursor-pointer'>tại đây</span>
             </div>
             <div className='w-full flex justify-between items-center mt-14'>
-              <button className='bg-[#0366FF] hover:bg-green-500  text-white py-[1.2rem] px-[7rem] font-ibm-plex-serif-700 rounded-lg'>
+              <button
+                type='submit'
+                className='bg-[#0366FF] hover:bg-green-500  text-white py-[1.2rem] px-[7rem] font-ibm-plex-serif-700 rounded-lg'
+              >
                 Đăng ký
               </button>
               <GoogleLogin
