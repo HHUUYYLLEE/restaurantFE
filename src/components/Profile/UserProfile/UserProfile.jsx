@@ -41,7 +41,9 @@ export default function UserProfile() {
     queryKey: ['userProfile', user_id],
     queryFn: () => {
       return getUserProfile(user_id)
-    }
+    },
+    placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 5
   })
 
   const dataUser = data?.data?.user
@@ -141,11 +143,11 @@ export default function UserProfile() {
         <></>
       )}
       {dataUser && (
-        <div className='m-auto grid grid-cols-[15] w-[70vw] gap-14'>
+        <div className='m-auto grid grid-cols-[15] w-[70vw] gap-12'>
           <div className='col-span-10'>
             <form key={1} onSubmit={onSubmit}>
               <div className='flex items-center gap-x-4'>
-                <div className='text-xl w-[10vw]'>Username</div>
+                <div className='text-xl w-[9vw]'>Username</div>
                 <input
                   type='text'
                   id='username'
@@ -154,11 +156,11 @@ export default function UserProfile() {
                   autoComplete='off'
                   defaultValue={dataUser.username}
                   {...register('username')}
-                  className='w-[35vw] focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-2 px-[2rem]'
+                  className='w-[35vw] focus:outline-none  placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-2 px-[1rem]'
                 />
               </div>
               <div className='mt-[3rem] flex items-center gap-x-5'>
-                <div className='text-xl w-[10vw]'>Số điện thoại</div>
+                <div className='text-xl w-[9vw]'>Số điện thoại</div>
                 <input
                   type='text'
                   id='phone_number'
@@ -167,12 +169,12 @@ export default function UserProfile() {
                   autoComplete='off'
                   defaultValue={dataUser.phone_number}
                   {...register('phone_number')}
-                  className='w-[35vw] focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-2 px-[2rem]'
+                  className='w-[35vw] focus:outline-none  placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-2 px-[1rem]'
                 />
                 <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.phone_number?.message}</div>
               </div>
               <div className='mt-[3rem] flex items-center gap-x-5'>
-                <div className='text-xl w-[10vw]'>Địa chỉ</div>
+                <div className='text-xl w-[9vw]'>Địa chỉ</div>
                 <input
                   type='text'
                   id='address'
@@ -181,7 +183,7 @@ export default function UserProfile() {
                   autoComplete='off'
                   defaultValue={dataUser.address}
                   {...register('address')}
-                  className='w-[35vw] focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-2 px-[2rem]'
+                  className='w-[35vw] focus:outline-none  placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-2 px-[1rem]'
                 />
               </div>
               <button className='mt-[3rem] hover:bg-[#0366FF] bg-green-500  text-white py-[1.2rem] px-[7rem] font-ibm-plex-serif-700 rounded-lg'>
@@ -190,7 +192,7 @@ export default function UserProfile() {
             </form>
           </div>
           <div className='col-start-11 col-span-5'>
-            <div className='flex justify-center'>
+            <div className=''>
               <div>
                 <div className='text-lg'>Ảnh đại diện</div>
 
@@ -209,7 +211,7 @@ export default function UserProfile() {
                     name='avatar'
                     accept='image/*'
                     {...registerAvatar('avatar')}
-                    className='bg-transparent'
+                    className='bg-transparent focus:outline-none'
                     onChange={(e) => {
                       const [file] = e.target.files
                       if (file) {

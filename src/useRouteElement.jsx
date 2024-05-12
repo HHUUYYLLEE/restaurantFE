@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Profile from './pages/Profile'
 import { useContext } from 'react'
 import { AppContext } from './contexts/app.context'
+import OpenRestaurant from './pages/OpenRestaurant/OpenRestaurant'
 
 // eslint-disable-next-line react-refresh/only-export-components
 function AdminProtectedRouter() {
@@ -40,6 +41,15 @@ export default function useRouteElement() {
           element: (
             <MainLayout>
               <Profile />
+            </MainLayout>
+          )
+        },
+        {
+          path: '/open_restaurant',
+          index: true,
+          element: (
+            <MainLayout>
+              <OpenRestaurant />
             </MainLayout>
           )
         }
