@@ -1,7 +1,7 @@
 import * as yup from 'yup'
 
 export const schemaLogin = yup.object({
-  email: yup.string().required('Email là bắt buộc').min(3, 'Độ dài từ 3 kí tự'),
+  email: yup.string().required('Email là bắt buộc').email('Email không hợp lệ'),
   password: yup
     .string()
     .required('Password là bắt buộc')
@@ -9,12 +9,13 @@ export const schemaLogin = yup.object({
     .max(160, 'Độ dài từ 6 - 160 ký tự')
 })
 export const schemaSignup = yup.object({
-  email: yup.string().required('Email là bắt buộc').min(3, 'Độ dài từ 3 kí tự'),
+  email: yup.string().required('Email là bắt buộc').email('Email không hợp lệ'),
   password: yup
     .string()
     .required('Password là bắt buộc')
     .min(5, 'Độ dài từ 6 - 160 ký tự')
-    .max(160, 'Độ dài từ 6 - 160 ký tự')
+    .max(160, 'Độ dài từ 6 - 160 ký tự'),
+  avatar: yup.mixed().required('Cần ảnh đại diện')
 })
 
 export const schemaEditRoom = yup.object({

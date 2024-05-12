@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { AiOutlineClose } from 'react-icons/ai'
 import { AppContext } from '../../contexts/app.context'
 import { useNavigate } from 'react-router-dom'
@@ -18,6 +18,8 @@ export default function SignupModal({ closeModalSignup }) {
   const { setIsAuthenticated, setInfo, isAuthenticated } = useContext(AppContext)
   const navigate = useNavigate()
   console.log(isAuthenticated)
+  const [previewImage, setPreviewImage] = useState('#')
+  const previewImageElement = useRef()
   const {
     register,
     handleSubmit,
@@ -84,11 +86,20 @@ export default function SignupModal({ closeModalSignup }) {
   }
   return (
     <div className='modal'>
-      <div className='overlay' onClick={() => closeModalSignup()}></div>
-      <div className='modal-content bg-white'>
-        <div className='relative w-[26rem] max-h-full'>
+      <div
+        className='overlay'
+        onClick={() => {
+          closeModalSignup()
+          setPreviewImage('#')
+        }}
+      ></div>
+      <div className='modal-content bg-white flex justify-center'>
+        <div className='relative'>
           <div
-            onClick={() => closeModalSignup()}
+            onClick={() => {
+              closeModalSignup()
+              setPreviewImage('#')
+            }}
             className='absolute right-0 top-[-0.5rem] rounded-full transition-all duration-300  cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-500 flex justify-center items-center h-8 w-8  dark:text-yellow-400 font-extrabold'
           >
             <AiOutlineClose />
@@ -99,20 +110,32 @@ export default function SignupModal({ closeModalSignup }) {
             <div className='font-ibm-plex-serif-400 text-xl mt-[0.7rem]'>Đăng ký tài khoản để tiếp tục</div>
           </div>
           <form className='w-full' onSubmit={onSubmit} noValidate>
-            <div className='mt-[3rem]'>
-              <input
-                type='text'
-                id='email'
-                name='email'
-                placeholder='Email'
-                autoComplete='on'
-                {...register('email')}
-                className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-xl rounded-xl w-full py-6 px-[2rem]'
-              />
-              <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.email?.message}</div>
+            <div className='mt-[3rem] flex gap-10'>
+              <div>
+                <input
+                  type='text'
+                  id='email'
+                  name='email'
+                  placeholder='Email'
+                  autoComplete='on'
+                  {...register('email')}
+                  className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-xl rounded-xl  py-2 px-[2rem]'
+                />
+                <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.email?.message}</div>
+              </div>
+              <div>
+                <input
+                  type='text'
+                  id='username'
+                  name='username'
+                  placeholder='Username (không bắt buộc)'
+                  autoComplete='on'
+                  {...register('usernmae')}
+                  className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-xl rounded-xl  py-2 px-[2rem]'
+                />
+              </div>
             </div>
-
-            <div className=''>
+            <div>
               <input
                 id='password'
                 type='password'
@@ -120,24 +143,55 @@ export default function SignupModal({ closeModalSignup }) {
                 placeholder='Password'
                 autoComplete='on'
                 {...register('password')}
-                className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-xl rounded-xl w-full py-6 px-[2rem]'
+                className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-xl w-full rounded-xl py-2 px-[2rem]'
               />
               <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.password?.message}</div>
             </div>
-            <div className='font-inter-400'>
+
+            <div className='mt-[3rem] flex'>
+              <div>
+                <div>Ảnh đại diện</div>
+                <input
+                  type='file'
+                  id='img'
+                  name='img'
+                  accept='image/*'
+                  {...register('avatar')}
+                  className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400  font-inter-500 border-[#E6E6E6] w-full py-6'
+                  onChange={(e) => {
+                    const [file] = e.target.files
+                    if (file) {
+                      setPreviewImage(URL.createObjectURL(file))
+                      previewImageElement.current.style.visibility = 'visible'
+                    }
+                  }}
+                />
+                <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.avatar?.message}</div>
+              </div>
+              <img
+                src={previewImage}
+                className='w-[10rem] h-[10rem]'
+                onError={(e) => {
+                  e.target.style.visibility = 'hidden'
+                }}
+                ref={previewImageElement}
+              />
+            </div>
+
+            <div className='font-inter-400 mt-[3rem]'>
               <span>Bạn chưa có tài khoản? Đăng ký </span>
               <span className='text-[#0038FF] underline cursor-pointer'>tại đây</span>
             </div>
-            <div className='w-full flex justify-center items-center mt-14'>
+            <div className='w-full flex justify-between items-center mt-14'>
               <button className='bg-[#0366FF] hover:bg-green-500  text-white py-[1.2rem] px-[7rem] font-ibm-plex-serif-700 rounded-lg'>
                 Đăng ký
               </button>
-            </div>
-            <div className='mt-10 w-full flex justify-center items-center'>
               <GoogleLogin
                 theme='filled_black'
                 text='signup_with'
                 size='large'
+                width='300'
+                useOneTap
                 onSuccess={(credentialResponse) => {
                   console.log(credentialResponse)
                   const credential = { credential: credentialResponse?.credential }

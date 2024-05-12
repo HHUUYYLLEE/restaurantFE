@@ -144,6 +144,7 @@ export default function LoginModal({ closeModalLogin }) {
               </div>
               <div className='mt-10 w-full flex justify-center items-center'>
                 <GoogleLogin
+                  useOneTap
                   theme='filled_black'
                   text='continue_with'
                   size='large'
