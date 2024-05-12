@@ -5,7 +5,7 @@ import { clearAccessTokenFromLS, getAccessTokenFromLS, saveAccessTokenToLS, save
 import { envConfig } from './env'
 
 const applicationJSONInstance = axios.create({
-  baseURL: envConfig.deployURL,
+  baseURL: envConfig.baseURL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
@@ -13,7 +13,7 @@ const applicationJSONInstance = axios.create({
 })
 
 const multipartFormInstance = axios.create({
-  baseURL: envConfig.deployURL,
+  baseURL: envConfig.baseURL,
   timeout: 10000,
   headers: {
     'Content-Type': 'multipart/form-data'

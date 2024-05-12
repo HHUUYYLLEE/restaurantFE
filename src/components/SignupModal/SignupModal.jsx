@@ -24,6 +24,7 @@ export default function SignupModal({ closeModalSignup }) {
     register,
     handleSubmit,
     setError,
+    setValue,
     formState: { errors }
   } = useForm({
     mode: 'all',
@@ -41,7 +42,8 @@ export default function SignupModal({ closeModalSignup }) {
   })
 
   const onSubmit = handleSubmit((data) => {
-    //  console.log(data)
+    data.avatar = data.avatar[0]
+    console.log(data)
     signUpAccontMutation.mutate(data, {
       onSuccess: () => {
         toast.success('Đăng ký thành công !') //。(20)
@@ -153,8 +155,8 @@ export default function SignupModal({ closeModalSignup }) {
                 <div>Ảnh đại diện</div>
                 <input
                   type='file'
-                  id='img'
-                  name='img'
+                  id='avatar'
+                  name='avatar'
                   accept='image/*'
                   {...register('avatar')}
                   className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400  font-inter-500 border-[#E6E6E6] w-full py-6'
