@@ -2,14 +2,10 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import HttpStatusCode from '../constants/httpStatusCode.enum'
 import { clearAccessTokenFromLS, getAccessTokenFromLS, saveAccessTokenToLS, saveInfoFromLS } from './auth'
-
-const URL = {
-  BASE_URL: 'http://localhost:4000/api/',
-  DEPLOY_URL: 'https://restaurantbe-huyle-2a11ba84.koyeb.app/api/'
-}
+import { envConfig } from './env'
 
 const applicationJSONInstance = axios.create({
-  baseURL: URL.DEPLOY_URL,
+  baseURL: envConfig.deployURL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
@@ -17,7 +13,7 @@ const applicationJSONInstance = axios.create({
 })
 
 const multipartFormInstance = axios.create({
-  baseURL: URL.DEPLOY_URL,
+  baseURL: envConfig.deployURL,
   timeout: 10000,
   headers: {
     'Content-Type': 'multipart/form-data'
@@ -47,7 +43,7 @@ applicationJSONInstance.interceptors.response.use(
     console.log(response)
     const { url } = response.config
 
-    if (url === 'user/login') {
+    if (url === '/user/login' || url === '/user/loginGoogle') {
       // console.log(url)
 
       accessToken = response.data.data.accessToken
@@ -98,7 +94,7 @@ multipartFormInstance.interceptors.response.use(
     console.log(response)
     const { url } = response.config
 
-    if (url === 'user/login') {
+    if (url === 'user/register') {
       // console.log(url)
 
       accessToken = response.data.data.accessToken

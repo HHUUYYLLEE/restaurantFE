@@ -1,4 +1,4 @@
-import { applicationJSONInstance, multipartFormInstance } from '../utils/headers'
+import { applicationJSONInstance, multipartFormInstance } from '../utils/http'
 
 export const getAllFood = (params) => applicationJSONInstance.get(`food`, { params })
 export const getRoom = (id) => applicationJSONInstance.get(`room/${id}`)

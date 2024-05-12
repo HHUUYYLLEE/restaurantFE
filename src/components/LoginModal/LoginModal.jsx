@@ -5,12 +5,14 @@ import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { schemaLogin } from '../../utils/rules'
-import { loginAccount } from '../../api/auth.api'
+import { loginAccount, loginGoogleAccount } from '../../api/auth.api'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 import Modal from 'react-modal'
 import { TailSpin } from 'react-loader-spinner'
 import { getInfoFromLS } from '../../utils/auth'
+import { GoogleLogin } from '@react-oauth/google'
+
 import { isAxiosUnprocessableEntityError } from '../../utils/utils'
 export default function LoginModal({ closeModalLogin }) {
   const { setIsAuthenticated, setInfo, isAuthenticated } = useContext(AppContext)
@@ -31,6 +33,28 @@ export default function LoginModal({ closeModalLogin }) {
   const loginAccontMutation = useMutation({
     mutationFn: (body) => loginAccount(body)
   })
+  const loginGoogleAccontMutation = useMutation({
+    mutationFn: (body) => loginGoogleAccount(body)
+  })
+  function onSubmitGoogle(credential) {
+    console.log(credential)
+    loginGoogleAccontMutation.mutate(credential, {
+      onSuccess: () => {
+        toast.success('Đăng nhập Google thành công !') //。(20)
+        setInfo(getInfoFromLS())
+        setIsAuthenticated(true)
+        closeModalLogin()
+        navigate('/')
+      },
+      onError: (error) => {
+        console.log(error)
+        if (isAxiosUnprocessableEntityError(error)) {
+          const formError = error.response?.data?.errors
+          console.log(formError)
+        }
+      }
+    })
+  }
 
   const onSubmit = handleSubmit((data) => {
     //  console.log(data)
@@ -114,9 +138,24 @@ export default function LoginModal({ closeModalLogin }) {
                 <span className='text-[#0038FF] underline cursor-pointer'>? Đăng ký tại đây</span>
               </div>
               <div className='w-full flex justify-center items-center pt-14'>
-                <button className='bg-[#0366FF] hover:bg-green-500  mx-5 text-white py-[1.2rem] px-[7rem] font-ibm-plex-serif-700 rounded-lg'>
+                <button className='bg-[#0366FF] hover:bg-green-500 text-white py-[1.2rem] px-[7rem] font-ibm-plex-serif-700 rounded-lg'>
                   Đăng nhập
                 </button>
+              </div>
+              <div className='mt-10 w-full flex justify-center items-center'>
+                <GoogleLogin
+                  theme='filled_black'
+                  text='continue_with'
+                  size='large'
+                  onSuccess={(credentialResponse) => {
+                    console.log(credentialResponse)
+                    const credential = { credential: credentialResponse?.credential }
+                    onSubmitGoogle(credential)
+                  }}
+                  onError={() => {
+                    console.log('Login Failed')
+                  }}
+                />
               </div>
             </form>
             <Modal

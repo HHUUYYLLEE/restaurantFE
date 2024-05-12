@@ -1,17 +1,16 @@
-import { Link, NavLink, useLocation, createSearchParams, useNavigate } from 'react-router-dom'
+import { Link, createSearchParams, useNavigate } from 'react-router-dom'
 import LoginModal from '../LoginModal'
 import useQueryConfig from '../../hooks/useQueryConfig'
-import { useQuery } from '@tanstack/react-query'
-import Ava from '../../asset/img/ava.png'
 import { AppContext } from '../../contexts/app.context'
 import { useEffect, useRef, useState, useContext } from 'react'
-import { useMutation } from '@tanstack/react-query'
 import Modal from 'react-modal'
 import { useForm } from 'react-hook-form'
 import { omit } from 'lodash'
-import googleDriveURL from '../../constants/googledriveURL'
+import { clearAccessTokenFromLS } from '../../utils/auth'
+import { toast } from 'react-toastify'
 
 import { TailSpin } from 'react-loader-spinner'
+import SignupModal from '../SignupModal/SignupModal'
 
 // const headerItems = [
 //   { id: 1, name: 'Trang chủ', path: '/' },
@@ -160,12 +159,17 @@ export default function Header() {
                  block rounded-xl mt-[0.5vh] h-[0.1rem] mx-auto bg-white'
               />
             </div>
-            <div onClick={() => this.forceUpdate} className='group text-lg transition duration-300 text-white'>
-              Đăng ký
-              <span
-                className='max-w-0 group-hover:max-w-[80%] transition-all duration-500
+            <div className={`flex flex-row gap-8 ${isAuthenticated && 'invisible'}`}>
+              <div
+                onClick={openModalSignup}
+                className='group cursor-pointer text-lg transition duration-300 text-white'
+              >
+                Đăng ký
+                <span
+                  className='max-w-0 group-hover:max-w-[80%] transition-all duration-500
                 block rounded-xl mt-[0.5vh] h-[0.1rem] mx-auto bg-white'
-              />
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -174,8 +178,8 @@ export default function Header() {
           ref={refDropDown}
         >
           <div onClick={toggleMenu} className='flex items-center gap-2'>
-            <div className='bg-gray-300 rounded-full w-[3rem] h-[3rem] flex items-center justify-center'>
-              <img src={googleDriveURL(info?.avatar_url)} alt='' className='w-[2rem] h-[2rem]' />
+            <div className='bg-gray-300 rounded-full w-[3rem] h-[3rem] flex items-center overflow-hidden justify-center'>
+              <img src={info?.avatar_url} alt='' className='' />
             </div>
             <div className='font-semibold text-white'>{info?.username}</div>
           </div>
@@ -198,6 +202,8 @@ export default function Header() {
         </div>
       </header>
       {modalLogin && <LoginModal closeModalLogin={closeModalLogin} />}
+      {signupModal && <SignupModal closeModalSignup={closeModalSignup} />}
+
       <Modal
         style={{
           overlay: {
@@ -234,6 +240,8 @@ export default function Header() {
               setIsAuthenticated(false)
               setInfo(null)
               setLogoutModal(false)
+              clearAccessTokenFromLS()
+              toast.success('Đăng xuất thành công !')
             }}
             className='w-[10vw] h-[8vh] flex justify-center items-center bg-[#0366FF] hover:bg-green-700 text-white font-inter-700 rounded-lg text-xl'
           >
