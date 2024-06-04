@@ -14,9 +14,16 @@ const applicationJSONInstance = axios.create({
 
 const multipartFormInstance = axios.create({
   baseURL: envConfig.baseURL,
-  timeout: 10000,
   headers: {
     'Content-Type': 'multipart/form-data'
+  }
+})
+
+const mapInstance = axios.create({
+  baseURL: envConfig.opencageURL,
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json'
   }
 })
 
@@ -43,11 +50,11 @@ applicationJSONInstance.interceptors.response.use(
     console.log(response)
     const { url } = response.config
 
-    if (url === '/user/login' || url === '/user/loginGoogle' || url === '/user/register') {
+    if (url === 'user/login' || url === '/user/loginGoogle' || url === 'user/register') {
       // console.log(url)
 
       accessToken = response.data.data.accessToken
-      //console.log(accessToken)
+      console.log(accessToken)
       saveInfoToLS(response.data.data.user)
       saveAccessTokenToLS(accessToken)
     } else if (url.includes('user')) {
@@ -96,7 +103,7 @@ multipartFormInstance.interceptors.response.use(
     console.log(response)
     const { url } = response.config
 
-    if (url === '/user/login' || url === '/user/loginGoogle' || url === '/user/register') {
+    if (url === 'user/login' || url === '/user/loginGoogle' || url === 'user/register') {
       // console.log(url)
 
       accessToken = response.data.data.accessToken
@@ -128,4 +135,4 @@ multipartFormInstance.interceptors.response.use(
   }
 )
 
-export { applicationJSONInstance, multipartFormInstance }
+export { applicationJSONInstance, multipartFormInstance, mapInstance }

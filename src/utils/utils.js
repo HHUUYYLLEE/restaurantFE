@@ -25,6 +25,13 @@ export function displayNum(num) {
     .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, '.')
 }
 
+export function convertTime(num) {
+  let temp = num
+  if (typeof num === 'string') temp = parseInt(num)
+  if (temp >= 0 && temp < 10) return '0' + temp
+  return temp
+}
+
 export function convertDate(date) {
   return date.substring(0, 10).replaceAll('-', '/')
 }

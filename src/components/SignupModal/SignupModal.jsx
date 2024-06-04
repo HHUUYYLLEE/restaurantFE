@@ -131,7 +131,7 @@ export default function SignupModal({ closeModalSignup }) {
                   name='username'
                   placeholder='Username (không bắt buộc)'
                   autoComplete='on'
-                  {...register('usernmae')}
+                  {...register('username')}
                   className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-xl rounded-xl  py-2 px-[2rem]'
                 />
               </div>

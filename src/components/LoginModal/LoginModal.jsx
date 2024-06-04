@@ -63,6 +63,7 @@ export default function LoginModal({ closeModalLogin }) {
         console.log(data?.data.data.user.role)
         toast.success('Đăng nhập thành công !') //。(20)
         setInfo(getInfoFromLS())
+        closeModalLogin()
         setIsAuthenticated(true)
         switch (data?.data.data.user.role) {
           case 0:
@@ -74,7 +75,6 @@ export default function LoginModal({ closeModalLogin }) {
           default:
             break
         }
-        closeModalLogin()
       },
       onError: (error) => {
         console.log(error)

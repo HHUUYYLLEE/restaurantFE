@@ -97,7 +97,7 @@ export default function Header() {
     <>
       <header className='fixed flex top-0 w-full h-20 shadow-lg items-center transition duration-300 z-[20] bg-orange-600'>
         <div className='ml-20 text-3xl italic text-white'>
-          <Link onClick={() => this.forceUpdate} to='/'>
+          <Link onClick={() => this.forceUpdate} to='/' className='focus:outline-none'>
             vnFood
           </Link>
         </div>

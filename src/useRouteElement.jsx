@@ -3,6 +3,8 @@ import MainLayout from './layouts/MainLayout'
 
 import Home from './pages/Home'
 import Profile from './pages/Profile'
+import RestaurantDetails from './pages/RestaurantDetails'
+import HostRestaurantDetails from './pages/HostRestaurantDetails'
 import { useContext } from 'react'
 import { AppContext } from './contexts/app.context'
 import OpenRestaurant from './pages/OpenRestaurant/OpenRestaurant'
@@ -23,11 +25,11 @@ function UserProtectedRouter() {
 export default function useRouteElement() {
   const routeElement = useRoutes([
     {
-      path: '/',
+      path: '/restaurant/:id',
       index: true,
       element: (
         <MainLayout>
-          <Home />
+          <RestaurantDetails />
         </MainLayout>
       )
     },
@@ -52,8 +54,26 @@ export default function useRouteElement() {
               <OpenRestaurant />
             </MainLayout>
           )
+        },
+        {
+          path: '/host_restaurant/:id',
+          index: true,
+          element: (
+            <MainLayout>
+              <HostRestaurantDetails />
+            </MainLayout>
+          )
         }
       ]
+    },
+    {
+      path: '/',
+      index: true,
+      element: (
+        <MainLayout>
+          <Home />
+        </MainLayout>
+      )
     }
   ])
   return routeElement

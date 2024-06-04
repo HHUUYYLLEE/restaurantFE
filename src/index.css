@@ -120,6 +120,12 @@
   font-family: 'DM Sans', sans-serif;
   font-weight: 700;
 }
+.leaflet-container {
+  height: 60vh;
+  width: 45vw;
+  z-index: 1;
+}
+
 /* .active {
   @apply text-blue-600;
 } */
@@ -159,7 +165,11 @@
 .overlay {
   background-color: rgba(0, 0, 0, 0.7);
 }
-
+.priceInput::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
 .modal-content {
   position: absolute;
   z-index: 27;
