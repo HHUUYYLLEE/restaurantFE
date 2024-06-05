@@ -15,10 +15,12 @@ export const clearAccessTokenFromLS = () => {
 export const getAccessTokenFromLS = () => localStorage.getItem('access_token') || ''
 
 export const getInfoFromLS = () => {
-  if (localStorage.getItem('keyInfo')) {
+  if (localStorage.getItem('keyInfo') !== 'undefined' && localStorage.getItem('keyInfo') !== 'null') {
     const objectInfo = JSON.parse(localStorage.getItem('keyInfo'))
     return objectInfo
   } else {
+    localStorage.removeItem('keyInfo')
+
     return null
   }
 }

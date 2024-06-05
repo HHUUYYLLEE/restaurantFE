@@ -3,6 +3,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { injectStyle } from 'react-toastify/dist/inject-style'
 import { contextClass } from './utils/objectUi'
+import { getInfoFromLS } from './utils/auth'
 
 if (typeof window !== 'undefined') {
   injectStyle()
