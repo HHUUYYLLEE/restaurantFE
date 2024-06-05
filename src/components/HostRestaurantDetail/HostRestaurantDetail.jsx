@@ -37,13 +37,13 @@ export default function HostRestaurantDetail() {
           <div className='col-span-3 flex items-center justify-center'>
             <Carousel showArrows={true}>
               <div>
-                <img src={data?.data.restaurant.main_avatar_url} />
+                <img src={data?.data.restaurant.main_avatar_url} referrerPolicy='no-referrer' />
               </div>
               {data &&
                 restaurantData.images.map((image, key) => {
                   return (
                     <div key={key}>
-                      <img src={image} />
+                      <img src={image} referrerPolicy='no-referrer' />
                     </div>
                   )
                 })}

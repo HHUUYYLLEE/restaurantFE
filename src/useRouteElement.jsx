@@ -5,10 +5,11 @@ import Home from './pages/Home'
 import Profile from './pages/Profile'
 import RestaurantDetails from './pages/RestaurantDetails'
 import HostRestaurantDetails from './pages/HostRestaurantDetails'
+import OrderList from './pages/OrderList/OrderList'
 import { useContext } from 'react'
 import { AppContext } from './contexts/app.context'
 import OpenRestaurant from './pages/OpenRestaurant/OpenRestaurant'
-
+import PlaceOrder from './pages/PlaceOrder/PlaceOrder'
 // eslint-disable-next-line react-refresh/only-export-components
 function AdminProtectedRouter() {
   const { info } = useContext(AppContext)
@@ -37,6 +38,24 @@ export default function useRouteElement() {
       path: '',
       element: <UserProtectedRouter />,
       children: [
+        {
+          path: '/place_order/:id',
+          index: true,
+          element: (
+            <MainLayout>
+              <PlaceOrder />
+            </MainLayout>
+          )
+        },
+        {
+          path: '/order_food',
+          index: true,
+          element: (
+            <MainLayout>
+              <OrderList />
+            </MainLayout>
+          )
+        },
         {
           path: '/profile',
           index: true,

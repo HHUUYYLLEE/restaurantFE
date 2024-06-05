@@ -12,7 +12,6 @@ function App() {
   const routeElement = useRouteElement()
   return (
     <div>
-      {/* <BGM /> */}
       {routeElement}
       <ToastContainer
         toastClassName={({ type }) =>

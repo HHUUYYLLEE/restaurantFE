@@ -55,7 +55,7 @@ export default function HostRestaurantFood() {
                       <FaRegTrashAlt style={{ width: '1.5vw', height: '1.5vw', color: 'white' }} />
                     </div>
                   </div>
-                  <img src={food.image_url} />
+                  <img src={food.image_url} referrerPolicy='no-referrer' />
                   <div>
                     <div className='text-xl mt-[1rem] h-[4.9rem] text-ellipsis'>{food.name}</div>
                     <div className='text-3xl mt-[1rem] text-yellow-600 font-poppins-400'>{displayNum(food.price)}</div>

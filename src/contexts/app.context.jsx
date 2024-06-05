@@ -7,7 +7,7 @@ const initialAppContext = {
   setValueAddress: () => null,
   valueQuery: {},
   setValueQuery: () => null,
-  isAuthenticated: Boolean(getAccessTokenFromLS()),
+  isAuthenticated: Boolean(getAccessTokenFromLS() && getInfoFromLS()),
   setIsAuthenticated: () => null,
   info: getInfoFromLS(),
   setInfo: () => null

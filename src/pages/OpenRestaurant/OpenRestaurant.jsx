@@ -14,7 +14,6 @@ import Modal from 'react-modal'
 import 'leaflet/dist/leaflet.css'
 import { MapContainer, TileLayer, useMapEvents, Marker, useMap } from 'react-leaflet'
 import { createSearchParams, useAsyncError } from 'react-router-dom'
-import { ref } from 'yup'
 import { envConfig } from '../../utils/env'
 import { convertTime } from '../../utils/utils'
 export default function OpenRestaurant() {
@@ -424,13 +423,13 @@ export default function OpenRestaurant() {
             </div>
             <div className='mt-[3rem] flex items-center'>
               <div className='text-xl w-[8vw]'>Địa chỉ</div>
-              <div className='relative flex '>
+              <div className='relative'>
                 <div className='absolute top-1 left-[50%] translate-x-[-50%] text-center z-10'>
                   <input
                     type='text'
                     id='search'
                     name='search'
-                    placeholder='Tìm kiếm'
+                    placeholder='Tìm kiếm hoặc click vào 1 vị trí'
                     autoComplete='off'
                     onInput={(e) => {
                       setLockMarker(true)

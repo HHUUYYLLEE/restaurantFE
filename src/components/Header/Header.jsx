@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form'
 import { omit } from 'lodash'
 import { clearAccessTokenFromLS } from '../../utils/auth'
 import { toast } from 'react-toastify'
-
+import { BsCart4 } from 'react-icons/bs'
 import SignupModal from '../SignupModal/SignupModal'
 
 export default function Header() {
@@ -52,47 +52,7 @@ export default function Header() {
   const toggleMenu = () => {
     setIsOpen(!isOpen)
   }
-  const onSubmit = handleSubmit((data) => {
-    navigate({
-      pathname: '/',
-      search: createSearchParams(
-        omit(
-          {
-            ...queryConfig,
-            ...data
-          },
-          [
-            'address',
-            'type',
-            'sort',
-            'price_min',
-            'price_max',
-            'area_min',
-            'area_max',
-            'is_have_parking_lot',
-            'is_new',
-            'is_high_security',
-            'is_have_owner',
-            'is_have_bed',
-            'is_have_wardrobe',
-            'is_have_dinning_table',
-            'is_have_refrigerator',
-            'is_have_television',
-            'is_have_kitchen',
-            'is_have_washing_machine',
-            'number_or_people'
-          ]
-        )
-      ).toString()
-    })
-  })
-  // const { data, isLoading, isSuccess, refetch } = useQuery({
-  //   queryKey: ['randomRoom'],
-  //   queryFn: () => {
-  //     return getRandomRoom()
-  //   },
-  //   staleTime: 1000 * 60 * 5
-  // })
+
   return (
     <>
       <header className='fixed flex top-0 w-full h-20 shadow-lg items-center transition duration-300 z-[20] bg-orange-600'>
@@ -101,7 +61,7 @@ export default function Header() {
             vnFood
           </Link>
         </div>
-        <form onSubmit={onSubmit}>
+        <form>
           <div className='relative ml-10 w-[50vw]'>
             <div className='absolute mt-3 ml-2 pointer-events-none'>
               <svg
@@ -125,7 +85,7 @@ export default function Header() {
               id='default-search'
               {...register('search')}
               className='font-andika focus:outline-none placeholder-white bg-white/30 text-white pl-16 py-3 w-full text-sm border border-gray-300 rounded-[10px]'
-              placeholder='Tìm kiếm quận, huyện, vị trí, phòng trọ,...'
+              placeholder='Tìm kiếm,...'
             ></input>
             <button
               type='submit'
@@ -144,7 +104,7 @@ export default function Header() {
             />
           </Link>
 
-          <div className={`flex flex-row gap-8 ${isAuthenticated && 'invisible'}`}>
+          <div className={`flex flex-row gap-8 ${isAuthenticated && 'hidden'}`}>
             <div onClick={openModalLogin} className='group cursor-pointer text-lg transition duration-300 text-white'>
               Đăng nhập
               <span
@@ -152,7 +112,7 @@ export default function Header() {
                  block rounded-xl mt-[0.5vh] h-[0.1rem] mx-auto bg-white'
               />
             </div>
-            <div className={`flex flex-row gap-8 ${isAuthenticated && 'invisible'}`}>
+            <div className={`flex flex-row gap-8 ${isAuthenticated && 'hidden'}`}>
               <div
                 onClick={openModalSignup}
                 className='group cursor-pointer text-lg transition duration-300 text-white'
@@ -166,34 +126,46 @@ export default function Header() {
             </div>
           </div>
         </div>
-        <div
-          className={`relative mr-20 cursor-pointer font-poppins-600 ${!isAuthenticated && 'invisible'}`}
-          ref={refDropDown}
-        >
-          <div onClick={toggleMenu} className='flex items-center gap-2'>
-            <div className='bg-gray-300 rounded-full w-[3rem] h-[3rem] flex items-center overflow-hidden justify-center'>
-              <img src={info?.avatar_url} alt='' className='' />
-            </div>
-            <div className='font-semibold text-white'>{info?.username}</div>
+        <div className='flex items-center ml-[8vw] gap-x-[1rem]'>
+          <div className={`${!isAuthenticated && 'hidden'}`}>
+            <Link to='/order_food'>
+              <BsCart4 style={{ width: '2.6vw', height: '2.6vw', color: 'white' }} />
+            </Link>
           </div>
-          {isOpen && (
-            <div className='absolute z-10 mt-4 w-[10vw] rounded-lg shadow-lg border-[1px] border-black focus:outline-none bg-white/80'>
-              <div className='py-1 divide-y-[1px] divide-gray-400'>
-                <NavLink to='/profile'>
-                  <button className='inline-flex w-full justify-center px-4 py-3 text-lg -mt-0.5'>Tài khoản</button>
-                </NavLink>
-                <button
-                  onClick={() => {
-                    setIsOpen(false)
-                    setLogoutModal(true)
-                  }}
-                  className='inline-flex w-full justify-center text-red-600 px-4 py-3 text-lg mt-0.5'
-                >
-                  Đăng xuất
-                </button>
+          <div
+            className={`relative mr-20 cursor-pointer font-poppins-600 ${!isAuthenticated && 'hidden'}`}
+            ref={refDropDown}
+          >
+            <div onClick={toggleMenu} className='flex items-center gap-2'>
+              <div className='bg-gray-300 rounded-full w-[3rem] h-[3rem] flex items-center overflow-hidden justify-center'>
+                <img src={info?.avatar_url} referrerPolicy='no-referrer' alt='' className='' />
               </div>
+              <div className='font-semibold text-white'>{info?.username}</div>
             </div>
-          )}
+            {isOpen && (
+              <div className='absolute z-10 mt-4 w-[10vw] rounded-lg shadow-lg border-[1px] border-black focus:outline-none bg-white/80'>
+                <div className='py-1 divide-y-[1px] divide-gray-400'>
+                  <NavLink to='/profile'>
+                    <button
+                      onClick={() => setIsOpen(false)}
+                      className='inline-flex w-full justify-center px-4 py-3 text-lg -mt-0.5'
+                    >
+                      Tài khoản
+                    </button>
+                  </NavLink>
+                  <button
+                    onClick={() => {
+                      setIsOpen(false)
+                      setLogoutModal(true)
+                    }}
+                    className='inline-flex w-full justify-center text-red-600 px-4 py-3 text-lg mt-0.5'
+                  >
+                    Đăng xuất
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </header>
       {modalLogin && <LoginModal closeModalLogin={closeModalLogin} />}
@@ -237,6 +209,7 @@ export default function Header() {
               setLogoutModal(false)
               clearAccessTokenFromLS()
               toast.success('Đăng xuất thành công !')
+              navigate('/')
             }}
             className='w-[10vw] h-[8vh] flex justify-center items-center bg-[#0366FF] hover:bg-green-700 text-white font-inter-700 rounded-lg text-xl'
           >

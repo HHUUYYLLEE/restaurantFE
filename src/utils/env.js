@@ -7,24 +7,6 @@ const envConfig = {
 }
 
 const webName = 'NhaHang'
-const minPrice = 0,
-  defaultPriceRight = 4500000,
-  minArea = 0,
-  defaultAreaRight = 50,
-  maxPrice = 20000000,
-  maxArea = 100,
-  stepPrice = 100000,
-  stepArea = 1
+const minPrice = 0
 
-export {
-  envConfig,
-  webName,
-  minPrice,
-  minArea,
-  defaultAreaRight,
-  defaultPriceRight,
-  maxPrice,
-  maxArea,
-  stepArea,
-  stepPrice
-}
+export { envConfig, webName }

@@ -62,3 +62,7 @@ export const schemaFood = yup.object({
   price: yup.string().required('Phải nhập giá'),
   image: yup.mixed().required('Cần ảnh minh hoạ')
 })
+
+export const orderInputSchema = yup.object({
+  quantity: yup.string().required(' ')
+})

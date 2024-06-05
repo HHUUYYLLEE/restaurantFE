@@ -8,3 +8,4 @@ export const getAllRoomsHost = (params) => applicationJSONInstance.get('room/get
 export const updateARoom = (formData) => applicationJSONInstance.put('room/updateRoom/update', formData)
 export const getAllFoodInRestaurant = (restaurant_id) => applicationJSONInstance.get(`food/restaurant/${restaurant_id}`)
 export const addFood = (formData) => multipartFormInstance.post('food', formData)
+export const getFood = (id) => applicationJSONInstance.get(`food/${id}`)
