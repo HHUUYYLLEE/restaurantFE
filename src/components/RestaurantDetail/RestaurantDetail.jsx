@@ -8,7 +8,10 @@ import { FaRegClock } from 'react-icons/fa'
 import { FaClock } from 'react-icons/fa'
 import { MapContainer, TileLayer, Marker } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
-
+import 'leaflet/dist/leaflet.css'
+import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css' // Re-uses images from ~leaflet package
+import * as L from 'leaflet'
+import 'leaflet-defaulticon-compatibility'
 export default function RestaurantDetail() {
   const { id } = useParams()
   const { data, status, isLoading, isSuccess } = useQuery({

@@ -21,7 +21,10 @@ import { envConfig } from '../../utils/env'
 import { CiShop } from 'react-icons/ci'
 import { getRestaurant } from '../../api/restaurants.api'
 import Food from './Food/Food'
-
+import 'leaflet/dist/leaflet.css'
+import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css' // Re-uses images from ~leaflet package
+import * as L from 'leaflet'
+import 'leaflet-defaulticon-compatibility'
 export default function OrderDetail() {
   const phone_number = getInfoFromLS().phone_number
   const username = getInfoFromLS().username
