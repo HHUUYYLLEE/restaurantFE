@@ -7,6 +7,5 @@ const envConfig = {
 }
 
 const webName = 'NhaHang'
-const minPrice = 0
 
 export { envConfig, webName }

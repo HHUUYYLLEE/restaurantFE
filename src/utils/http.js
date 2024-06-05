@@ -6,7 +6,6 @@ import { envConfig } from './env'
 
 const applicationJSONInstance = axios.create({
   baseURL: envConfig.deployURL,
-  timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -21,7 +20,7 @@ const multipartFormInstance = axios.create({
 
 const mapInstance = axios.create({
   baseURL: envConfig.opencageURL,
-  timeout: 10000,
+
   headers: {
     'Content-Type': 'application/json'
   }
