@@ -21,10 +21,10 @@ import { envConfig } from '../../utils/env'
 import { CiShop } from 'react-icons/ci'
 import { getRestaurant } from '../../api/restaurants.api'
 import Food from './Food/Food'
+import markerIconPng from 'leaflet/dist/images/marker-icon.png'
+import { Icon } from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css' // Re-uses images from ~leaflet package
-import * as L from 'leaflet'
-import 'leaflet-defaulticon-compatibility'
+
 export default function OrderDetail() {
   const phone_number = getInfoFromLS().phone_number
   const username = getInfoFromLS().username
@@ -210,7 +210,10 @@ export default function OrderDetail() {
             <MapContainer center={[21.028511, 105.804817]} zoom={13} style={{ width: '100%', height: '85vh' }}>
               <ResetCenterView></ResetCenterView>
               <MyComponent></MyComponent>
-              <Marker position={markerPos}></Marker>
+              <Marker
+                position={markerPos}
+                icon={new Icon({ iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41] })}
+              ></Marker>
               <TileLayer
                 attribution='Google Maps'
                 url='http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}' // regular

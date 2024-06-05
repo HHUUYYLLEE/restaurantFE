@@ -6,11 +6,11 @@ import 'react-responsive-carousel/lib/styles/carousel.css'
 import { MdOutlinePinDrop } from 'react-icons/md'
 import { TiPencil } from 'react-icons/ti'
 import { FaRegTrashAlt } from 'react-icons/fa'
-import { MapContainer, TileLayer, Marker } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { displayNum } from '../../utils/utils'
 import { useState } from 'react'
 import AddFoodModal from './AddFoodModal/AddFoodModal'
+
 export default function HostRestaurantFood() {
   const [addFoodModal, setAddFoodModal] = useState(false)
   const openAddFoodModal = () => {

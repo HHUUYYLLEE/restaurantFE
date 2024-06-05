@@ -7,6 +7,8 @@ import { MdOutlinePinDrop } from 'react-icons/md'
 import { FaRegClock } from 'react-icons/fa'
 import { FaClock } from 'react-icons/fa'
 import { MapContainer, TileLayer, Marker } from 'react-leaflet'
+import markerIconPng from 'leaflet/dist/images/marker-icon.png'
+import { Icon } from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { createSearchParams, useNavigate } from 'react-router-dom'
 import { getInfoFromLS } from '../../utils/auth'
@@ -100,7 +102,10 @@ export default function HostRestaurantDetail() {
               </div>
               <div className='w-[50vw]'>
                 <MapContainer center={[restaurantData.lat, restaurantData.lng]} zoom={17}>
-                  <Marker position={[restaurantData.lat, restaurantData.lng]}></Marker>
+                  <Marker
+                    position={[restaurantData.lat, restaurantData.lng]}
+                    icon={new Icon({ iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41] })}
+                  ></Marker>
                   <TileLayer
                     attribution='Google Maps'
                     url='http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}' // regular

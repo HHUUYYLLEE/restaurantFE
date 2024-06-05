@@ -12,11 +12,9 @@ import { useEffect, useRef, useState } from 'react'
 import { TailSpin } from 'react-loader-spinner'
 import Modal from 'react-modal'
 import 'leaflet/dist/leaflet.css'
+import markerIconPng from 'leaflet/dist/images/marker-icon.png'
+import { Icon } from 'leaflet'
 import { MapContainer, TileLayer, useMapEvents, Marker, useMap } from 'react-leaflet'
-import 'leaflet/dist/leaflet.css'
-import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css' // Re-uses images from ~leaflet package
-import * as L from 'leaflet'
-import 'leaflet-defaulticon-compatibility'
 import { createSearchParams, useAsyncError } from 'react-router-dom'
 import { envConfig } from '../../utils/env'
 import { convertTime } from '../../utils/utils'
@@ -470,7 +468,10 @@ export default function OpenRestaurant() {
                 <MapContainer center={[21.028511, 105.804817]} zoom={13}>
                   <ResetCenterView></ResetCenterView>
                   <MyComponent></MyComponent>
-                  <Marker position={markerPos}></Marker>
+                  <Marker
+                    position={markerPos}
+                    icon={new Icon({ iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41] })}
+                  ></Marker>
                   <TileLayer
                     attribution='Google Maps'
                     url='http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}' // regular
