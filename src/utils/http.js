@@ -1,18 +1,23 @@
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import HttpStatusCode from '../constants/httpStatusCode.enum'
-import { clearAccessTokenFromLS, getAccessTokenFromLS, saveAccessTokenToLS, saveInfoToLS } from './auth'
+import {
+  clearAccessTokenFromLS,
+  getAccessTokenFromLS,
+  saveAccessTokenToLS,
+  saveInfoToLS
+} from './auth'
 import { envConfig } from './env'
 
 const applicationJSONInstance = axios.create({
-  baseURL: envConfig.deployURL,
+  baseURL: envConfig.baseURL,
   headers: {
     'Content-Type': 'application/json'
   }
 })
 
 const multipartFormInstance = axios.create({
-  baseURL: envConfig.deployURL,
+  baseURL: envConfig.baseURL,
   headers: {
     'Content-Type': 'multipart/form-data'
   }

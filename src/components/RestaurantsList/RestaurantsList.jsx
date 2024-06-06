@@ -17,7 +17,7 @@ export default function RestaurantsList() {
   console.log(dataRestaurants)
   return (
     <>
-      <div className='m-auto w-[75%] grid grid-cols-5 grid-rows-2 gap-y-3 gap-x-2'>
+      <div className='m-auto md:sm:w-[75%] w-[90%] mb-[2rem] h-full grid grid-cols-3 md:sm:grid-cols-5 grid-rows-2 gap-y-3 gap-x-2'>
         {dataRestaurants &&
           dataRestaurants?.map((restaurant) => {
             return <Restaurant key={restaurant._id} restaurant={restaurant} />

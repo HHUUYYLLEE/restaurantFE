@@ -52,7 +52,10 @@ export default function OpenRestaurant() {
     useEffect(() => {
       if (isSuccess2) {
         setAddressValue(data2.data.results[0].formatted)
-        setLatLngValueInput([data2.data.results[0].geometry.lat, data2.data.results[0].geometry.lng])
+        setLatLngValueInput([
+          data2.data.results[0].geometry.lat,
+          data2.data.results[0].geometry.lng
+        ])
       }
     }, [isSuccess2])
   }
@@ -90,13 +93,17 @@ export default function OpenRestaurant() {
   const onSubmit = handleSubmit((data) => {
     console.log(data)
     if (data.address === '' || data.lat === '' || data.lng === '') {
-      toast.error('Hãy nhập địa chỉ')
+      // toast.error('Hãy nhập địa chỉ')
       return
     }
-    data.morning_open_time = convertTime(data.morning_hour_open) + ':' + convertTime(data.morning_minute_open)
-    data.morning_closed_time = convertTime(data.morning_hour_close) + ':' + convertTime(data.morning_minute_close)
-    data.afternoon_open_time = convertTime(data.afternoon_hour_open) + ':' + convertTime(data.afternoon_minute_open)
-    data.afternoon_closed_time = convertTime(data.afternoon_hour_close) + ':' + convertTime(data.afternoon_minute_close)
+    data.morning_open_time =
+      convertTime(data.morning_hour_open) + ':' + convertTime(data.morning_minute_open)
+    data.morning_closed_time =
+      convertTime(data.morning_hour_close) + ':' + convertTime(data.morning_minute_close)
+    data.afternoon_open_time =
+      convertTime(data.afternoon_hour_open) + ':' + convertTime(data.afternoon_minute_open)
+    data.afternoon_closed_time =
+      convertTime(data.afternoon_hour_close) + ':' + convertTime(data.afternoon_minute_close)
     data.image = data.images[0]
     data.image2 = data.images[1]
     data.image3 = data.images[2]
@@ -116,7 +123,7 @@ export default function OpenRestaurant() {
 
     createARestaurantMutation.mutate(data, {
       onSuccess: () => {
-        toast.success('Mỏ nhà hàng thành công !') //。(20)
+        // toast.success('Mỏ nhà hàng thành công !') //。(20)
         window.location.reload()
       },
       onError: (error) => {
@@ -210,11 +217,11 @@ export default function OpenRestaurant() {
         <></>
       )}
 
-      <div className='mt-36 mx-auto grid grid-cols-15 w-[90vw] gap-x-4'>
-        <div className='col-span-9'>
+      <div className='mt-36 mx-auto sm:grid sm:grid-cols-15 w-[90vw] gap-x-4'>
+        <div className='sm:col-span-9'>
           <form onSubmit={onSubmit}>
             <div className='flex items-center gap-x-4'>
-              <div className='text-xl w-[10vw]'>Tên nhà hàng</div>
+              <div className='sm:text-xl sm:w-[10vw] text-xs w-[16vw]'>Tên nhà hàng</div>
               <input
                 type='text'
                 id='name'
@@ -222,13 +229,17 @@ export default function OpenRestaurant() {
                 placeholder='Tên nhà hàng'
                 autoComplete='off'
                 {...register('name')}
-                className='w-full focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-2 px-[2rem]'
+                className='w-full focus:outline-[#8AC0FF] placeholder:text-[#6666667e] 
+                placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] 
+                text-lg rounded-xl sm:py-2 sm:px-[2rem] px-[1rem] py-[0.3rem]'
               />
             </div>
-            <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.name?.message}</div>
+            <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+              {errors.name?.message}
+            </div>
 
-            <div className='mt-[3rem] flex items-center gap-x-5'>
-              <div className='text-xl w-[10vw]'>Mô tả</div>
+            <div className='mt-[1rem] flex items-center gap-x-4'>
+              <div className='sm:text-xl text-xs sm:w-[10vw] w-[16vw]'>Mô tả</div>
               <textarea
                 type='text'
                 id='desc'
@@ -236,16 +247,21 @@ export default function OpenRestaurant() {
                 placeholder='Mô tả'
                 autoComplete='off'
                 {...register('desc')}
-                className='resize-none h-[18vh] w-full focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-[0.7rem] px-[2rem]'
+                className='resize-none h-[18vh] w-full focus:outline-[#8AC0FF] 
+                placeholder:text-[#6666667e] placeholder:font-inter-400 border 
+                font-inter-500 border-[#E6E6E6] text-lg rounded-xl sm:py-[0.7rem] sm:px-[2rem]
+                py-[0.3rem] px-[1rem]'
               />
             </div>
-            <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.desc?.message}</div>
+            <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+              {errors.desc?.message}
+            </div>
 
-            <div className='mt-[3rem] flex items-center'>
-              <div className='text-xl w-[10vw]'>Khung giờ mở cửa</div>
+            <div className=' flex items-center'>
+              <div className='sm:text-xl text-xs sm:w-[10vw] w-[16vw]'>Khung giờ mở cửa</div>
               <div className=''>
                 <div className='flex items-center'>
-                  <div className='text-lg italic ml-[1.25rem] w-[3vw]'>Sáng</div>
+                  <div className='sm:text-lg italic ml-[1.25rem] sm:w-[3.3vw] w-[8vw]'>Sáng</div>
                   <input
                     type='number'
                     id='morning_hour_open'
@@ -263,9 +279,12 @@ export default function OpenRestaurant() {
 
                       if (e.target.value.length === 1) e.target.value = '0' + e.target.value
                     }}
-                    className='w-[4vw] ml-[0.5rem] focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-2 pl-[0.7rem] pr-[0.4rem]'
+                    className='2xl:w-[4vw] sm:w-[4.7vw] w-[12vw] sm:ml-[0.5rem] ml-[1rem]
+                    focus:outline-[#8AC0FF] placeholder:text-[#6666667e] 
+                    placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg 
+                    rounded-xl sm:py-2 sm:pl-[0.7rem] pl-[0.4rem] pr-[0.4rem]'
                   />
-                  <div className='text-lg ml-[0.5rem]'>:</div>
+                  <div className='text-lg sm:ml-[0.5rem] ml-[0.2rem]'>:</div>
                   <input
                     type='number'
                     id='morning_minute_open'
@@ -280,12 +299,16 @@ export default function OpenRestaurant() {
 
                       if (e.target.value.length === 1) e.target.value = '0' + e.target.value
                       if (e.target.value.length > 2) {
-                        if (parseInt(e.target.value) < 10) e.target.value = '0' + parseInt(e.target.value)
+                        if (parseInt(e.target.value) < 10)
+                          e.target.value = '0' + parseInt(e.target.value)
                         else if (parseInt(e.target.value) > 59) e.target.value = '00'
                         else e.target.value = parseInt(e.target.value)
                       }
                     }}
-                    className='w-[4vw] ml-[0.5rem] focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-2 pl-[0.7rem] pr-[0.4rem]'
+                    className='2xl:w-[4vw] sm:w-[4.7vw] w-[12vw] sm:ml-[0.5rem] ml-[0.2rem]
+                    focus:outline-[#8AC0FF] placeholder:text-[#6666667e] 
+                    placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg 
+                    rounded-xl sm:py-2 sm:pl-[0.7rem] pl-[0.4rem] pr-[0.4rem]'
                   />
                   <div className='text-lg italic ml-[0.5rem]'>&#8212;</div>
                   <input
@@ -305,9 +328,12 @@ export default function OpenRestaurant() {
 
                       if (e.target.value.length === 1) e.target.value = '0' + e.target.value
                     }}
-                    className='w-[4vw] ml-[0.5rem] focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-2 pl-[0.7rem] pr-[0.4rem]'
+                    className='2xl:w-[4vw] sm:w-[4.7vw] w-[12vw] sm:ml-[0.5rem] ml-[0.2rem]
+                    focus:outline-[#8AC0FF] placeholder:text-[#6666667e] 
+                    placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg 
+                    rounded-xl sm:py-2 sm:pl-[0.7rem] pl-[0.4rem] pr-[0.4rem]'
                   />
-                  <div className='text-lg ml-[0.5rem]'>:</div>
+                  <div className='text-lg sm:ml-[0.5rem] ml-[0.2rem]'>:</div>
                   <input
                     type='number'
                     id='morning_minute_close'
@@ -322,12 +348,16 @@ export default function OpenRestaurant() {
 
                       if (e.target.value.length === 1) e.target.value = '0' + e.target.value
                       if (e.target.value.length > 2) {
-                        if (parseInt(e.target.value) < 10) e.target.value = '0' + parseInt(e.target.value)
+                        if (parseInt(e.target.value) < 10)
+                          e.target.value = '0' + parseInt(e.target.value)
                         else if (parseInt(e.target.value) > 59) e.target.value = '00'
                         else e.target.value = parseInt(e.target.value)
                       }
                     }}
-                    className='w-[4vw] ml-[0.5rem] focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-2 pl-[0.7rem] pr-[0.4rem]'
+                    className='2xl:w-[4vw] sm:w-[4.7vw] w-[12vw] sm:ml-[0.5rem] ml-[0.2rem]
+                    focus:outline-[#8AC0FF] placeholder:text-[#6666667e] 
+                    placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg 
+                    rounded-xl sm:py-2 sm:pl-[0.7rem] pl-[0.4rem] pr-[0.4rem]'
                   />
                   <div className='ml-[0.2rem] min-h-[1.75rem] text-lg text-red-600'>
                     {errors.morning_hour_close?.message}
@@ -352,7 +382,9 @@ export default function OpenRestaurant() {
 
                       if (parseInt(e.target.value) > 23) e.target.value = '12'
                     }}
-                    className='w-[4vw] ml-[0.5rem] focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-2 pl-[0.7rem] pr-[0.4rem]'
+                    className='w-[4vw] ml-[0.5rem] focus:outline-[#8AC0FF] 
+                    placeholder:text-[#6666667e] placeholder:font-inter-400 border 
+                    font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-2 pl-[0.7rem] pr-[0.4rem]'
                   />
                   <div className='text-lg ml-[0.5rem]'>:</div>
                   <input
@@ -369,12 +401,15 @@ export default function OpenRestaurant() {
 
                       if (e.target.value.length === 1) e.target.value = '0' + e.target.value
                       if (e.target.value.length > 2) {
-                        if (parseInt(e.target.value) < 10) e.target.value = '0' + parseInt(e.target.value)
+                        if (parseInt(e.target.value) < 10)
+                          e.target.value = '0' + parseInt(e.target.value)
                         else if (parseInt(e.target.value) > 59) e.target.value = '00'
                         else e.target.value = parseInt(e.target.value)
                       }
                     }}
-                    className='w-[4vw] ml-[0.5rem] focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-2 pl-[0.7rem] pr-[0.4rem]'
+                    className='w-[4vw] ml-[0.5rem] focus:outline-[#8AC0FF] 
+                    placeholder:text-[#6666667e] placeholder:font-inter-400 border 
+                    font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-2 pl-[0.7rem] pr-[0.4rem]'
                   />
                   <div className='text-lg italic ml-[0.5rem]'>&#8212;</div>
                   <input
@@ -409,12 +444,15 @@ export default function OpenRestaurant() {
 
                       if (e.target.value.length === 1) e.target.value = '0' + e.target.value
                       if (e.target.value.length > 2) {
-                        if (parseInt(e.target.value) < 10) e.target.value = '0' + parseInt(e.target.value)
+                        if (parseInt(e.target.value) < 10)
+                          e.target.value = '0' + parseInt(e.target.value)
                         else if (parseInt(e.target.value) > 59) e.target.value = '00'
                         else e.target.value = parseInt(e.target.value)
                       }
                     }}
-                    className='w-[4vw] ml-[0.5rem] focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-2 pl-[0.7rem] pr-[0.4rem]'
+                    className='w-[4vw] ml-[0.5rem] focus:outline-[#8AC0FF] 
+                    placeholder:text-[#4F4F4F] placeholder:font-inter-400 border 
+                    font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-2 pl-[0.7rem] pr-[0.4rem]'
                   />
                   <div className='ml-[0.2rem] min-h-[1.75rem] text-lg text-red-600'>
                     {errors.afternoon_hour_close?.message}
@@ -470,7 +508,9 @@ export default function OpenRestaurant() {
                   <MyComponent></MyComponent>
                   <Marker
                     position={markerPos}
-                    icon={new Icon({ iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41] })}
+                    icon={
+                      new Icon({ iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41] })
+                    }
                   ></Marker>
                   <TileLayer
                     attribution='Google Maps'
@@ -533,7 +573,9 @@ export default function OpenRestaurant() {
                 className='w-full priceInput focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-2 px-[2rem]'
               />
             </div>
-            <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.number_of_tables?.message}</div>
+            <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+              {errors.number_of_tables?.message}
+            </div>
             <div className='flex items-center gap-x-4 mt-[2rem] w-full'>
               <div className='text-xl w-[10vw]'>Nhập số chỗ ngồi</div>
               <input
@@ -549,16 +591,20 @@ export default function OpenRestaurant() {
                 className='w-full priceInput focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-2 px-[2rem]'
               />
             </div>
-            <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.number_of_chairs?.message}</div>
+            <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+              {errors.number_of_chairs?.message}
+            </div>
 
             <button className='mt-[3rem] hover:bg-[#0366FF] bg-green-500  text-white py-[1.2rem] px-[7rem] font-ibm-plex-serif-700 rounded-lg'>
               Xác nhận
             </button>
           </form>
         </div>
-        <div className='col-start-10 col-span-6'>
+        <div className='sm:col-start-10 sm:col-span-6'>
           <div className='text-lg'>Ảnh nhà hàng (5 ảnh)</div>
-          <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.images?.message}</div>
+          <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+            {errors.images?.message}
+          </div>
           {previewImageElements.map((element, key) => {
             return (
               <img
@@ -597,7 +643,9 @@ export default function OpenRestaurant() {
               }
             }}
           />
-          <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.images?.message}</div>
+          <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+            {errors.images?.message}
+          </div>
         </div>
       </div>
     </>

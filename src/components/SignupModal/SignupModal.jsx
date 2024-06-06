@@ -45,7 +45,7 @@ export default function SignupModal({ closeModalSignup }) {
     console.log(data)
     signUpAccontMutation.mutate(data, {
       onSuccess: () => {
-        toast.success('Đăng ký thành công !') //。(20)
+        // toast.success('Đăng ký thành công !') //。(20)
         setInfo(getInfoFromLS())
         setIsAuthenticated(true)
         closeModalSignup()
@@ -70,7 +70,7 @@ export default function SignupModal({ closeModalSignup }) {
     // console.log(credential)
     loginGoogleAccontMutation.mutate(credential, {
       onSuccess: () => {
-        toast.success('Đăng nhập Google thành công !') //。(20)
+        // toast.success('Đăng nhập Google thành công !') //。(20)
         setInfo(getInfoFromLS())
         setIsAuthenticated(true)
         closeModalSignup()
@@ -94,7 +94,7 @@ export default function SignupModal({ closeModalSignup }) {
           setPreviewImage('#')
         }}
       ></div>
-      <div className='modal-content bg-white flex justify-center'>
+      <div className='modal-content bg-white sm:w-[52vw] w-[80vw] sm:h-[90vh] h-[75vh]'>
         <div className='relative'>
           <div
             onClick={() => {
@@ -106,12 +106,14 @@ export default function SignupModal({ closeModalSignup }) {
             <AiOutlineClose />
           </div>
 
-          <div className='w-full justify-between items-center'>
-            <div className='font-inter-700 text-3xl'>Đăng ký</div>
-            <div className='font-ibm-plex-serif-400 text-xl mt-[0.7rem]'>Đăng ký tài khoản để tiếp tục</div>
+          <div className=''>
+            <div className='font-inter-700 sm:text-3xl'>Đăng ký</div>
+            <div className='font-ibm-plex-serif-400 sm:text-xl sm:mt-[0.7rem]'>
+              Đăng ký tài khoản để tiếp tục
+            </div>
           </div>
-          <form className='w-full' onSubmit={onSubmit} noValidate>
-            <div className='mt-[3rem] flex gap-10'>
+          <form onSubmit={onSubmit} noValidate>
+            <div className='sm:mt-[3rem] mt-[1rem] sm:flex sm:gap-x-10'>
               <div>
                 <input
                   type='text'
@@ -120,9 +122,14 @@ export default function SignupModal({ closeModalSignup }) {
                   placeholder='Email'
                   autoComplete='on'
                   {...register('email')}
-                  className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-xl rounded-xl  py-2 px-[2rem]'
+                  className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F]
+                  sm:w-full w-[69vw]
+                  placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] 
+                  sm:text-xl rounded-xl sm:py-2 sm:px-[2rem] px-[1rem]'
                 />
-                <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.email?.message}</div>
+                <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+                  {errors.email?.message}
+                </div>
               </div>
               <div>
                 <input
@@ -132,7 +139,10 @@ export default function SignupModal({ closeModalSignup }) {
                   placeholder='Username (không bắt buộc)'
                   autoComplete='on'
                   {...register('username')}
-                  className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-xl rounded-xl  py-2 px-[2rem]'
+                  className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F]
+                  sm:w-full w-[69vw]
+                  placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] 
+                  sm:text-xl rounded-xl sm:py-2 sm:px-[2rem] px-[1rem]'
                 />
               </div>
             </div>
@@ -141,15 +151,19 @@ export default function SignupModal({ closeModalSignup }) {
                 id='password'
                 type='password'
                 name='password'
-                placeholder='Password'
+                placeholder='Mật khẩu'
                 autoComplete='on'
                 {...register('password')}
-                className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-xl w-full rounded-xl py-2 px-[2rem]'
+                className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F]
+                sm:w-full w-[69vw]
+                placeholder:font-inter-400 border font-inter-500 sm:mt-0 mt-[1rem] border-[#E6E6E6] 
+                sm:text-xl rounded-xl sm:py-2 sm:px-[2rem] px-[1rem]'
               />
-              <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.password?.message}</div>
+              <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+                {errors.password?.message}
+              </div>
             </div>
-
-            <div className='mt-[3rem] flex'>
+            <div className='flex'>
               <div>
                 <div>Ảnh đại diện</div>
                 <input
@@ -158,7 +172,7 @@ export default function SignupModal({ closeModalSignup }) {
                   name='avatar'
                   accept='image/*'
                   {...register('avatar')}
-                  className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400  font-inter-500 border-[#E6E6E6] w-full py-6'
+                  className='w-full'
                   onChange={(e) => {
                     const [file] = e.target.files
                     if (file) {
@@ -167,44 +181,46 @@ export default function SignupModal({ closeModalSignup }) {
                     }
                   }}
                 />
-                <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.avatar?.message}</div>
+                <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+                  {errors.avatar?.message}
+                </div>
               </div>
               <img
                 src={previewImage}
-                className='w-[10rem] h-[10rem]'
+                className='sm:w-[10rem] sm:h-[10rem] w-[30vw] h-[30vw]'
                 onError={(e) => {
                   e.target.style.visibility = 'hidden'
                 }}
                 ref={previewImageElement}
               />
             </div>
-
-            <div className='font-inter-400 mt-[3rem]'>
-              <span>Bạn chưa có tài khoản? Đăng ký </span>
-              <span className='text-[#0038FF] underline cursor-pointer'>tại đây</span>
-            </div>
-            <div className='w-full flex justify-between items-center mt-14'>
-              <button
-                type='submit'
-                className='bg-[#0366FF] hover:bg-green-500  text-white py-[1.2rem] px-[7rem] font-ibm-plex-serif-700 rounded-lg'
-              >
-                Đăng ký
-              </button>
-              <GoogleLogin
-                theme='filled_black'
-                text='signup_with'
-                size='large'
-                width='300'
-                useOneTap
-                onSuccess={(credentialResponse) => {
-                  console.log(credentialResponse)
-                  const credential = { credential: credentialResponse?.credential }
-                  onSubmitGoogle(credential)
-                }}
-                onError={() => {
-                  console.log('Login Failed')
-                }}
-              />
+            <div className='w-full sm:flex sm:justify-between items-center 2xl:mt-14 sm:mt-[1.5rem] mt-[1rem]'>
+              <div className='sm:block sm:justify-start flex justify-center'>
+                <button
+                  type='submit'
+                  className='bg-[#0366FF] hover:bg-green-500
+                text-white 2xl:py-[1.2rem] 2xl:px-[7rem] px-[3rem] py-[0.4rem] font-ibm-plex-serif-700 rounded-lg'
+                >
+                  Đăng ký
+                </button>
+              </div>
+              <div className='sm:block sm:justify-start flex justify-center sm:mt-0 mt-[2rem]'>
+                <GoogleLogin
+                  theme='filled_black'
+                  text='signup_with'
+                  size='large'
+                  width={screen.width >= 640 ? '300' : '30'}
+                  useOneTap
+                  onSuccess={(credentialResponse) => {
+                    console.log(credentialResponse)
+                    const credential = { credential: credentialResponse?.credential }
+                    onSubmitGoogle(credential)
+                  }}
+                  onError={() => {
+                    console.log('Login Failed')
+                  }}
+                />
+              </div>
             </div>
           </form>
           <Modal
@@ -237,7 +253,9 @@ export default function SignupModal({ closeModalSignup }) {
             isOpen={signUpAccontMutation.isPending}
           >
             <>
-              <div className='text-[#4FA94D] font-dmsans-700 mb-[5vh] text-3xl'>Đang đăng nhập...</div>
+              <div className='text-[#4FA94D] font-dmsans-700 mb-[5vh] text-3xl'>
+                Đang đăng ký...
+              </div>
               <TailSpin
                 height='200'
                 width='200'

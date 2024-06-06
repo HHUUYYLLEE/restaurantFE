@@ -40,7 +40,7 @@ export default function LoginModal({ closeModalLogin }) {
     // console.log(credential)
     loginGoogleAccontMutation.mutate(credential, {
       onSuccess: () => {
-        toast.success('Đăng nhập Google thành công !') //。(20)
+        // toast.success('Đăng nhập Google thành công !') //。(20)
         setInfo(getInfoFromLS())
         setIsAuthenticated(true)
         closeModalLogin()
@@ -61,7 +61,7 @@ export default function LoginModal({ closeModalLogin }) {
     loginAccontMutation.mutate(data, {
       onSuccess: (data) => {
         console.log(data?.data.data.user.role)
-        toast.success('Đăng nhập thành công !') //。(20)
+        // toast.success('Đăng nhập thành công !') //。(20)
         setInfo(getInfoFromLS())
         closeModalLogin()
         setIsAuthenticated(true)
@@ -69,9 +69,9 @@ export default function LoginModal({ closeModalLogin }) {
           case 0:
             navigate('/')
             break
-          case 1:
-            navigate('/admin/dashboard')
-            break
+          // case 1:
+          //   navigate('/admin/dashboard')
+          //   break
           default:
             break
         }
@@ -95,7 +95,7 @@ export default function LoginModal({ closeModalLogin }) {
     <div className='modal'>
       <div className='overlay' onClick={() => closeModalLogin()}></div>
       <div className='modal-content bg-white'>
-        <div className='relative w-[26rem] max-h-full'>
+        <div className='relative sm:w-[26rem] w-[70vw] max-h-full'>
           {/* <div
             onClick={() => closeModalLogin()}
             className='absolute right-0 top-[-0.5rem] rounded-full transition-all duration-300  cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-500 flex justify-center items-center h-8 w-8  dark:text-yellow-400 font-extrabold'
@@ -104,11 +104,13 @@ export default function LoginModal({ closeModalLogin }) {
           </div> */}
           <div>
             <div className='w-full justify-between items-center'>
-              <div className='font-inter-700 text-3xl'>Đăng nhập</div>
-              <div className='font-ibm-plex-serif-400 text-xl mt-[0.7rem]'>Đăng nhập tài khoản để tiếp tục</div>
+              <div className='font-inter-700 sm:text-3xl text-2xl'>Đăng nhập</div>
+              <div className='font-ibm-plex-serif-400 sm:text-xl sm:mt-[0.7rem] text-sm mt-[0.5rem]'>
+                Đăng nhập tài khoản để tiếp tục
+              </div>
             </div>
             <form className='w-full' onSubmit={onSubmit} noValidate>
-              <div className='mt-[3rem]'>
+              <div className='sm:mt-[3rem] mt-[1.1rem]'>
                 <input
                   type='text'
                   id='email'
@@ -116,9 +118,13 @@ export default function LoginModal({ closeModalLogin }) {
                   placeholder='Email'
                   autoComplete='on'
                   {...register('email')}
-                  className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-xl rounded-xl w-full py-6 px-[2rem]'
+                  className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] 
+                  placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] 
+                  text-xl rounded-xl w-full sm:py-6 px-[2rem]'
                 />
-                <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.email?.message}</div>
+                <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+                  {errors.email?.message}
+                </div>
               </div>
 
               <div className=''>
@@ -129,18 +135,20 @@ export default function LoginModal({ closeModalLogin }) {
                   placeholder='Password'
                   autoComplete='on'
                   {...register('password')}
-                  className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-xl rounded-xl w-full py-6 px-[2rem]'
+                  className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] 
+                  placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] 
+                  text-xl rounded-xl w-full sm:py-6 px-[2rem]'
                 />
-                <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.password?.message}</div>
+                <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+                  {errors.password?.message}
+                </div>
               </div>
-              <div className='font-inter-400'>
-                <span>Bạn chưa có tài khoản</span>
-                <span className='text-[#0038FF] underline cursor-pointer'>? Đăng ký tại đây</span>
-              </div>
-              <div className='w-full flex justify-center items-center pt-14'>
+
+              <div className='w-full flex justify-center items-center sm:pt-5 pt-3'>
                 <button
                   type='submit'
-                  className='bg-[#0366FF] hover:bg-green-500 text-white py-[1.2rem] px-[7rem] font-ibm-plex-serif-700 rounded-lg'
+                  className='bg-[#0366FF] hover:bg-green-500 text-white 
+                  sm:py-[1.2rem] sm:px-[7rem] px-[2rem] py-[0.5rem] font-ibm-plex-serif-700 rounded-lg'
                 >
                   Đăng nhập
                 </button>
@@ -192,7 +200,9 @@ export default function LoginModal({ closeModalLogin }) {
               isOpen={loginAccontMutation.isPending}
             >
               <>
-                <div className='text-[#4FA94D] font-dmsans-700 mb-[5vh] text-3xl'>Đang đăng nhập...</div>
+                <div className='text-[#4FA94D] font-dmsans-700 mb-[5vh] text-3xl'>
+                  Đang đăng nhập...
+                </div>
                 <TailSpin
                   height='200'
                   width='200'

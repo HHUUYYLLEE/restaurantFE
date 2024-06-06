@@ -4,16 +4,22 @@ export default function Restaurant({ restaurant }) {
   return (
     <>
       <Link to={`/host_restaurant/${restaurant._id}`}>
-        <div className='w-full pb-8'>
+        <div className='w-full pb-8 h-[39vh]'>
           <img
             src={restaurant.main_avatar_url}
             alt=''
-            className='w-full h-[20vh] cursor-pointer'
+            className='w-full h-[20vh] '
             referrerPolicy='no-referrer'
           />
-          <div className='bg-white cursor-pointer h-[18vh]'>
-            <div className='mt-2 ml-3'>{restaurant.name}</div>
-            <div className='mt-3 ml-3 text-gray-600'>{restaurant.address}</div>
+          <div className='bg-white h-[18vh]'>
+            <div className='py-2'>
+              <div className='mx-3 sm:text-base text-xs line-clamp-2 h-[4vh] sm:h-[7vh] text-ellipsis'>
+                {restaurant.name}
+              </div>
+            </div>
+            <div className=' mx-3 sm:text-xs 2xl:text-sm text-xs text-ellipsis sm:line-clamp-3 2xl:line-clamp-5  text-gray-600'>
+              {restaurant.address}
+            </div>
           </div>
         </div>
       </Link>

@@ -40,7 +40,7 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
     console.log(data)
     addFoodMutation.mutate(data, {
       onSuccess: () => {
-        toast.success('Tạo món ăn thành công!') //。(20)
+        // toast.success('Tạo món ăn thành công!') //。(20)
         window.location.reload()
       },
       onError: (error) => {
@@ -89,7 +89,9 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
                   {...register('name')}
                   className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-xl rounded-xl  py-2 px-[2rem]'
                 />
-                <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.name?.message}</div>
+                <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+                  {errors.name?.message}
+                </div>
               </div>
               <div>
                 <input
@@ -101,7 +103,9 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
                   {...register('quantity')}
                   className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-xl rounded-xl  py-2 px-[2rem]'
                 />
-                <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.quantity?.message}</div>
+                <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+                  {errors.quantity?.message}
+                </div>
               </div>
             </div>
             <input
@@ -116,7 +120,9 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
               }}
               className='focus:outline-[#8AC0FF] w-full priceInput placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-xl rounded-xl  py-2 px-[2rem]'
             />
-            <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.price?.message}</div>
+            <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+              {errors.price?.message}
+            </div>
 
             <div>
               <textarea
@@ -129,7 +135,9 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
                 className='resize-none h-[18vh] w-full focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-[0.7rem] px-[2rem]'
               />
 
-              <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.desc?.message}</div>
+              <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+                {errors.desc?.message}
+              </div>
             </div>
 
             <div className='mt-[3rem] flex'>
@@ -150,7 +158,9 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
                     }
                   }}
                 />
-                <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.avatar?.message}</div>
+                <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+                  {errors.avatar?.message}
+                </div>
               </div>
               <img
                 src={previewImage}
@@ -161,7 +171,9 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
                 ref={previewImageElement}
               />
             </div>
-            <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.image?.message}</div>
+            <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+              {errors.image?.message}
+            </div>
 
             <div className='w-full flex justify-center items-center mt-[2rem]'>
               <button className='bg-[#0366FF] hover:bg-green-500  text-white py-[1.2rem] px-[7rem] font-ibm-plex-serif-700 rounded-lg'>

@@ -72,7 +72,10 @@ export default function OrderDetail() {
     useEffect(() => {
       if (isSuccess2) {
         setAddressValue(data2.data.results[0].formatted)
-        setLatLngValueInput([data2.data.results[0].geometry.lat, data2.data.results[0].geometry.lng])
+        setLatLngValueInput([
+          data2.data.results[0].geometry.lat,
+          data2.data.results[0].geometry.lng
+        ])
       }
     }, [isSuccess2])
   }
@@ -140,7 +143,7 @@ export default function OrderDetail() {
     console.log(data)
     placeAnOrderMutation.mutate(data, {
       onSuccess: () => {
-        toast.success('Đã đặt hàng thành công!') //。(20)
+        // toast.success('Đã đặt hàng thành công!') //。(20)
         navigate('/order_food')
       },
       onError: (error) => {
@@ -207,12 +210,18 @@ export default function OrderDetail() {
                   )
                 })}
             </div>
-            <MapContainer center={[21.028511, 105.804817]} zoom={13} style={{ width: '100%', height: '85vh' }}>
+            <MapContainer
+              center={[21.028511, 105.804817]}
+              zoom={13}
+              style={{ width: '100%', height: '85vh' }}
+            >
               <ResetCenterView></ResetCenterView>
               <MyComponent></MyComponent>
               <Marker
                 position={markerPos}
-                icon={new Icon({ iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41] })}
+                icon={
+                  new Icon({ iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41] })
+                }
               ></Marker>
               <TileLayer
                 attribution='Google Maps'

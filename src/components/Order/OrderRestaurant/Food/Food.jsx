@@ -45,7 +45,7 @@ export default function Food({ food_id, quantity, refetch, status }) {
     // console.log(data)
     updateOrderFood.mutate(data, {
       onSuccess: () => {
-        toast.success('Đã cập nhật giỏ hàng!') //。(20)
+        // toast.success('Đã cập nhật giỏ hàng!') //。(20)
         // window.location.reload()
         reset()
         setEditQuantity(false)
@@ -91,7 +91,9 @@ export default function Food({ food_id, quantity, refetch, status }) {
                         className='w-[6vw] text-right priceInput focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:text-sm border font-inter-500 border-[#E6E6E6] text-lg px-[0.3rem]'
                       />
                       <button type='submit' className='hover:bg-slate-200'>
-                        <IoCheckmarkCircleSharp style={{ width: '1.9vw', height: '1.9vw', color: 'green' }} />
+                        <IoCheckmarkCircleSharp
+                          style={{ width: '1.9vw', height: '1.9vw', color: 'green' }}
+                        />
                       </button>
 
                       <button
@@ -101,7 +103,9 @@ export default function Food({ food_id, quantity, refetch, status }) {
                           setEditQuantity(false)
                         }}
                       >
-                        <FaRegTimesCircle style={{ width: '1.6vw', height: '1.6vw', color: 'red' }} />
+                        <FaRegTimesCircle
+                          style={{ width: '1.6vw', height: '1.6vw', color: 'red' }}
+                        />
                       </button>
                     </div>
                   </form>
@@ -118,7 +122,9 @@ export default function Food({ food_id, quantity, refetch, status }) {
               </div>
             </div>
           </div>
-          <div className='flex items-center text-orange-400 text-2xl'>{displayNum(foodData.price) + 'đ'}</div>
+          <div className='flex items-center text-orange-400 text-2xl'>
+            {displayNum(foodData.price) + 'đ'}
+          </div>
         </div>
       </>
     )

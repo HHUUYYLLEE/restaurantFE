@@ -12,7 +12,7 @@ export const schemaSignup = yup.object({
   email: yup.string().required('Email là bắt buộc').email('Email không hợp lệ'),
   password: yup
     .string()
-    .required('Password là bắt buộc')
+    .required('Mật khẩu là bắt buộc')
     .min(5, 'Độ dài từ 6 - 160 ký tự')
     .max(160, 'Độ dài từ 6 - 160 ký tự'),
   avatar: yup.mixed().required('Cần ảnh đại diện')
@@ -34,7 +34,8 @@ export const schemaRestaurantProfile = yup.object({
     .when(
       ['morning_hour_open', 'morning_hour_close', 'morning_minute_open'],
       ([morning_hour_open, morning_hour_close, morning_minute_open], schema) => {
-        if (morning_hour_open === morning_hour_close) return schema.min(morning_minute_open, 'phút phải hợp lý')
+        if (morning_hour_open === morning_hour_close)
+          return schema.min(morning_minute_open, 'phút phải hợp lý')
       }
     ),
   afternoon_hour_close: yup.number().when('afternoon_hour_open', (afternoon_hour_open, schema) => {

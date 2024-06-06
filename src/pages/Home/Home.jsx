@@ -12,16 +12,16 @@ export default function Home() {
       <div>
         <Banner />
       </div>
-      <div className='w-[100%] h-[35rem] mt-10'>
+      <div className='w-[100%] md:sm:h-full mt-10'>
         <RestaurantsList />
       </div>
 
-      <div className='my-[3rem] mx-[9vw] grid gap-x-[3rem] grid-cols-11'>
-        <div className='row-start-1 col-span-2'></div>
+      {/* <div className='md:sm:my-[3rem] md:sm:mx-[9vw] grid gap-x-[3rem] grid-cols-11'>
+        <div className='row-start-1 col-span-2'></div> *
         <div className='row-start-1 col-span-9'>
           <FoodList />
         </div>
-      </div>
+      </div> */}
     </>
   )
 }

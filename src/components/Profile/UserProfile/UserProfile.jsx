@@ -53,7 +53,7 @@ export default function UserProfile() {
     // console.log(data)
     editUserProfileMutation.mutate(data, {
       onSuccess: () => {
-        toast.success('Cập nhật profile thành công !') //。(20)
+        // toast.success('Cập nhật profile thành công !') //。(20)
         window.location.reload()
       },
       onError: (error) => {
@@ -76,7 +76,7 @@ export default function UserProfile() {
     data.avatar = data.avatar[0]
     editUserAvatarMutation.mutate(data, {
       onSuccess: () => {
-        toast.success('Cập nhật avatar thành công !') //。(20)
+        // toast.success('Cập nhật avatar thành công !') //。(20)
         window.location.reload()
       },
       onError: (error) => {
@@ -143,55 +143,8 @@ export default function UserProfile() {
         <></>
       )}
       {dataUser && (
-        <div className='m-auto grid grid-cols-[15] w-[70vw] gap-12'>
-          <div className='col-span-10'>
-            <form key={1} onSubmit={onSubmit}>
-              <div className='flex items-center gap-x-4'>
-                <div className='text-xl w-[9vw]'>Username</div>
-                <input
-                  type='text'
-                  id='username'
-                  name='username'
-                  placeholder='Username (nếu bỏ trống thì "newUser")'
-                  autoComplete='off'
-                  defaultValue={dataUser.username}
-                  {...register('username')}
-                  className='w-[35vw] focus:outline-none  placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-2 px-[1rem]'
-                />
-              </div>
-              <div className='mt-[3rem] flex items-center gap-x-5'>
-                <div className='text-xl w-[9vw]'>Số điện thoại</div>
-                <input
-                  type='text'
-                  id='phone_number'
-                  name='phone_number'
-                  placeholder='Số điện thoại'
-                  autoComplete='off'
-                  defaultValue={dataUser.phone_number}
-                  {...register('phone_number')}
-                  className='w-[35vw] focus:outline-none  placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-2 px-[1rem]'
-                />
-                <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>{errors.phone_number?.message}</div>
-              </div>
-              <div className='mt-[3rem] flex items-center gap-x-5'>
-                <div className='text-xl w-[9vw]'>Địa chỉ</div>
-                <input
-                  type='text'
-                  id='address'
-                  name='address'
-                  placeholder='Địa chỉ'
-                  autoComplete='off'
-                  defaultValue={dataUser.address}
-                  {...register('address')}
-                  className='w-[35vw] focus:outline-none  placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-2 px-[1rem]'
-                />
-              </div>
-              <button className='mt-[3rem] hover:bg-[#0366FF] bg-green-500  text-white py-[1.2rem] px-[7rem] font-ibm-plex-serif-700 rounded-lg'>
-                Cập nhật thông tin
-              </button>
-            </form>
-          </div>
-          <div className='col-start-11 col-span-5'>
+        <div className='sm:m-auto ml-[2rem] sm:grid sm:grid-cols-[15] sm:w-[70vw] w-[90vw] gap-12'>
+          <div className='sm:col-span-5'>
             <div className=''>
               <div>
                 <div className='text-lg'>Ảnh đại diện</div>
@@ -222,12 +175,76 @@ export default function UserProfile() {
                       }
                     }}
                   />
-                  <button className='mt-[3rem] hover:bg-[#0366FF] bg-green-500  text-white py-[1rem] px-[1rem] font-ibm-plex-serif-700 rounded-lg'>
-                    Cập nhật avatar
+                  <button
+                    className='sm:mt-[3rem] hover:bg-[#0366FF] bg-green-500  
+                  text-white py-[1rem] px-[1rem] font-ibm-plex-serif-700 rounded-lg
+                  mt-[2rem] 2xl:w-[14vw] sm:w-[16vw] w-[57vw]'
+                  >
+                    Cập nhật ảnh đại diện
                   </button>
                 </form>
               </div>
             </div>
+          </div>
+          <div className='sm:col-start-6 sm:col-span-10 sm:mt-0 mt-[3rem]'>
+            <form key={1} onSubmit={onSubmit}>
+              <div className='flex items-center gap-x-4'>
+                <div className='sm:text-xl sm:w-[9vw] w-[19vw]'>Username</div>
+                <input
+                  type='text'
+                  id='username'
+                  name='username'
+                  placeholder='tên mặc định là "newUser"'
+                  autoComplete='off'
+                  defaultValue={dataUser.username}
+                  {...register('username')}
+                  className='sm:w-[35vw] 
+                  w-[55vw] focus:outline-none placeholder:text-[0.7rem] placeholder:text-[#6666667e] 
+                  placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] 
+                  text-lg rounded-xl py-2 px-[1rem]'
+                />
+              </div>
+              <div className='sm:mt-[3rem] mt-[1rem] flex items-center gap-x-4'>
+                <div className='sm:text-xl sm:w-[9vw] w-[19vw]'>SĐT</div>
+                <input
+                  type='text'
+                  id='phone_number'
+                  name='phone_number'
+                  placeholder='Số điện thoại'
+                  autoComplete='off'
+                  defaultValue={dataUser.phone_number}
+                  {...register('phone_number')}
+                  className='sm:w-[35vw] w-[55vw] focus:outline-none  placeholder:text-[#6666667e] 
+                   placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg 
+                   rounded-xl py-2 px-[1rem] placeholder:text-[0.7rem]'
+                />
+              </div>
+              <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+                {errors.phone_number?.message}
+              </div>
+              <div className='sm:mt-[1rem] flex items-center gap-x-4'>
+                <div className='sm:text-xl sm:w-[9vw] w-[19vw]'>Địa chỉ</div>
+                <input
+                  type='text'
+                  id='address'
+                  name='address'
+                  placeholder='Địa chỉ'
+                  autoComplete='off'
+                  defaultValue={dataUser.address}
+                  {...register('address')}
+                  className='sm:w-[35vw] w-[55vw] focus:outline-none placeholder:text-[0.7rem]
+                  placeholder:text-[#6666667e]  placeholder:font-inter-400 border font-inter-500
+                    border-[#E6E6E6] text-lg  rounded-xl py-2 px-[1rem]'
+                />
+              </div>
+              <button
+                className='sm:mt-[3rem] hover:bg-[#0366FF] bg-green-500  
+                  text-white py-[1rem] px-[1rem] font-ibm-plex-serif-700 rounded-lg
+                  mt-[2rem] 2xl:w-[12vw] sm:w-[14vw] w-[57vw]'
+              >
+                Cập nhật thông tin
+              </button>
+            </form>
           </div>
         </div>
       )}
