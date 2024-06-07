@@ -107,13 +107,13 @@ export default function SignupModal({ closeModalSignup }) {
           </div>
 
           <div className=''>
-            <div className='font-inter-700 sm:text-3xl'>Đăng ký</div>
-            <div className='font-ibm-plex-serif-400 sm:text-xl sm:mt-[0.7rem]'>
-              Đăng ký tài khoản để tiếp tục
+            <div className='font-inter-700 sm:text-3xl text-green-700'>Đăng ký</div>
+            <div className='font-ibm-plex-serif-400 sm:text-xl text-orange-500 sm:mt-[0.7rem]'>
+              Chào mừng đến với vnFood!
             </div>
           </div>
           <form onSubmit={onSubmit} noValidate>
-            <div className='sm:mt-[3rem] mt-[1rem] sm:flex sm:gap-x-10'>
+            <div className='sm:mt-[1rem] mt-[1rem] sm:flex sm:gap-x-10'>
               <div>
                 <input
                   type='text'
@@ -125,7 +125,7 @@ export default function SignupModal({ closeModalSignup }) {
                   className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F]
                   sm:w-full w-[69vw]
                   placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] 
-                  sm:text-xl rounded-xl sm:py-2 sm:px-[2rem] px-[1rem]'
+                  sm:text-xl rounded-xl sm:py-1 sm:px-[2rem] px-[1rem]'
                 />
                 <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
                   {errors.email?.message}
@@ -134,16 +134,19 @@ export default function SignupModal({ closeModalSignup }) {
               <div>
                 <input
                   type='text'
-                  id='username'
-                  name='username'
-                  placeholder='Username (không bắt buộc)'
+                  id='phone_number'
+                  name='phone_number'
+                  placeholder='SĐT'
                   autoComplete='on'
-                  {...register('username')}
+                  {...register('phone_number')}
                   className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F]
                   sm:w-full w-[69vw]
                   placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] 
-                  sm:text-xl rounded-xl sm:py-2 sm:px-[2rem] px-[1rem]'
+                  sm:text-xl rounded-xl sm:py-1 sm:px-[2rem] px-[1rem]'
                 />
+                <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+                  {errors.phone_number?.message}
+                </div>
               </div>
             </div>
             <div>
@@ -156,11 +159,28 @@ export default function SignupModal({ closeModalSignup }) {
                 {...register('password')}
                 className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F]
                 sm:w-full w-[69vw]
-                placeholder:font-inter-400 border font-inter-500 sm:mt-0 mt-[1rem] border-[#E6E6E6] 
-                sm:text-xl rounded-xl sm:py-2 sm:px-[2rem] px-[1rem]'
+                placeholder:font-inter-400 border font-inter-500 sm:mt-0  border-[#E6E6E6] 
+                sm:text-xl rounded-xl sm:py-1 sm:px-[2rem] px-[1rem]'
               />
               <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
                 {errors.password?.message}
+              </div>
+            </div>
+            <div>
+              <input
+                id='confirm_password'
+                type='confirm_password'
+                name='confirm_password'
+                placeholder='Xác nhận mật khẩu'
+                autoComplete='on'
+                {...register('confirm_password')}
+                className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F]
+                sm:w-full w-[69vw]
+                placeholder:font-inter-400 border font-inter-500 sm:mt-0  border-[#E6E6E6] 
+                sm:text-xl rounded-xl sm:py-1 sm:px-[2rem] px-[1rem]'
+              />
+              <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+                {errors.confirm_password?.message}
               </div>
             </div>
             <div className='flex'>
@@ -198,13 +218,13 @@ export default function SignupModal({ closeModalSignup }) {
               <div className='sm:block sm:justify-start flex justify-center'>
                 <button
                   type='submit'
-                  className='bg-[#0366FF] hover:bg-green-500
+                  className='bg-orange-600 hover:bg-green-500
                 text-white 2xl:py-[1.2rem] 2xl:px-[7rem] px-[3rem] py-[0.4rem] font-ibm-plex-serif-700 rounded-lg'
                 >
                   Đăng ký
                 </button>
               </div>
-              <div className='sm:block sm:justify-start flex justify-center sm:mt-0 mt-[2rem]'>
+              <div className='sm:block sm:justify-start flex justify-center sm:mt-0 mt-[0.5rem]'>
                 <GoogleLogin
                   theme='filled_black'
                   text='signup_with'

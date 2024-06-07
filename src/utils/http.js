@@ -10,14 +10,14 @@ import {
 import { envConfig } from './env'
 
 const applicationJSONInstance = axios.create({
-  baseURL: envConfig.deployURL,
+  baseURL: envConfig.baseURL,
   headers: {
     'Content-Type': 'application/json'
   }
 })
 
 const multipartFormInstance = axios.create({
-  baseURL: envConfig.deployURL,
+  baseURL: envConfig.baseURL,
   headers: {
     'Content-Type': 'multipart/form-data'
   }
@@ -72,14 +72,14 @@ applicationJSONInstance.interceptors.response.use(
       const data = error.response?.data
       const message = data.message || error.message
       // console.log(message)
-      toast.error(message)
+      // toast.error(message)
     }
     if (error.response?.status === HttpStatusCode.Unauthorized) {
       const data = error.response?.data
       console.log(data)
       const message = data.message || error.message
       clearAccessTokenFromLS()
-      toast.error(message)
+      // toast.error(message)
       window.location.reload()
     }
     return Promise.reject(error)
@@ -125,14 +125,14 @@ multipartFormInstance.interceptors.response.use(
       const data = error.response?.data
       const message = data.message || error.message
       // console.log(message)
-      toast.error(message)
+      // toast.error(message)
     }
     if (error.response?.status === HttpStatusCode.Unauthorized) {
       const data = error.response?.data
       console.log(data)
       const message = data.message || error.message
       clearAccessTokenFromLS()
-      toast.error(message)
+      // toast.error(message)
       window.location.reload()
     }
     return Promise.reject(error)

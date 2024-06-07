@@ -82,18 +82,15 @@ export default function RestaurantDetail() {
                       </div>
                     </div>
                   </div>
-                  <div className='flex md:sm:mt-0 mt-2 md:sm:gap-x-4'>
-                    <div className='w-[30vw] mt-0 md:sm:w-full'>Số bàn</div>
-                    <div>{restaurantData.number_of_tables}</div>
-                  </div>
-                  <div className='flex md:sm:gap-x-4'>
-                    <div className='md:sm:w-full w-[30vw]'>Số chỗ ngồi</div>
-                    <div>{restaurantData.number_of_chairs}</div>
-                  </div>
                 </div>
               </div>
               <div className='flex gap-x-1 mt-[1rem] font-inter-400'>
-                <MdOutlinePinDrop />
+                <MdOutlinePinDrop
+                  style={{
+                    width: screen.width >= 640 ? '1vw' : '10vw',
+                    height: screen.width >= 640 ? '1vw' : '10vw'
+                  }}
+                />
                 <div>{restaurantData.address}</div>
               </div>
               <div className=''>

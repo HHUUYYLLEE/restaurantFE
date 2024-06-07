@@ -69,16 +69,19 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
               closeAddFoodModal()
               setPreviewImage('#')
             }}
-            className='absolute right-0 top-[-0.5rem] rounded-full transition-all duration-300  cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-500 flex justify-center items-center h-8 w-8  dark:text-yellow-400 font-extrabold'
+            className='absolute right-0 top-[-0.5rem] 
+            rounded-full transition-all duration-300
+             cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-500
+              flex justify-center items-center h-8 w-8 dark:text-yellow-400 font-extrabold'
           >
             <AiOutlineClose />
           </div>
 
-          <div className='w-full justify-between items-center'>
-            <div className='font-inter-700 text-3xl'>Thêm một món ăn</div>
+          <div className='flex justify-between items-center'>
+            <div className='font-inter-700 sm:text-2xl'>Thêm một món ăn</div>
           </div>
-          <form className='w-full' onSubmit={onSubmit} noValidate>
-            <div className='mt-[1rem] flex gap-10'>
+          <form className='w-[70vw] sm:w-[40vw]' onSubmit={onSubmit} noValidate>
+            <div className='mt-[1rem] flex gap-x-8 sm:justify-between'>
               <div>
                 <input
                   type='text'
@@ -87,41 +90,47 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
                   placeholder='Tên món ăn'
                   autoComplete='on'
                   {...register('name')}
-                  className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-xl rounded-xl  py-2 px-[2rem]'
+                  className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] 
+                  placeholder:font-inter-400 border font-inter-500 
+                  border-[#E6E6E6] text-sm rounded-xl px-[4vw] w-[30vw] sm:px-[1rem] sm:w-[18vw]'
                 />
-                <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+                <div className='mt-1 min-h-[1.75rem] text-xs text-red-600'>
                   {errors.name?.message}
                 </div>
               </div>
               <div>
                 <input
-                  type='number'
-                  id='quantity'
-                  name='quantity'
-                  placeholder='Số lượng'
+                  type='text'
+                  id='price'
+                  name='price'
+                  placeholder='Giá'
                   autoComplete='on'
-                  {...register('quantity')}
-                  className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-xl rounded-xl  py-2 px-[2rem]'
+                  {...register('price')}
+                  className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] 
+                  placeholder:font-inter-400 border font-inter-500 
+                  border-[#E6E6E6] text-sm rounded-xl px-[4vw] w-[30vw] sm:w-[18vw]'
                 />
-                <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
-                  {errors.quantity?.message}
+                <div className='mt-1 flex min-h-[1.75rem] text-xs text-red-600'>
+                  {errors.price?.message}
                 </div>
               </div>
             </div>
             <input
-              type='text'
-              id='price'
-              name='price'
-              placeholder='Giá'
-              {...register('price')}
+              type='number'
+              id='quantity'
+              name='quantity'
+              placeholder='Số lượng'
+              {...register('quantity')}
               onInput={(e) => {
                 console.log(e.target.value)
                 e.target.value = displayNum(e.target.value)
               }}
-              className='focus:outline-[#8AC0FF] w-full priceInput placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-xl rounded-xl  py-2 px-[2rem]'
+              className='focus:outline-[#8AC0FF] w-full priceInput 
+              placeholder:text-[#4F4F4F] placeholder:font-inter-400 border 
+              font-inter-500 border-[#E6E6E6] text-sm px-[1rem] rounded-xl '
             />
-            <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
-              {errors.price?.message}
+            <div className='mt-1 flex min-h-[1.75rem] text-xs text-red-600'>
+              {errors.quantity?.message}
             </div>
 
             <div>
@@ -132,15 +141,18 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
                 placeholder='Mô tả'
                 autoComplete='off'
                 {...register('desc')}
-                className='resize-none h-[18vh] w-full focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl py-[0.7rem] px-[2rem]'
+                className='resize-none h-[18vh] w-full 
+                focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] 
+                placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] 
+                text-xs rounded-xl px-[1rem] py-[0.5rem]'
               />
 
-              <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+              <div className='mt-1 flex min-h-[1.75rem] text-xs text-red-600'>
                 {errors.desc?.message}
               </div>
             </div>
 
-            <div className='mt-[3rem] flex'>
+            <div className=' flex'>
               <div>
                 <div>Ảnh minh hoạ</div>
                 <input
@@ -149,7 +161,8 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
                   name='image'
                   accept='image/*'
                   {...register('image')}
-                  className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:font-inter-400  font-inter-500 border-[#E6E6E6] w-full py-6'
+                  className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] 
+                  placeholder:font-inter-400 font-inter-500 border-[#E6E6E6] w-full'
                   onChange={(e) => {
                     const [file] = e.target.files
                     if (file) {
@@ -158,7 +171,7 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
                     }
                   }}
                 />
-                <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+                <div className='mt-1 flex min-h-[1.75rem] text-xl text-red-600'>
                   {errors.avatar?.message}
                 </div>
               </div>
@@ -175,8 +188,11 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
               {errors.image?.message}
             </div>
 
-            <div className='w-full flex justify-center items-center mt-[2rem]'>
-              <button className='bg-[#0366FF] hover:bg-green-500  text-white py-[1.2rem] px-[7rem] font-ibm-plex-serif-700 rounded-lg'>
+            <div className='w-full flex justify-center items-center'>
+              <button
+                className='bg-orange-600 hover:bg-green-500  
+              text-white px-[2rem] py-[0.5rem] font-ibm-plex-serif-700 rounded-lg'
+              >
                 Xác nhận
               </button>
             </div>

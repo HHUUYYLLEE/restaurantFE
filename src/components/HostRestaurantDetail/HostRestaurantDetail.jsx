@@ -7,13 +7,10 @@ import { MdOutlinePinDrop } from 'react-icons/md'
 import { FaRegClock } from 'react-icons/fa'
 import { FaClock } from 'react-icons/fa'
 import { MapContainer, TileLayer, Marker } from 'react-leaflet'
+import 'leaflet/dist/leaflet.css'
 import markerIconPng from 'leaflet/dist/images/marker-icon.png'
 import { Icon } from 'leaflet'
-import 'leaflet/dist/leaflet.css'
-import { createSearchParams, useNavigate } from 'react-router-dom'
-import { getInfoFromLS } from '../../utils/auth'
-export default function HostRestaurantDetail() {
-  const info = getInfoFromLS()
+export default function RestaurantDetail() {
   const { id } = useParams()
   const { data, status, isLoading, isSuccess } = useQuery({
     queryKey: ['restaurantDetail', id],
@@ -22,22 +19,20 @@ export default function HostRestaurantDetail() {
     },
     placeholderData: keepPreviousData
   })
-  const navigate = useNavigate()
   const restaurantData = data?.data.restaurant
   const date = new Date()
   const hour = date.getHours()
   const minute = date.getMinutes()
-  // console.log(info)
-  if (isSuccess) {
-    if (restaurantData.user_id !== info._id)
-      navigate({
-        pathname: `/restaurant/${id}`
-      })
+  if (isSuccess)
     return (
       <>
-        <div className='grid grid-cols-7 gap-x-5 pb-[2rem]'>
-          <div className='col-span-3 flex items-center justify-center'>
-            <Carousel showArrows={true}>
+        <div className='md:sm:grid md:sm:grid-cols-7 md:sm:gap-x-5 pb-[2rem]'>
+          <div className='md:sm:col-span-3 flex items-center justify-center'>
+            <Carousel
+              showArrows={true}
+              width={screen.width >= 1536 ? 500 : screen.width >= 640 ? 450 : 300}
+              thumbWidth={screen.width < 640 ? 46 : 80}
+            >
               <div>
                 <img src={data?.data.restaurant.main_avatar_url} referrerPolicy='no-referrer' />
               </div>
@@ -51,11 +46,10 @@ export default function HostRestaurantDetail() {
                 })}
             </Carousel>
           </div>
-          <div className='col-start-4 col-span-4 bg-white'>
-            <div className='mx-[2rem] my-[1rem]'>
+          <div className='md:sm:col-start-4 md:sm:col-span-4 bg-white'>
+            <div className='mx-[1rem] py-[1rem]'>
               <div className='italic text-xl bold text-green-600'>{restaurantData.name}</div>
-
-              <div className='mt-[2rem]'>
+              <div className='mt-[1rem]'>
                 <div className='text-gray-600'>
                   {hour < 12
                     ? hour >= parseInt(restaurantData.morning_open_time.split(':')[0]) &&
@@ -71,28 +65,22 @@ export default function HostRestaurantDetail() {
                     ? 'Đang hoạt động'
                     : 'Đã đóng cửa'}
                 </div>
-                <div className='flex gap-x-7'>
+                <div className='md:sm:flex gap-x-7'>
                   <div className='flex gap-x-7'>
                     <div>
                       <div className='text-yellow-600'>Sáng</div>
                       <div>
-                        {restaurantData.morning_open_time} &#8212; {restaurantData.morning_closed_time}
+                        {restaurantData.morning_open_time} &#8212;
+                        {restaurantData.morning_closed_time}
                       </div>
                     </div>
                     <div>
                       <div className='text-orange-600'>Chiều</div>
                       <div>
-                        {restaurantData.afternoon_open_time} &#8212; {restaurantData.afternoon_closed_time}
+                        {restaurantData.afternoon_open_time} &#8212;
+                        {restaurantData.afternoon_closed_time}
                       </div>
                     </div>
-                  </div>
-                  <div className='flex gap-x-4'>
-                    <div className=''>Số bàn</div>
-                    <div>{restaurantData.number_of_tables}</div>
-                  </div>
-                  <div className='flex gap-x-4'>
-                    <div className=''>Số chỗ ngồi</div>
-                    <div>{restaurantData.number_of_chairs}</div>
                   </div>
                 </div>
               </div>
@@ -100,11 +88,24 @@ export default function HostRestaurantDetail() {
                 <MdOutlinePinDrop />
                 <div>{restaurantData.address}</div>
               </div>
-              <div className='w-[50vw]'>
-                <MapContainer center={[restaurantData.lat, restaurantData.lng]} zoom={17}>
+              <div className=''>
+                <MapContainer
+                  center={[restaurantData.lat, restaurantData.lng]}
+                  zoom={17}
+                  style={{
+                    height: screen.width <= 640 ? '30vh' : 'full',
+                    width: screen.width >= 1536 ? '45vw' : screen.width >= 640 ? '45vw' : '75vw'
+                  }}
+                >
                   <Marker
                     position={[restaurantData.lat, restaurantData.lng]}
-                    icon={new Icon({ iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41] })}
+                    icon={
+                      new Icon({
+                        iconUrl: markerIconPng,
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41]
+                      })
+                    }
                   ></Marker>
                   <TileLayer
                     attribution='Google Maps'
@@ -121,5 +122,4 @@ export default function HostRestaurantDetail() {
         </div>
       </>
     )
-  }
 }

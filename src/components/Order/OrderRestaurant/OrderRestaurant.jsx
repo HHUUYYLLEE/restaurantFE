@@ -43,15 +43,22 @@ export default function OrderRestaurant({ id, restaurant_id, status, total_price
     return (
       <>
         <div className='bg-white mb-[2rem]'>
-          <div className='py-[1.2rem] px-[1.2rem]'>
-            <div className='flex justify-between'>
+          <div className='py-[1.2rem] sm:px-[1.2rem] px-[0.5rem]'>
+            <div className='flex justify-between items-center'>
               <Link to={`/restaurant/${restaurant_id}`}>
-                <div className='flex gap-x-[1.2rem]'>
-                  <CiShop style={{ width: '2vw', height: '2vw' }} />
-                  <div className='text-2xl'>{restaurantData.name}</div>
+                <div className='flex items-center sm:gap-x-[1.2rem]'>
+                  <CiShop
+                    style={{
+                      width: screen.width >= 640 ? '2vw' : '11vw',
+                      height: screen.width >= 640 ? '2vw' : '11vw'
+                    }}
+                  />
+                  <div className='sm:text-2xl text-xs'>{restaurantData.name}</div>
                 </div>
               </Link>
-              <div className='text-red-500 text-2xl'>{status === 0 ? 'CHỜ XÁC NHẬN ĐẶT' : 'ĐÃ ĐẶT'}</div>
+              <div className='text-red-500 sm:text-2xl text-xs'>
+                {status === 0 ? 'CHỜ XÁC NHẬN ĐẶT' : 'ĐÃ ĐẶT'}
+              </div>
             </div>
             <hr className='h-[0.1rem] mt-[0.4rem] border-none bg-gray-400' />
             {order_list_data &&
@@ -68,11 +75,19 @@ export default function OrderRestaurant({ id, restaurant_id, status, total_price
               })}
             <hr className='h-[0.2rem] mt-[0.4rem] z-10 border-none bg-gray-400' />
             <div>
-              <div className='text-right mt-[1rem] flex items-center gap-x-[3rem]'>
-                <div className='mr-0 ml-auto text-3xl text-emerald-600'>{displayNum(total_price) + 'đ'}</div>
+              <div className='text-right mt-[1rem] flex items-center sm:gap-x-[3rem] gap-x-[1rem]'>
+                <div className='mr-0 ml-auto sm:text-3xl text-xltext-emerald-600'>
+                  <div className='flex sm:gap-x-3 items-center gap-x-6'>
+                    <div>{displayNum(total_price) + 'đ'}</div>
+                  </div>
+                </div>
+
                 {status === 0 ? (
                   <Link to={`/place_order/${id}`}>
-                    <button className=' px-[2rem] py-[1rem] text-3xl bg-orange-600 hover:bg-orange-900 text-white rounded-xl'>
+                    <button
+                      className=' px-[2rem] py-[1rem] sm:text-3xl 
+                    bg-orange-600 hover:bg-orange-900 text-white rounded-xl'
+                    >
                       Đặt đơn
                     </button>
                   </Link>

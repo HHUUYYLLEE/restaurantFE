@@ -15,14 +15,15 @@ import { IoCheckmarkCircleSharp } from 'react-icons/io5'
 import { displayNum, isAxiosUnprocessableEntityError } from '../../utils/utils'
 import { toast } from 'react-toastify'
 import OrderRestaurant from './OrderRestaurant/OrderRestaurant'
-
+import ShoppingCartError from '../../../src/asset/img/broken_shopping_cart.png'
 export default function Order() {
-  const { data, isSuccess } = useQuery({
+  const { data, isSuccess, isError } = useQuery({
     queryKey: ['all_order_food'],
     queryFn: () => {
       return getAllUserOrders()
     },
-    placeholderData: keepPreviousData
+    placeholderData: keepPreviousData,
+    retry: false
   })
   console.log(data)
   const orderData = data?.data.orderFood
@@ -44,5 +45,16 @@ export default function Order() {
             })}
         </div>
       </>
+    )
+  if (isError)
+    return (
+      <div className='w-full mt-[5rem]'>
+        <div className='flex justify-center'>
+          <img src={ShoppingCartError} />
+        </div>
+        <div className='flex justify-center text-sm sm:text-xl text-orange-500'>
+          Có vẻ như bạn chưa thêm gì vào giỏ hàng cả...
+        </div>
+      </div>
     )
 }

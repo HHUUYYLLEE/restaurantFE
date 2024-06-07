@@ -4,7 +4,7 @@ export default function OrderList() {
   return (
     <>
       <div className='w-full mt-[10rem]'>
-        <div className='mx-auto w-[85%] pb-[2rem]'>
+        <div className='mx-auto w-[85%] '>
           <Order />
         </div>
       </div>

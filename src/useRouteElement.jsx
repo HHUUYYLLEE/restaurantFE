@@ -10,6 +10,7 @@ import { useContext } from 'react'
 import { AppContext } from './contexts/app.context'
 import OpenRestaurant from './pages/OpenRestaurant/OpenRestaurant'
 import PlaceOrder from './pages/PlaceOrder/PlaceOrder'
+import Search from './pages/Search/Search'
 // eslint-disable-next-line react-refresh/only-export-components
 function AdminProtectedRouter() {
   const { info } = useContext(AppContext)
@@ -25,6 +26,15 @@ function UserProtectedRouter() {
 
 export default function useRouteElement() {
   const routeElement = useRoutes([
+    {
+      path: '/search',
+      index: true,
+      element: (
+        <MainLayout>
+          <Search />
+        </MainLayout>
+      )
+    },
     {
       path: '/restaurant/:id',
       index: true,

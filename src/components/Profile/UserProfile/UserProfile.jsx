@@ -143,11 +143,11 @@ export default function UserProfile() {
         <></>
       )}
       {dataUser && (
-        <div className='sm:m-auto ml-[2rem] sm:grid sm:grid-cols-[15] sm:w-[70vw] w-[90vw] gap-12'>
+        <div className='sm:m-auto m-auto sm:grid sm:grid-cols-[15] sm:w-[72vw] w-[92vw] p-2 gap-12'>
           <div className='sm:col-span-5'>
             <div className=''>
               <div>
-                <div className='text-lg'>Ảnh đại diện</div>
+                <div className='text-lg text-orange-600'>Ảnh đại diện</div>
 
                 <img
                   src={dataUser?.avatar_url}
@@ -176,7 +176,7 @@ export default function UserProfile() {
                     }}
                   />
                   <button
-                    className='sm:mt-[3rem] hover:bg-[#0366FF] bg-green-500  
+                    className='sm:mt-[3rem] hover:bg-[#0366FF] bg-orange-500  
                   text-white py-[1rem] px-[1rem] font-ibm-plex-serif-700 rounded-lg
                   mt-[2rem] 2xl:w-[14vw] sm:w-[16vw] w-[57vw]'
                   >
@@ -189,7 +189,7 @@ export default function UserProfile() {
           <div className='sm:col-start-6 sm:col-span-10 sm:mt-0 mt-[3rem]'>
             <form key={1} onSubmit={onSubmit}>
               <div className='flex items-center gap-x-4'>
-                <div className='sm:text-xl sm:w-[9vw] w-[19vw]'>Username</div>
+                <div className='sm:text-xl text-orange-600 sm:w-[9vw] w-[19vw]'>Username</div>
                 <input
                   type='text'
                   id='username'
@@ -199,13 +199,13 @@ export default function UserProfile() {
                   defaultValue={dataUser.username}
                   {...register('username')}
                   className='sm:w-[35vw] 
-                  w-[55vw] focus:outline-none placeholder:text-[0.7rem] placeholder:text-[#6666667e] 
+                  w-[55vw] focus:outline-none placeholder:text-[0.7rem] placeholder:text-[#ee4c0c7e]
                   placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] 
                   text-lg rounded-xl py-2 px-[1rem]'
                 />
               </div>
               <div className='sm:mt-[3rem] mt-[1rem] flex items-center gap-x-4'>
-                <div className='sm:text-xl sm:w-[9vw] w-[19vw]'>SĐT</div>
+                <div className='sm:text-xl sm:w-[9vw] text-orange-600 w-[19vw]'>SĐT</div>
                 <input
                   type='text'
                   id='phone_number'
@@ -214,7 +214,7 @@ export default function UserProfile() {
                   autoComplete='off'
                   defaultValue={dataUser.phone_number}
                   {...register('phone_number')}
-                  className='sm:w-[35vw] w-[55vw] focus:outline-none  placeholder:text-[#6666667e] 
+                  className='sm:w-[35vw] w-[55vw] focus:outline-none  placeholder:text-[#ee4c0c7e] 
                    placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg 
                    rounded-xl py-2 px-[1rem] placeholder:text-[0.7rem]'
                 />
@@ -223,7 +223,7 @@ export default function UserProfile() {
                 {errors.phone_number?.message}
               </div>
               <div className='sm:mt-[1rem] flex items-center gap-x-4'>
-                <div className='sm:text-xl sm:w-[9vw] w-[19vw]'>Địa chỉ</div>
+                <div className='sm:text-xl sm:w-[9vw] w-[19vw] text-orange-600'>Địa chỉ</div>
                 <input
                   type='text'
                   id='address'
@@ -233,12 +233,12 @@ export default function UserProfile() {
                   defaultValue={dataUser.address}
                   {...register('address')}
                   className='sm:w-[35vw] w-[55vw] focus:outline-none placeholder:text-[0.7rem]
-                  placeholder:text-[#6666667e]  placeholder:font-inter-400 border font-inter-500
+                  placeholder:text-[#ee4c0c7e] placeholder:font-inter-400 border font-inter-500
                     border-[#E6E6E6] text-lg  rounded-xl py-2 px-[1rem]'
                 />
               </div>
               <button
-                className='sm:mt-[3rem] hover:bg-[#0366FF] bg-green-500  
+                className='sm:mt-[3rem] hover:bg-[#0366FF] bg-orange-500  
                   text-white py-[1rem] px-[1rem] font-ibm-plex-serif-700 rounded-lg
                   mt-[2rem] 2xl:w-[12vw] sm:w-[14vw] w-[57vw]'
               >

@@ -71,11 +71,17 @@ export default function Food({ food_id, quantity, refetch, status }) {
   if (isSuccess) {
     return (
       <>
-        <div className='flex justify-between h-[20vh] py-[0.2rem]'>
-          <div className='flex items-center gap-x-[0.4rem]'>
-            <img src={foodData.image_url} className='h-[17vh]' referrerPolicy='no-referrer'></img>
+        <div className='flex justify-between sm:h-[25vh] py-[0.2rem]'>
+          <div className='flex items-center gap-x-[0.4rem] w-[100vw] sm:w-[80vw]'>
+            <img
+              src={foodData.image_url}
+              className='sm:w-[9vw] sm:h-[9vw] w-[14vw] h-[14vw]'
+              referrerPolicy='no-referrer'
+            ></img>
             <div>
-              <div className='text-xl'>{foodData.name}</div>
+              <div className='sm:text-xl sm:w-[60vw] text-sm line-clamp-1 text-ellipsis overlow-hidden'>
+                {foodData.name}
+              </div>
               <div className='mt-[0.2rem]'>
                 {editQuantity ? (
                   <form onSubmit={onSubmit}>
@@ -84,18 +90,22 @@ export default function Food({ food_id, quantity, refetch, status }) {
                         type='number'
                         id='quantity'
                         name='quantity'
-                        placeholder='Số lượng'
                         defaultValue={quantity}
                         autoComplete='off'
                         {...register('quantity')}
-                        className='w-[6vw] text-right priceInput focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] placeholder:text-sm border font-inter-500 border-[#E6E6E6] text-lg px-[0.3rem]'
+                        className='sm:w-[6vw] w-[10vw] text-right priceInput focus:outline-[#8AC0FF] 
+                        placeholder:text-[#4F4F4F] 
+                         border font-inter-500 border-[#E6E6E6] text-xs sm:text-lg px-[0.3rem]'
                       />
                       <button type='submit' className='hover:bg-slate-200'>
                         <IoCheckmarkCircleSharp
-                          style={{ width: '1.9vw', height: '1.9vw', color: 'green' }}
+                          style={{
+                            width: screen.width >= 640 ? '1.9vw' : '4vw',
+                            height: screen.width >= 640 ? '1.9vw' : '4vw',
+                            color: 'green'
+                          }}
                         />
                       </button>
-
                       <button
                         className='hover:bg-slate-200'
                         onClick={() => {
@@ -104,17 +114,26 @@ export default function Food({ food_id, quantity, refetch, status }) {
                         }}
                       >
                         <FaRegTimesCircle
-                          style={{ width: '1.6vw', height: '1.6vw', color: 'red' }}
+                          style={{
+                            width: screen.width >= 640 ? '1.6vw' : '3.7vw',
+                            height: screen.width >= 640 ? '1.6vw' : '3.7vw',
+                            color: 'red'
+                          }}
                         />
                       </button>
                     </div>
                   </form>
                 ) : (
-                  <div className='flex items-center gap-x-[0.4rem]'>
-                    <div className='text-green-700 text-lg'>{'x' + quantity}</div>
+                  <div className='flex items-center sm:gap-x-[0.4rem] gap-x-[0.2rem]'>
+                    <div className='text-green-700 sm:text-lg'>{'x' + quantity}</div>
                     {status === 0 && (
                       <div className='cursor-pointer' onClick={() => setEditQuantity(true)}>
-                        <HiOutlinePencilSquare style={{ width: '1.2vw', height: '1.2vw' }} />
+                        <HiOutlinePencilSquare
+                          style={{
+                            width: screen.width >= 640 ? '1.6vw' : '3.7vw',
+                            height: screen.width >= 640 ? '1.6vw' : '3.7vw'
+                          }}
+                        />
                       </div>
                     )}
                   </div>
@@ -122,7 +141,11 @@ export default function Food({ food_id, quantity, refetch, status }) {
               </div>
             </div>
           </div>
-          <div className='flex items-center text-orange-400 text-2xl'>
+          <div
+            className='flex items-center justify-between sm:text-right   w-[29vw] 
+           text-orange-400 sm:text-4xl'
+          >
+            <div></div>
             {displayNum(foodData.price) + 'đ'}
           </div>
         </div>

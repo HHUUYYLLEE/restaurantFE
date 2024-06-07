@@ -24,7 +24,9 @@ import Food from './Food/Food'
 import markerIconPng from 'leaflet/dist/images/marker-icon.png'
 import { Icon } from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-
+import 'leaflet-routing-machine'
+import 'lrm-graphhopper'
+import L from 'leaflet'
 export default function OrderDetail() {
   const phone_number = getInfoFromLS().phone_number
   const username = getInfoFromLS().username
@@ -40,7 +42,7 @@ export default function OrderDetail() {
   const [latLngValueInput, setLatLngValueInput] = useState(['', ''])
   const [markerPos, setMarkerPos] = useState([0, 0])
   const [addressValue, setAddressValue] = useState('')
-
+  const [stopFindingRoutes, setStopFindingRoutes] = useState(false)
   const { handleSubmit } = useForm({
     mode: 'all'
   })
@@ -119,7 +121,19 @@ export default function OrderDetail() {
         setMarkerPos(latLng)
       }
     }, [map])
-
+    if (!stopFindingRoutes)
+      L.Routing.control({
+        waypoints: [
+          L.latLng(latLngValueInput[0], latLngValueInput[1]),
+          L.latLng(restaurantData.lat, restaurantData.lng)
+        ],
+        router: L.Routing.graphHopper(envConfig.graphhopperKey)
+      })
+        .on('routeselected', (e) => {
+          console.log(e)
+          setStopFindingRoutes(true)
+        })
+        .addTo(map)
     return null
   }
   const orderFood = order_detail?.data.orderFood
@@ -155,68 +169,88 @@ export default function OrderDetail() {
       }
     })
   })
+
   if (isSuccess && restaurantSuccess) {
     return (
       <>
-        <div className='w-full bg-white p-[2.5rem]'>
-          <div className='flex justify-between'>
+        <div className='w-full bg-white sm:p-[2.5rem] p-[0.5rem]'>
+          <div className='flex sm:justify-between items-center sm:gap-x-0 gap-x-[5rem]'>
             <div className='flex gap-x-1 items-center mt-[1rem] font-inter-400'>
-              <MdOutlinePinDrop style={{ width: '1.6vw', height: '1.6vw', color: 'red' }} />
-              <div className='text-2xl text-red-700'>Địa chỉ nhận</div>
+              <MdOutlinePinDrop
+                style={{
+                  width: screen.width >= 640 ? '1.6vw' : '3.5vw',
+                  height: screen.width >= 640 ? '1.6vw' : '3.5vw',
+                  color: 'red'
+                }}
+              />
+              <div className='sm:text-2xl text-red-700'>Địa chỉ nhận</div>
             </div>
-            <div className='flex items-center font-bold text-2xl gap-x-[1rem]'>
-              <div>{username}</div>
-              <div>{phone_number}</div>
+
+            <div className='sm:flex  items-center font-bold sm:text-2xl sm:gap-x-[1rem]'>
+              <div className='text-orange-500'>{username}</div>
+              <div className='text-green-500'>{phone_number}</div>
             </div>
           </div>
-          <div className='text-2xl italic h-[2rem]'>{addressValue}</div>
+          <div className='sm:text-2xl text-xs w-[37vw] sm:w-full italic h-[2rem]'>
+            {addressValue}
+          </div>
           <div className='relative w-full'>
             <div className='absolute top-1 left-[50%] translate-x-[-50%] text-center z-10'>
-              <input
-                type='text'
-                id='search'
-                name='search'
-                placeholder='Tìm kiếm hoặc click vào 1 vị trí trong bản đồ'
-                autoComplete='off'
-                onInput={(e) => {
-                  setLockMarker(true)
-                  if (firstRender) {
-                    setFirstUpdate(false)
-                    setFirstRender(false)
-                  }
-                  setEnableSearchResults(true)
-                  setSearchQuery({ q: e.target.value, key: envConfig.opencageKey })
+              <div
+                onBlur={() => {
+                  setEnableSearchResults(false)
                 }}
-                className='focus:outline-[#8AC0FF] w-[35vw] placeholder:text-[#4F4F4F] placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg rounded-xl px-[0.5rem] py-[0.2rem]'
-              />
-              {data &&
-                enableSearchResults &&
-                data.data?.results.map((data, key) => {
-                  return (
-                    <div key={key}>
-                      <div
-                        className='w-[35vw] cursor-pointer hover:bg-slate-200 bg-white'
-                        onClick={() => {
-                          setLatLng([data.geometry.lat, data.geometry.lng])
-                          setEnableSearchResults(false)
-                          setAddressValue(data.formatted)
-                          setLatLngValueInput([data.geometry.lat, data.geometry.lng])
-                        }}
-                      >
-                        {data.formatted}
+              >
+                <input
+                  type='text'
+                  id='search'
+                  name='search'
+                  autoComplete='off'
+                  onInput={(e) => {
+                    setLockMarker(true)
+                    if (firstRender) {
+                      setFirstUpdate(false)
+                      setFirstRender(false)
+                    }
+                    setEnableSearchResults(true)
+                    setSearchQuery({ q: e.target.value, key: envConfig.opencageKey })
+                  }}
+                  className='focus:outline-[#8AC0FF] sm:w-[53vw] w-[50vw]
+                  border font-inter-500 border-[#E6E6E6] sm:text-lg rounded-xl px-[0.5rem] py-[0.2rem]'
+                />
+                {data &&
+                  enableSearchResults &&
+                  data.data?.results.map((data, key) => {
+                    return (
+                      <div key={key}>
+                        <div
+                          className='sm:w-[53vw] w-[50vw] cursor-pointer hover:bg-slate-200 bg-white'
+                          onClick={() => {
+                            setLatLng([data.geometry.lat, data.geometry.lng])
+                            setEnableSearchResults(false)
+                            setAddressValue(data.formatted)
+                            setLatLngValueInput([data.geometry.lat, data.geometry.lng])
+                          }}
+                        >
+                          {data.formatted}
+                        </div>
+                        <hr></hr>
                       </div>
-                      <hr></hr>
-                    </div>
-                  )
-                })}
+                    )
+                  })}
+              </div>
             </div>
             <MapContainer
               center={[21.028511, 105.804817]}
               zoom={13}
-              style={{ width: '100%', height: '85vh' }}
+              style={{
+                height: screen.width <= 640 ? '30vh' : 'full',
+                width: screen.width >= 1536 ? '80vw' : screen.width >= 640 ? '80vw' : '78vw'
+              }}
             >
               <ResetCenterView></ResetCenterView>
               <MyComponent></MyComponent>
+
               <Marker
                 position={markerPos}
                 icon={
@@ -234,33 +268,42 @@ export default function OrderDetail() {
             </MapContainer>
           </div>
         </div>
-        <div className='w-full mt-[5rem]'>
+        <div className='w-full sm:mt-[3rem] mt-[1rem]'>
           <div className='bg-white mb-[2rem]'>
-            <div className='py-[1.2rem] px-[1.2rem]'>
+            <div className='py-[1.2rem] sm:px-[1.2rem] px-[0.3rem]'>
               <div className='flex justify-between'>
                 <Link to={`/restaurant/${restaurantData?._id}`}>
-                  <div className='flex gap-x-[1.2rem]'>
-                    <CiShop style={{ width: '2vw', height: '2vw' }} />
-                    <div className='text-2xl'>{restaurantData?.name}</div>
+                  <div className='flex items-center sm:gap-x-[1.2rem]'>
+                    <CiShop
+                      style={{
+                        width: screen.width >= 640 ? '2vw' : '11vw',
+                        height: screen.width >= 640 ? '2vw' : '11vw'
+                      }}
+                    />
+                    <div className='sm:text-2xl'>{restaurantData?.name}</div>
                   </div>
                 </Link>
               </div>
-              <hr className='h-[0.1rem] mt-[0.4rem] border-none bg-gray-400' />
+              <hr className='h-[0.2rem] mt-[0.4rem] z-10 border-none bg-gray-400' />
               {order_detail &&
                 orderFoodList.map((data) => {
                   return <Food key={data._id} food_id={data.food_id} quantity={data.quantity} />
                 })}
               <hr className='h-[0.2rem] mt-[0.4rem] z-10 border-none bg-gray-400' />
               <div>
-                <div className='text-right mt-[1rem] flex items-center gap-x-[3rem]'>
-                  <div className='mr-0 ml-auto text-3xl text-emerald-600'>
+                <div className='text-right mt-[1rem] flex items-center sm:gap-x-[3rem] gap-x-[1rem]'>
+                  <div className='mr-0 ml-auto sm:text-3xl text-xl text-emerald-600'>
                     {displayNum(orderFood?.total_price) + 'đ'}
                   </div>
                   {orderFood.status === 0 ? (
                     <form onSubmit={onSubmit}>
                       <button
                         disabled={addressValue === '' ? true : false}
-                        className=' px-[2rem] py-[1rem] text-3xl disabled:bg-gray-200 disabled:text-black disabled:text-opacity-50 bg-orange-600 hover:enabled:bg-orange-900 text-white rounded-xl'
+                        className='sm:px-[2rem] sm:py-[1rem] sm:text-3xl 
+                        disabled:bg-gray-200 disabled:text-black 
+                        disabled:text-opacity-50 bg-orange-600 
+                        hover:enabled:bg-orange-900 text-white rounded-xl
+                        px-[1rem] py-[0.5rem]'
                       >
                         Xác nhận
                       </button>

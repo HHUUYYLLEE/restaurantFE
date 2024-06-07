@@ -29,19 +29,31 @@ export default function Food({ food_id, quantity }) {
   if (isSuccess) {
     return (
       <>
-        <div className='flex justify-between h-[20vh] py-[0.2rem]'>
-          <div className='flex items-center gap-x-[0.4rem]'>
-            <img src={foodData.image_url} className='h-[17vh]' referrerPolicy='no-referrer'></img>
+        <div className='flex justify-between sm:h-[25vh] py-[0.2rem]'>
+          <div className='flex items-center gap-x-[0.4rem] w-[100vw] sm:w-[80vw]'>
+            <img
+              src={foodData.image_url}
+              className='sm:w-[9vw] sm:h-[9vw] w-[14vw] h-[14vw]'
+              referrerPolicy='no-referrer'
+            ></img>
             <div>
-              <div className='text-xl'>{foodData.name}</div>
+              <div className='sm:text-xl sm:w-[60vw] text-sm line-clamp-1 text-ellipsis overlow-hidden'>
+                {foodData.name}
+              </div>
               <div className='mt-[0.2rem]'>
-                <div className='flex items-center gap-x-[0.4rem]'>
-                  <div className='text-green-700 text-lg'>{'x' + quantity}</div>
+                <div className='flex items-center sm:gap-x-[0.4rem] gap-x-[0.2rem]'>
+                  <div className='text-green-700 sm:text-lg'>{'x' + quantity}</div>
                 </div>
               </div>
             </div>
           </div>
-          <div className='flex items-center text-orange-400 text-2xl'>{displayNum(foodData.price) + 'đ'}</div>
+          <div
+            className='flex items-center justify-between sm:text-right   w-[29vw] 
+           text-orange-400 sm:text-4xl'
+          >
+            <div></div>
+            {displayNum(foodData.price) + 'đ'}
+          </div>
         </div>
       </>
     )

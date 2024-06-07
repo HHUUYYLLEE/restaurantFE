@@ -1,3 +1,5 @@
+import { transform } from 'lodash'
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
@@ -19,6 +21,11 @@ export default {
         godofwar: ['GodOfWar']
       },
       keyframes: {
+        blinkingText: {
+          '50%': {
+            opacity: 0.6
+          }
+        },
         loadingtext: {
           '0%': {
             'font-size': '3rem',
@@ -100,7 +107,8 @@ export default {
         fadeIn4: 'fadeIn 2.5s linear 16.5s',
         fadeIn5: 'fadeIn 2.5s linear 19s',
         rainbowtext: 'rainbowtext 2s linear infinite',
-        loadingtext: 'loadingtext 4s linear infinite'
+        loadingtext: 'loadingtext 4s linear infinite',
+        blinkingText: 'blinkingText 5.5s linear infinite'
       }
     }
   },

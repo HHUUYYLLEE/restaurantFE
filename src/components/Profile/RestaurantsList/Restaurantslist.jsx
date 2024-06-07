@@ -18,7 +18,7 @@ export default function RestaurantsList() {
   console.log(dataUserRestaurants)
   return (
     <>
-      <div className='mx-auto mt-[25vh] w-[75%] '>
+      <div className='mx-auto mt-[10vh] w-[80%] p-4'>
         <div className='flex items-center gap-x-4'>
           <div className='sm:text-3xl'>Danh sách nhà hàng của bạn</div>
           <NavLink to='/open_restaurant'>

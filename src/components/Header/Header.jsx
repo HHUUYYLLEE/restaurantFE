@@ -10,16 +10,28 @@ import { clearAccessTokenFromLS } from '../../utils/auth'
 import { toast } from 'react-toastify'
 import { BsCart4 } from 'react-icons/bs'
 import SignupModal from '../SignupModal/SignupModal'
-
+import { searchRestaurantsAndFood } from '../../api/restaurants.api'
+import { useQuery } from '@tanstack/react-query'
+import { useDebounce } from '@uidotdev/usehooks'
 export default function Header() {
-  const { register, handleSubmit } = useForm({})
-  const queryConfig = useQueryConfig()
-
+  const { register } = useForm({ mode: 'all' })
   const navigate = useNavigate()
   const [modalLogin, setModalLogin] = useState(false)
   const [logoutModal, setLogoutModal] = useState(false)
   const [signupModal, setSignupModal] = useState(false)
   const { isAuthenticated, setIsAuthenticated, info, setInfo } = useContext(AppContext)
+  const [search, setSearch] = useState(null)
+  const [searchParams, setSearchParams] = useDebounce([search], 1000)
+  const [showSearchResults, setShowSearchResults] = useState(false)
+  const [allResultsToggle, setAllResultsToggle] = useState(false)
+  const { data } = useQuery({
+    queryKey: ['search', searchParams],
+    queryFn: () => {
+      return searchRestaurantsAndFood({ search: searchParams })
+    },
+    keepPreviousData: true,
+    staleTime: 1000
+  })
 
   const openModalLogin = () => {
     setModalLogin(true)
@@ -88,21 +100,76 @@ export default function Header() {
                 ></path>
               </svg>
             </div>
-            <input
-              type='search'
-              id='default-search'
-              {...register('search')}
-              className={`${
-                expandingSearchBar && screen.width < 640
-                  ? 'w-[94vw] fixed top-4 left-2 z-[1] bg-white '
-                  : 'w-[20vw] bg-white/30 text-white '
-              }
+            <div
+              onBlur={() => {
+                setTimeout(() => {
+                  setShowSearchResults(false)
+                  setExpandingSearchBar(false)
+                  setAllResultsToggle(false)
+                }, '200')
+              }}
+            >
+              <input
+                type='search'
+                id='default-search'
+                {...register('search')}
+                className={`${
+                  expandingSearchBar && screen.width < 640
+                    ? 'w-[94vw] fixed top-4 left-2 z-[1] bg-white '
+                    : 'w-[20vw] bg-white/30 text-white '
+                }
               font-andika focus:outline-none placeholder-white  transition-colors duration-300
-              pl-10 py-3 sm:w-full text-sm border border-gray-300 rounded-[10px]`}
-              placeholder={screen.width >= 640 ? 'Tìm kiếm,...' : ''}
-              onFocus={() => setExpandingSearchBar(true)}
-              onBlur={() => setExpandingSearchBar(false)}
-            ></input>
+              pl-10 py-3 sm:w-full text-sm border border-gray-300 rounded-[10px] `}
+                placeholder={screen.width >= 640 ? 'Tìm kiếm,...' : ''}
+                onInput={(e) => {
+                  setSearch(e.target.value)
+                  if (e.target.value) setAllResultsToggle(true)
+                  else setAllResultsToggle(false)
+                }}
+                onFocus={() => {
+                  setShowSearchResults(true)
+                  setExpandingSearchBar(true)
+                }}
+              ></input>
+              <div className='absolute mt-[1.3rem] sm:mt-0'>
+                {showSearchResults &&
+                  data &&
+                  data?.data?.data?.map((data) => {
+                    return (
+                      <div key={data._id}>
+                        <div className='w-[93vw] sm:w-[50vw] h-[7.5vh] sm:h-[10vh] hover:bg-[#fff5f1] bg-white ml-[-5.3rem] sm:ml-0'>
+                          <Link to={`/restaurant/${data.restaurant_id || data._id}`}>
+                            <div
+                              onClick={() => {
+                                setShowSearchResults(false)
+                                setExpandingSearchBar(false)
+                              }}
+                              className='flex items-center sm:h-[9.5vh] h-[5vh] gap-x-2 px-[0.3rem] pt-[0.6rem] sm:p-[0.5rem]'
+                            >
+                              <img
+                                className='w-[5vh] h-[5vh] sm:h-[7vh] sm:w-[7vh]'
+                                src={data.image_url || data.main_avatar_url}
+                              ></img>
+                              <div className='sm:text-base text-sm'>{data.name}</div>
+                            </div>
+                          </Link>
+                          <hr className='h-[0.1rem] mt-[1rem] sm:mt-[0.06rem] border-none bg-black' />
+                        </div>
+                      </div>
+                    )
+                  })}
+                {allResultsToggle && (
+                  <Link to={`/search?search=${search}&mode=2`}>
+                    <div
+                      className='w-[93vw] flex justify-center items-center sm:w-[50vw] h-[4.3vh] sm:h-[5vh] bg-white 
+                  ml-[-5.3rem] sm:ml-0 text-orange-500 hover:bg-[#fff5f1]'
+                    >
+                      Xem tất cả kết quả
+                    </div>
+                  </Link>
+                )}
+              </div>
+            </div>
           </div>
         </form>
         <div className='flex items-center sm:ml-10 gap-x-8 font-poppins-500'>
@@ -221,8 +288,8 @@ export default function Header() {
         isOpen={logoutModal}
         onRequestClose={() => setLogoutModal(false)}
       >
-        <div className='font-inter-700 text-4xl'>Bạn có muốn đăng xuất?</div>
-        <div className='mt-[8vh] flex justify-between'>
+        <div className='font-inter-700 sm:text-2xl'>Bạn có muốn đăng xuất?</div>
+        <div className='sm:mt-[8vh] mt-[2vh] flex justify-between'>
           <button
             onClick={() => {
               setIsAuthenticated(false)
@@ -232,13 +299,18 @@ export default function Header() {
               // toast.success('Đăng xuất thành công !')
               navigate('/')
             }}
-            className='w-[10vw] h-[8vh] flex justify-center items-center bg-[#0366FF] hover:bg-green-700 text-white font-inter-700 rounded-lg text-xl'
+            className='flex justify-center items-center 
+            bg-orange-700 hover:bg-orange-700 text-white font-inter-700 rounded-lg
+            px-[1rem] py-[0.5rem] sm:py-[1.6rem] sm:text-lg text-sm
+            '
           >
             Đăng xuất
           </button>
           <button
             onClick={() => setLogoutModal(false)}
-            className='w-[10vw] h-[8vh] flex justify-center items-center bg-[#DD1A1A] hover:bg-red-900 text-white font-inter-700 rounded-lg text-xl'
+            className='flex justify-center items-center bg-[#DD1A1A] hover:bg-red-900 
+            text-white font-inter-700 rounded-lg
+            px-[1rem] py-[0.1rem] text-sm sm:text-lg sm:px-[2rem]'
           >
             Huỷ
           </button>

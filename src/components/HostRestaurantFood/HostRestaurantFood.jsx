@@ -32,33 +32,73 @@ export default function HostRestaurantFood() {
   if (isSuccess)
     return (
       <div className='bg-white'>
-        <div className='flex ml-[1rem] py-[0.3rem] gap-x-[3rem]'>
-          <div className='text-4xl'>Các món ăn</div>
+        <div className='flex items-center ml-[1rem] py-[0.3rem] sm:gap-x-[3rem]  gap-x-[1rem]'>
+          <div className='sm:text-4xl text-orange-500 italic'>Các món ăn</div>
           <button
             onClick={() => openAddFoodModal()}
-            className='rounded-lg py-[1rem] hover:bg-green-700 px-[2rem] bg-orange-600 text-white'
+            className='rounded-lg sm:py-[1rem] py-[0.5rem] hover:bg-green-700 sm:px-[2rem] px-[1rem]
+             bg-orange-600 text-white'
           >
             Thêm món ăn
           </button>
         </div>
         <hr className='h-[0.1rem] border-none bg-gray-400' />
-        <div className='grid grid-cols-3 gap-x-2 pb-[2rem] '>
+        <div className='grid sm:grid-cols-3 grid-cols-2 gap-x-2 pb-[2rem] sm:mt-0 mt-[1rem]'>
           {data &&
             foodData.map((food) => {
               return (
-                <div key={food._id} className='flex mx-[1rem] my-[1rem] relative gap-x-2'>
-                  <div className='absolute flex right-0 bottom-0 gap-x-2'>
-                    <div className='cursor-pointer bg-red-700 rounded-full p-[0.2rem]'>
-                      <TiPencil style={{ width: '1.5vw', height: '1.5vw', color: 'white' }} />
+                <div
+                  key={food._id}
+                  className='flex sm:mx-[1rem] sm:h-[28vh] h-[9vh] 
+                  sm:my-[1rem] mx-[0.3rem] my-[0.1rem] sm:w-[25vw] w-[38vw] relative gap-x-2
+                  border rounded-md sm:border-4'
+                >
+                  <img
+                    src={food.image_url}
+                    referrerPolicy='no-referrer'
+                    className='sm:w-[12vw] w-[18vw] sm:h-full h-[8vh]'
+                  />
+                  <div className='relative'>
+                    <div
+                      className='absolute flex cursor-pointer bottom-[0.2rem] right-[0.2rem] 
+                    sm:bottom-[0.6rem] sm:right-[0.5rem] gap-x-1 sm:gap-x-3'
+                    >
+                      <div className='cursor-pointer rounded-full'>
+                        <TiPencil
+                          style={{
+                            width: screen.width >= 640 ? '1.6vw' : '3.4vw',
+                            height: screen.width >= 640 ? '1.6vw' : '3.4vw',
+                            color: 'green'
+                          }}
+                        />
+                      </div>
+                      <div className='cursor-pointer rounded-full'>
+                        <FaRegTrashAlt
+                          style={{
+                            width: screen.width >= 640 ? '1.4vw' : '3.0vw',
+                            height: screen.width >= 640 ? '1.4vw' : '3.0vw',
+                            color: 'red'
+                          }}
+                        />
+                      </div>
                     </div>
-                    <div className='cursor-pointer bg-red-700 rounded-full p-[0.2rem]'>
-                      <FaRegTrashAlt style={{ width: '1.5vw', height: '1.5vw', color: 'white' }} />
+
+                    <div>
+                      <div
+                        className='2xl:text-[1.1rem] sm:text-[1rem] sm:w-full 
+                      sm:mt-[1rem] sm:h-[10.2vh] 2xl:h-[3rem] h-[4vh] sm:leading-[1.4rem] 
+                      2xl:leading-[1.6rem] leading-[0.6rem] w-[15vw] text-[0.44rem] 
+                      overflow-hidden text-ellipsis line-clamp-3 mt-[0.2rem]'
+                      >
+                        {food.name}
+                      </div>
+                      <div
+                        className='sm:text-2xl 2xl:text-3xl sm:mt-[1rem] text-yellow-600
+                      text-[0.6rem] font-poppins-400'
+                      >
+                        {displayNum(food.price)}
+                      </div>
                     </div>
-                  </div>
-                  <img src={food.image_url} referrerPolicy='no-referrer' />
-                  <div>
-                    <div className='text-xl mt-[1rem] h-[4.9rem] text-ellipsis'>{food.name}</div>
-                    <div className='text-3xl mt-[1rem] text-yellow-600 font-poppins-400'>{displayNum(food.price)}</div>
                   </div>
                 </div>
               )
