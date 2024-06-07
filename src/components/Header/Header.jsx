@@ -20,7 +20,7 @@ export default function Header() {
   const [logoutModal, setLogoutModal] = useState(false)
   const [signupModal, setSignupModal] = useState(false)
   const { isAuthenticated, setIsAuthenticated, info, setInfo } = useContext(AppContext)
-  const [search, setSearch] = useState(null)
+  const [search, setSearch] = useState('')
   const [searchParams, setSearchParams] = useDebounce([search], 1000)
   const [showSearchResults, setShowSearchResults] = useState(false)
   const [allResultsToggle, setAllResultsToggle] = useState(false)
@@ -30,7 +30,7 @@ export default function Header() {
       return searchRestaurantsAndFood({ search: searchParams })
     },
     keepPreviousData: true,
-    staleTime: 1000
+    enabled: allResultsToggle
   })
 
   const openModalLogin = () => {

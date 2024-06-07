@@ -17,6 +17,8 @@ import { toast } from 'react-toastify'
 import OrderRestaurant from './OrderRestaurant/OrderRestaurant'
 import ShoppingCartError from '../../../src/asset/img/broken_shopping_cart.png'
 export default function Order() {
+  const [option, setOption] = useState(0)
+  const options = ['Tất cả', 'Chưa đặt', 'Đã đặt', 'Đã huỷ', 'Đã hoàn thành']
   const { data, isSuccess, isError } = useQuery({
     queryKey: ['all_order_food'],
     queryFn: () => {
@@ -30,18 +32,35 @@ export default function Order() {
   if (isSuccess)
     return (
       <>
-        <div className='w-full mt-[5rem]'>
-          {data &&
-            orderData.map((data) => {
+        <div className='w-full'>
+          <div className=' w-full grid grid-cols-5 mb-[2rem]'>
+            {options.map((data, id) => {
               return (
-                <OrderRestaurant
-                  key={data._id}
-                  id={data._id}
-                  restaurant_id={data.restaurant_id}
-                  status={data.status}
-                  total_price={data.total_price}
-                />
+                <div
+                  key={id}
+                  className={`${
+                    option === id ? ' bg-orange-500 text-white ' : ' bg-white '
+                  } flex justify-center 
+                  items-center text-[0.7rem] h-[7vh] 2x:text-2xl sm:text-xl text-center sm:h-[10vh] cursor-pointer`}
+                  onClick={() => setOption(id)}
+                >
+                  {data}
+                </div>
               )
+            })}
+          </div>
+          {data &&
+            orderData.map((data, id) => {
+              if (data.status + 1 === option || option === 0)
+                return (
+                  <OrderRestaurant
+                    key={id}
+                    id={data._id}
+                    restaurant_id={data.restaurant_id}
+                    status={data.status}
+                    total_price={data.total_price}
+                  />
+                )
             })}
         </div>
       </>

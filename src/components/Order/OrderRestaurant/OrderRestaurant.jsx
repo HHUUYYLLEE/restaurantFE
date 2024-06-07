@@ -57,7 +57,7 @@ export default function OrderRestaurant({ id, restaurant_id, status, total_price
                 </div>
               </Link>
               <div className='text-red-500 sm:text-2xl text-xs'>
-                {status === 0 ? 'CHỜ XÁC NHẬN ĐẶT' : 'ĐÃ ĐẶT'}
+                {{ 0: 'CHỜ XÁC NHẬN ĐẶT', 1: 'ĐÃ ĐẶT', 2: 'ĐÃ BỊ HUỶ', 3: 'ĐÃ HOÀN THÀNH' }[status]}
               </div>
             </div>
             <hr className='h-[0.1rem] mt-[0.4rem] border-none bg-gray-400' />
@@ -76,7 +76,7 @@ export default function OrderRestaurant({ id, restaurant_id, status, total_price
             <hr className='h-[0.2rem] mt-[0.4rem] z-10 border-none bg-gray-400' />
             <div>
               <div className='text-right mt-[1rem] flex items-center sm:gap-x-[3rem] gap-x-[1rem]'>
-                <div className='mr-0 ml-auto sm:text-3xl text-xltext-emerald-600'>
+                <div className='mr-0 ml-auto sm:text-3xl text-xl text-emerald-600'>
                   <div className='flex sm:gap-x-3 items-center gap-x-6'>
                     <div>{displayNum(total_price) + 'đ'}</div>
                   </div>
@@ -88,15 +88,32 @@ export default function OrderRestaurant({ id, restaurant_id, status, total_price
                       className=' px-[2rem] py-[1rem] sm:text-3xl 
                     bg-orange-600 hover:bg-orange-900 text-white rounded-xl'
                     >
-                      Đặt đơn
+                      Xác nhận
                     </button>
                   </Link>
+                ) : status === 1 ? (
+                  <button
+                    disabled
+                    className=' px-[2rem] py-[1rem] sm:text-3xl 
+                    bg-gray-200 text-black text-opacity-50 rounded-xl'
+                  >
+                    Đã đặt
+                  </button>
+                ) : status === 2 ? (
+                  <button
+                    disabled
+                    className=' px-[2rem] py-[1rem] sm:text-3xl 
+                bg-gray-200 text-black text-opacity-50 rounded-xl'
+                  >
+                    Đã bị huỷ
+                  </button>
                 ) : (
                   <button
                     disabled
-                    className=' px-[2rem] py-[1rem] text-3xl bg-gray-200 text-black text-opacity-50 rounded-xl'
+                    className=' px-[1rem] py-[1rem] sm:text-3xl 
+            bg-gray-200 text-black text-opacity-50 text-sm rounded-xl'
                   >
-                    Đã đặt
+                    Đã hoàn thành
                   </button>
                 )}
               </div>

@@ -6,7 +6,7 @@ import 'react-responsive-carousel/lib/styles/carousel.css'
 import { MdOutlinePinDrop } from 'react-icons/md'
 import { FaRegClock } from 'react-icons/fa'
 import { FaClock } from 'react-icons/fa'
-import { MapContainer, TileLayer, Marker } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import markerIconPng from 'leaflet/dist/images/marker-icon.png'
 import { Icon } from 'leaflet'
@@ -19,6 +19,11 @@ export default function RestaurantDetail() {
     },
     placeholderData: keepPreviousData
   })
+  function DisableZoom() {
+    const map = useMap()
+    map.scrollWheelZoom.disable()
+    return null
+  }
   const restaurantData = data?.data.restaurant
   const date = new Date()
   const hour = date.getHours()
@@ -90,6 +95,7 @@ export default function RestaurantDetail() {
               </div>
               <div className=''>
                 <MapContainer
+                  zoomSnap='0.1'
                   center={[restaurantData.lat, restaurantData.lng]}
                   zoom={17}
                   style={{
@@ -97,6 +103,7 @@ export default function RestaurantDetail() {
                     width: screen.width >= 1536 ? '45vw' : screen.width >= 640 ? '45vw' : '75vw'
                   }}
                 >
+                  <DisableZoom></DisableZoom>
                   <Marker
                     position={[restaurantData.lat, restaurantData.lng]}
                     icon={

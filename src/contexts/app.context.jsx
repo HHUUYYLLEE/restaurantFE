@@ -8,7 +8,11 @@ const initialAppContext = {
   isAuthenticated: Boolean(getAccessTokenFromLS() && getInfoFromLS()),
   setIsAuthenticated: () => null,
   info: getInfoFromLS(),
-  setInfo: () => null
+  setInfo: () => null,
+  leafletMap: null,
+  setLeafletMap: () => null,
+  mapDraw: null,
+  setMapDraw: () => null
 }
 
 export const AppContext = createContext(initialAppContext)
@@ -17,6 +21,8 @@ export const AppProvider = ({ children }) => {
   const [valueQuery, setValueQuery] = useState(initialAppContext.valueQuery)
   const [isAuthenticated, setIsAuthenticated] = useState(initialAppContext.isAuthenticated)
   const [info, setInfo] = useState(initialAppContext.info)
+  const [leafletMap, setLeafletMap] = useState(initialAppContext.leafletMap)
+  const [mapDraw, setMapDraw] = useState(initialAppContext.mapDraw)
   return (
     <AppContext.Provider
       value={{
@@ -25,7 +31,11 @@ export const AppProvider = ({ children }) => {
         isAuthenticated,
         setIsAuthenticated,
         info,
-        setInfo
+        setInfo,
+        leafletMap,
+        setLeafletMap,
+        mapDraw,
+        setMapDraw
       }}
     >
       {children}

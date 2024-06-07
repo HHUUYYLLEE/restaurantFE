@@ -15,41 +15,43 @@ import { TailSpin } from 'react-loader-spinner'
 import Modal from 'react-modal'
 import 'leaflet/dist/leaflet.css'
 import markerIconPng from 'leaflet/dist/images/marker-icon.png'
+import { useDebounce } from '@uidotdev/usehooks'
+
 import { Icon } from 'leaflet'
 import { MapContainer, TileLayer, useMapEvents, Marker, useMap } from 'react-leaflet'
 import { createSearchParams, useAsyncError } from 'react-router-dom'
 import { envConfig } from '../../utils/env'
 import { convertTime } from '../../utils/utils'
 export default function OpenRestaurant() {
-  const [searchQuery, setSearchQuery] = useState({})
-  const [searchQuery2, setSearchQuery2] = useState({})
   const [enableSearchResults, setEnableSearchResults] = useState(false)
-  const [latLng, setLatLng] = useState(undefined)
-  const [lockMarker, setLockMarker] = useState(false)
-  const [firstUpdate, setFirstUpdate] = useState(true)
-  const [firstRender, setFirstRender] = useState(true)
+  const [latLng, setLatLng] = useState(null)
+
   const [addressValue, setAddressValue] = useState(1)
   const [latLngValueInput, setLatLngValueInput] = useState(['', ''])
   const [tableChair, setTableChair] = useState([{ chair: 0, table: 0 }])
-  const { status, data, isLoading, refetch } = useQuery({
-    queryKey: ['search_location', searchQuery],
+  const [enableSearchLatLng, setEnableSearchLatLng] = useState(false)
+  const [searchQuery, setSearchQuery] = useState(null)
+  const [searchQuery2, setSearchQuery2] = useState(null)
+  const [searchParams] = useDebounce([searchQuery], 1000)
+  const [searchParams2] = useDebounce([searchQuery2], 1000)
+  const { status, data, isLoading } = useQuery({
+    queryKey: ['search_location', searchParams],
     queryFn: () => {
-      return getSearchLocation(searchQuery)
+      return getSearchLocation(searchParams)
     },
-    enabled: false
+    enabled: enableSearchResults
   })
   const {
     status: status2,
     data: data2,
     isLoading: isLoading2,
-    isSuccess: isSuccess2,
-    refetch: refetch2
+    isSuccess: isSuccess2
   } = useQuery({
-    queryKey: ['search_lat_lng', searchQuery2],
+    queryKey: ['search_lat_lng', searchParams2],
     queryFn: () => {
-      return getSearchLocation(searchQuery2)
+      return getSearchLocation(searchParams2)
     },
-    enabled: false
+    enabled: enableSearchLatLng
   })
   function HandleSuccess({ isSuccess2, data }) {
     useEffect(() => {
@@ -63,12 +65,7 @@ export default function OpenRestaurant() {
     }, [isSuccess2])
   }
   HandleSuccess({ isSuccess2, data })
-  useEffect(() => {
-    if (!firstUpdate) refetch()
-  }, [searchQuery, refetch, firstUpdate])
-  useEffect(() => {
-    if (!firstUpdate) refetch2()
-  }, [searchQuery2, refetch2, firstUpdate])
+
   const {
     register,
     handleSubmit,
@@ -171,28 +168,22 @@ export default function OpenRestaurant() {
   function MyComponent() {
     const map = useMapEvents({
       click: (e) => {
-        if (firstRender) {
-          setFirstUpdate(false)
-          setFirstRender(false)
-        }
-        setLockMarker(false)
         setMarkerPos([e.latlng.lat, e.latlng.lng])
+        setLatLngValueInput([e.latlng.lat, e.latlng.lng])
+        setEnableSearchLatLng(true)
         setSearchQuery2({ q: e.latlng.lat + ',' + e.latlng.lng, key: envConfig.opencageKey })
       }
     })
     return null
   }
-  function ResetCenterView() {
+
+  function ResetCenterView({ latLng }) {
     const map = useMap()
     useEffect(() => {
-      if (latLng && lockMarker) {
-        // console.log('active')
-        map.setView(latLng, map.getZoom() + 15, {
-          animate: true
-        })
-        setMarkerPos(latLng)
+      if (latLng) {
+        map.flyTo(latLng, map.getZoom())
       }
-    }, [map])
+    }, [map, latLng])
 
     return null
   }
@@ -261,7 +252,7 @@ export default function OpenRestaurant() {
                   className='w-full focus:outline-[#8AC0FF] placeholder:text-[#6666667e] 
                 placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] 
                 text-lg rounded-xl sm:py-2 sm:px-[2rem] px-[1rem] py-[0.3rem]'
-                />{' '}
+                />
                 <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
                   {errors.name?.message}
                 </div>
@@ -507,7 +498,9 @@ export default function OpenRestaurant() {
                 <div className='absolute top-1 left-[50%] translate-x-[-50%] text-center z-10'>
                   <div
                     onBlur={() => {
-                      setEnableSearchResults(false)
+                      setTimeout(() => {
+                        setEnableSearchResults(false)
+                      }, '200')
                     }}
                   >
                     <input
@@ -517,11 +510,6 @@ export default function OpenRestaurant() {
                       placeholder='Tìm kiếm hoặc click vào 1 vị trí'
                       autoComplete='off'
                       onInput={(e) => {
-                        setLockMarker(true)
-                        if (firstRender) {
-                          setFirstUpdate(false)
-                          setFirstRender(false)
-                        }
                         setEnableSearchResults(true)
                         setSearchQuery({ q: e.target.value, key: envConfig.opencageKey })
                       }}
@@ -539,7 +527,8 @@ export default function OpenRestaurant() {
                             <div
                               className='sm:w-[35vw] w-[49vw] cursor-pointer hover:bg-slate-200 bg-white'
                               onClick={() => {
-                                setLatLng([data.geometry.lat, data.geometry.lng])
+                                setLatLng({ lat: data.geometry.lat, lng: data.geometry.lng })
+                                setMarkerPos([data.geometry.lat, data.geometry.lng])
                                 setEnableSearchResults(false)
                                 setAddressValue(data.formatted)
                                 setLatLngValueInput([data.geometry.lat, data.geometry.lng])
@@ -554,6 +543,7 @@ export default function OpenRestaurant() {
                   </div>
                 </div>
                 <MapContainer
+                  zoomSnap='0.1'
                   center={[21.028511, 105.804817]}
                   zoom={13}
                   style={{
@@ -561,7 +551,7 @@ export default function OpenRestaurant() {
                     width: screen.width >= 1536 ? '45vw' : screen.width >= 640 ? '45vw' : '75vw'
                   }}
                 >
-                  <ResetCenterView></ResetCenterView>
+                  <ResetCenterView latLng={latLng}></ResetCenterView>
                   <MyComponent></MyComponent>
                   <Marker
                     position={markerPos}

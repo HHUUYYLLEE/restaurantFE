@@ -7,7 +7,7 @@ import { BsCart4 } from 'react-icons/bs'
 import { FaRegTimesCircle } from 'react-icons/fa'
 import 'leaflet/dist/leaflet.css'
 import { getSearchLocation } from '../../api/openstreetmap.api'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
 import { orderInputSchema } from '../../utils/rules'
@@ -27,22 +27,33 @@ import 'leaflet/dist/leaflet.css'
 import 'leaflet-routing-machine'
 import 'lrm-graphhopper'
 import L from 'leaflet'
+import { useDebounce } from '@uidotdev/usehooks'
+import { AppContext } from '../../contexts/app.context'
+import { FaPhoneAlt } from 'react-icons/fa'
+import Checkbox from 'react-custom-checkbox'
+import { FaCheckCircle } from 'react-icons/fa'
+
 export default function OrderDetail() {
+  const { leafletMap } = useContext(AppContext)
   const phone_number = getInfoFromLS().phone_number
   const username = getInfoFromLS().username
   const { id } = useParams()
   const navigate = useNavigate()
-  const [searchQuery, setSearchQuery] = useState({})
-  const [searchQuery2, setSearchQuery2] = useState({})
+
   const [enableSearchResults, setEnableSearchResults] = useState(false)
   const [latLng, setLatLng] = useState(undefined)
-  const [lockMarker, setLockMarker] = useState(false)
-  const [firstUpdate, setFirstUpdate] = useState(true)
-  const [firstRender, setFirstRender] = useState(true)
+
   const [latLngValueInput, setLatLngValueInput] = useState(['', ''])
-  const [markerPos, setMarkerPos] = useState([0, 0])
+  const [markerPos, setMarkerPos] = useState(['', ''])
   const [addressValue, setAddressValue] = useState('')
-  const [stopFindingRoutes, setStopFindingRoutes] = useState(false)
+  const [searchQuery, setSearchQuery] = useState(null)
+  const [searchQuery2, setSearchQuery2] = useState(null)
+  const [searchParams, setSearchParams] = useDebounce([searchQuery], 1000)
+  const [searchParams2, setSearchParams2] = useDebounce([searchQuery2], 1000)
+  const [enableSearchLatLng, setEnableSearchLatLng] = useState(false)
+  const [snapMap, setSnapMap] = useState(false)
+  const [routingRedraw, setRoutingRedraw] = useState(false)
+  const { mapDraw, setMapDraw } = useContext(AppContext)
   const { handleSubmit } = useForm({
     mode: 'all'
   })
@@ -50,25 +61,28 @@ export default function OrderDetail() {
   const placeAnOrderMutation = useMutation({
     mutationFn: (body) => placeAnOrder(body)
   })
-  const { status, data, isLoading, refetch } = useQuery({
-    queryKey: ['search_location', searchQuery],
+  const { status, data, isLoading } = useQuery({
+    queryKey: ['search_location', searchParams],
     queryFn: () => {
-      return getSearchLocation(searchQuery)
+      return getSearchLocation(searchParams)
     },
-    enabled: false
+    keepPreviousData: true,
+    staleTime: 1000,
+    enabled: enableSearchResults
   })
   const {
     status: status2,
     data: data2,
     isLoading: isLoading2,
-    isSuccess: isSuccess2,
-    refetch: refetch2
+    isSuccess: isSuccess2
   } = useQuery({
-    queryKey: ['search_lat_lng', searchQuery2],
+    queryKey: ['search_lat_lng', searchParams2],
     queryFn: () => {
-      return getSearchLocation(searchQuery2)
+      return getSearchLocation(searchParams2)
     },
-    enabled: false
+    keepPreviousData: true,
+    staleTime: 1000,
+    enabled: enableSearchLatLng
   })
   function HandleSuccess({ isSuccess2, data }) {
     useEffect(() => {
@@ -90,50 +104,65 @@ export default function OrderDetail() {
     placeholderData: keepPreviousData
   })
 
-  useEffect(() => {
-    if (!firstUpdate) refetch()
-  }, [searchQuery, refetch, firstUpdate])
-  useEffect(() => {
-    if (!firstUpdate) refetch2()
-  }, [searchQuery2, refetch2, firstUpdate])
   function MyComponent() {
     const map = useMapEvents({
       click: (e) => {
-        if (firstRender) {
-          setFirstUpdate(false)
-          setFirstRender(false)
-        }
-        setLockMarker(false)
+        setLatLng({ lat: e.latlng.lat, lng: e.latlng.lng })
         setMarkerPos([e.latlng.lat, e.latlng.lng])
+        setSnapMap(true)
+        setEnableSearchLatLng(true)
+        setLatLngValueInput([e.latlng.lat, e.latlng.lng])
         setSearchQuery2({ q: e.latlng.lat + ',' + e.latlng.lng, key: envConfig.opencageKey })
+        if (!routingRedraw) {
+          const newRoutingMap = L.Routing.control({
+            waypoints: [
+              L.latLng(e.latlng.lat, e.latlng.lng),
+              L.latLng(restaurantData.lat, restaurantData.lng)
+            ],
+            router: L.Routing.graphHopper(envConfig.graphhopperKey),
+            fitSelectedRoutes: true
+          })
+          newRoutingMap.on('routeselected', (e) => {
+            console.log(e)
+          })
+          newRoutingMap.on('routingerror', (e) => {})
+          newRoutingMap.addTo(leafletMap)
+          setMapDraw(newRoutingMap)
+          setRoutingRedraw(true)
+        } else {
+          leafletMap.removeControl(mapDraw)
+          const newRoutingMap = L.Routing.control({
+            waypoints: [
+              L.latLng(e.latlng.lat, e.latlng.lng),
+              L.latLng(restaurantData.lat, restaurantData.lng)
+            ],
+            router: L.Routing.graphHopper(envConfig.graphhopperKey),
+            fitSelectedRoutes: true
+          })
+          newRoutingMap.on('routeselected', (e) => {})
+          newRoutingMap.on('routingerror', (e) => {})
+          newRoutingMap.addTo(leafletMap)
+          setMapDraw(newRoutingMap)
+        }
       }
     })
     return null
   }
-  function ResetCenterView() {
+
+  function ResetCenterView({ latLng }) {
     const map = useMap()
+    const { setLeafletMap } = useContext(AppContext)
+
     useEffect(() => {
-      if (latLng && lockMarker) {
-        // console.log('active')
-        map.setView(latLng, map.getZoom() + 15, {
-          animate: true
-        })
-        setMarkerPos(latLng)
+      setLeafletMap(map)
+    }, [map, setLeafletMap])
+    useEffect(() => {
+      if (snapMap) {
+        map.flyTo(latLng, map.getZoom())
+        setSnapMap(false)
       }
-    }, [map])
-    if (!stopFindingRoutes)
-      L.Routing.control({
-        waypoints: [
-          L.latLng(latLngValueInput[0], latLngValueInput[1]),
-          L.latLng(restaurantData.lat, restaurantData.lng)
-        ],
-        router: L.Routing.graphHopper(envConfig.graphhopperKey)
-      })
-        .on('routeselected', (e) => {
-          console.log(e)
-          setStopFindingRoutes(true)
-        })
-        .addTo(map)
+    }, [map, latLng])
+
     return null
   }
   const orderFood = order_detail?.data.orderFood
@@ -169,158 +198,303 @@ export default function OrderDetail() {
       }
     })
   })
+  const bottomBar = useRef()
+  window.addEventListener('scroll', (event) => {
+    if (window.scrollY > 500) bottomBar.current.style.visibility = 'visible'
+    else bottomBar.current.style.visibility = 'hidden'
+  })
 
   if (isSuccess && restaurantSuccess) {
     return (
       <>
-        <div className='w-full bg-white sm:p-[2.5rem] p-[0.5rem]'>
-          <div className='flex sm:justify-between items-center sm:gap-x-0 gap-x-[5rem]'>
-            <div className='flex gap-x-1 items-center mt-[1rem] font-inter-400'>
-              <MdOutlinePinDrop
-                style={{
-                  width: screen.width >= 640 ? '1.6vw' : '3.5vw',
-                  height: screen.width >= 640 ? '1.6vw' : '3.5vw',
-                  color: 'red'
-                }}
-              />
-              <div className='sm:text-2xl text-red-700'>Địa chỉ nhận</div>
-            </div>
-
-            <div className='sm:flex  items-center font-bold sm:text-2xl sm:gap-x-[1rem]'>
-              <div className='text-orange-500'>{username}</div>
-              <div className='text-green-500'>{phone_number}</div>
-            </div>
-          </div>
-          <div className='sm:text-2xl text-xs w-[37vw] sm:w-full italic h-[2rem]'>
-            {addressValue}
-          </div>
-          <div className='relative w-full'>
-            <div className='absolute top-1 left-[50%] translate-x-[-50%] text-center z-10'>
-              <div
-                onBlur={() => {
-                  setEnableSearchResults(false)
-                }}
-              >
-                <input
-                  type='text'
-                  id='search'
-                  name='search'
-                  autoComplete='off'
-                  onInput={(e) => {
-                    setLockMarker(true)
-                    if (firstRender) {
-                      setFirstUpdate(false)
-                      setFirstRender(false)
-                    }
-                    setEnableSearchResults(true)
-                    setSearchQuery({ q: e.target.value, key: envConfig.opencageKey })
+        <form onSubmit={onSubmit}>
+          <div className='w-full bg-white sm:p-[2.5rem] p-[0.5rem]'>
+            <div className='flex sm:justify-between items-center sm:gap-x-0 gap-x-[1rem]'>
+              <div className='flex gap-x-1 items-center mt-[1rem] font-inter-400'>
+                <MdOutlinePinDrop
+                  style={{
+                    width: screen.width >= 640 ? '1.6vw' : '3.5vw',
+                    height: screen.width >= 640 ? '1.6vw' : '3.5vw',
+                    color: 'red'
                   }}
-                  className='focus:outline-[#8AC0FF] sm:w-[53vw] w-[50vw]
-                  border font-inter-500 border-[#E6E6E6] sm:text-lg rounded-xl px-[0.5rem] py-[0.2rem]'
                 />
-                {data &&
-                  enableSearchResults &&
-                  data.data?.results.map((data, key) => {
-                    return (
-                      <div key={key}>
-                        <div
-                          className='sm:w-[53vw] w-[50vw] cursor-pointer hover:bg-slate-200 bg-white'
-                          onClick={() => {
-                            setLatLng([data.geometry.lat, data.geometry.lng])
-                            setEnableSearchResults(false)
-                            setAddressValue(data.formatted)
-                            setLatLngValueInput([data.geometry.lat, data.geometry.lng])
-                          }}
-                        >
-                          {data.formatted}
-                        </div>
-                        <hr></hr>
-                      </div>
-                    )
-                  })}
+                <div
+                  className='sm:text-2xl w-[27vw] 
+              sm:w-[11vw] 2xl:w-[9.5vw] text-red-700'
+                >
+                  Địa chỉ nhận
+                </div>
               </div>
-            </div>
-            <MapContainer
-              center={[21.028511, 105.804817]}
-              zoom={13}
-              style={{
-                height: screen.width <= 640 ? '30vh' : 'full',
-                width: screen.width >= 1536 ? '80vw' : screen.width >= 640 ? '80vw' : '78vw'
-              }}
-            >
-              <ResetCenterView></ResetCenterView>
-              <MyComponent></MyComponent>
 
-              <Marker
-                position={markerPos}
-                icon={
-                  new Icon({ iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41] })
-                }
-              ></Marker>
-              <TileLayer
-                attribution='Google Maps'
-                url='http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}' // regular
-                // url="http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}" // satellite
-                // url='http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}' // terrain
-                maxZoom={20}
-                subdomains={['mt0', 'mt1', 'mt2', 'mt3']}
-              />
-            </MapContainer>
-          </div>
-        </div>
-        <div className='w-full sm:mt-[3rem] mt-[1rem]'>
-          <div className='bg-white mb-[2rem]'>
-            <div className='py-[1.2rem] sm:px-[1.2rem] px-[0.3rem]'>
-              <div className='flex justify-between'>
-                <Link to={`/restaurant/${restaurantData?._id}`}>
-                  <div className='flex items-center sm:gap-x-[1.2rem]'>
-                    <CiShop
+              <div
+                className='flex font-bold sm:text-2xl sm:gap-x-[1rem] 
+           sm:w-full w-[45vw] justify-end'
+              >
+                <div className='sm:flex sm:items-center sm:gap-x-3 sm:justify-end'>
+                  <div className='text-orange-500 sm:block flex sm:justify-start justify-end'>
+                    {username}
+                  </div>
+                  <div className='flex gap-x-2 sm:ml-0'>
+                    <FaPhoneAlt
                       style={{
-                        width: screen.width >= 640 ? '2vw' : '11vw',
-                        height: screen.width >= 640 ? '2vw' : '11vw'
+                        color: 'green',
+                        width: screen.width >= 640 ? '2vw' : '5vw',
+                        height: screen.width >= 640 ? '2vw' : '5vw'
                       }}
                     />
-                    <div className='sm:text-2xl'>{restaurantData?.name}</div>
+                    <div className='text-green-500'>{phone_number}</div>
                   </div>
-                </Link>
+                </div>
               </div>
-              <hr className='h-[0.2rem] mt-[0.4rem] z-10 border-none bg-gray-400' />
-              {order_detail &&
-                orderFoodList.map((data) => {
-                  return <Food key={data._id} food_id={data.food_id} quantity={data.quantity} />
-                })}
-              <hr className='h-[0.2rem] mt-[0.4rem] z-10 border-none bg-gray-400' />
-              <div>
-                <div className='text-right mt-[1rem] flex items-center sm:gap-x-[3rem] gap-x-[1rem]'>
-                  <div className='mr-0 ml-auto sm:text-3xl text-xl text-emerald-600'>
-                    {displayNum(orderFood?.total_price) + 'đ'}
-                  </div>
-                  {orderFood.status === 0 ? (
-                    <form onSubmit={onSubmit}>
+            </div>
+            <div className='sm:text-2xl text-[0.6rem] sm:line-clamp-1 text-ellipsis line-clamp-2 w-[37vw] sm:w-full overflow-hidden  italic h-[2rem]'>
+              {addressValue}
+            </div>
+            <div className='relative w-full'>
+              <div className='absolute top-1 left-[50%] translate-x-[-50%] text-center z-10'>
+                <div
+                  onBlur={() => {
+                    setTimeout(() => {
+                      setEnableSearchResults(false)
+                    }, '200')
+                  }}
+                >
+                  <input
+                    type='text'
+                    id='search'
+                    name='search'
+                    autoComplete='off'
+                    onInput={(e) => {
+                      if (e.target.value) setEnableSearchResults(true)
+                      else setEnableSearchResults(false)
+                      setSearchQuery({ q: e.target.value, key: envConfig.opencageKey })
+                    }}
+                    className='focus:outline-[#8AC0FF] sm:w-[53vw] w-[50vw]
+                  border font-inter-500 border-[#E6E6E6] sm:text-lg rounded-xl 
+                  sm:opacity-40 sm:hover:opacity-100 duration-500
+                  px-[0.5rem] py-[0.2rem]'
+                  />
+                  {data &&
+                    enableSearchResults &&
+                    data.data?.results.map((data, key) => {
+                      return (
+                        <div key={key}>
+                          <div
+                            className='sm:w-[53vw] w-[50vw] cursor-pointer 
+                          
+                          hover:bg-slate-200 bg-white'
+                            onClick={() => {
+                              setLatLng([data.geometry.lat, data.geometry.lng])
+                              setEnableSearchResults(false)
+                              setSnapMap(true)
+                              setAddressValue(data.formatted)
+                              setMarkerPos([data.geometry.lat, data.geometry.lng])
+                              setLatLngValueInput([data.geometry.lat, data.geometry.lng])
+                              if (!routingRedraw) {
+                                const newRoutingMap = L.Routing.control({
+                                  waypoints: [
+                                    L.latLng(data.geometry.lat, data.geometry.lng),
+                                    L.latLng(restaurantData.lat, restaurantData.lng)
+                                  ],
+                                  router: L.Routing.graphHopper(envConfig.graphhopperKey),
+                                  fitSelectedRoutes: true
+                                })
+                                newRoutingMap.on('routesfound', (e) => {})
+                                newRoutingMap.on('routingerror', (e) => {})
+                                newRoutingMap.addTo(leafletMap)
+                                setMapDraw(newRoutingMap)
+                                setRoutingRedraw(true)
+                              } else {
+                                leafletMap.removeControl(mapDraw)
+                                const newRoutingMap = L.Routing.control({
+                                  waypoints: [
+                                    L.latLng(data.geometry.lat, data.geometry.lng),
+                                    L.latLng(restaurantData.lat, restaurantData.lng)
+                                  ],
+                                  router: L.Routing.graphHopper(envConfig.graphhopperKey),
+                                  fitSelectedRoutes: true
+                                })
+                                newRoutingMap.on('routeselected', (e) => {})
+                                newRoutingMap.on('routingerror', (e) => {})
+                                newRoutingMap.addTo(leafletMap)
+                                setMapDraw(newRoutingMap)
+                              }
+                            }}
+                          >
+                            {data.formatted}
+                          </div>
+                          <hr></hr>
+                        </div>
+                      )
+                    })}
+                </div>
+              </div>
+              <MapContainer
+                center={[21.028511, 105.804817]}
+                zoom={13}
+                style={{
+                  height: screen.width <= 640 ? '30vh' : 'full',
+                  width: screen.width >= 1536 ? '80vw' : screen.width >= 640 ? '80vw' : '78vw'
+                }}
+                zoomSnap='0.1'
+              >
+                <ResetCenterView latLng={latLng}></ResetCenterView>
+                <MyComponent></MyComponent>
+
+                <Marker
+                  position={markerPos}
+                  icon={
+                    new Icon({ iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41] })
+                  }
+                ></Marker>
+                <TileLayer
+                  attribution='Google Maps'
+                  url='http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}' // regular
+                  // url="http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}" // satellite
+                  // url='http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}' // terrain
+                  maxZoom={20}
+                  subdomains={['mt0', 'mt1', 'mt2', 'mt3']}
+                />
+              </MapContainer>
+            </div>
+          </div>
+          <div className='w-full sm:mt-[3rem] mt-[1rem]'>
+            <div className='bg-white mb-[2rem]'>
+              <div className='py-[1.2rem] sm:px-[1.2rem] px-[0.3rem]'>
+                <div className='flex justify-between'>
+                  <Link to={`/restaurant/${restaurantData?._id}`}>
+                    <div className='flex items-center sm:gap-x-[1.2rem]'>
+                      <CiShop
+                        style={{
+                          width: screen.width >= 640 ? '2vw' : '11vw',
+                          height: screen.width >= 640 ? '2vw' : '11vw'
+                        }}
+                      />
+                      <div className='sm:text-2xl'>{restaurantData?.name}</div>
+                    </div>
+                  </Link>
+                </div>
+                <hr className='h-[0.2rem] mt-[0.4rem] z-10 border-none bg-gray-400' />
+                {order_detail &&
+                  orderFoodList.map((data) => {
+                    return <Food key={data._id} food_id={data.food_id} quantity={data.quantity} />
+                  })}
+                <hr className='h-[0.2rem] mt-[0.4rem] z-10 border-none bg-gray-400' />
+                <div>
+                  <div className='text-right mt-[1rem] sm:text-3xl flex items-center mx-[0.5rem] sm:gap-x-[3rem] gap-x-[1rem]'>
+                    <div className='text-orange-500'>
+                      {screen.width < 640 ? 'Tổng' : 'Tổng thanh toán'}
+                    </div>
+                    <div
+                      className={`mr-0 ml-auto sm:text-4xl w-[37vw]
+                  ${orderFood?.total_price >= Math.pow(10, 9) ? ' text-lg ' : ' text-xl '} 
+                  text-emerald-600`}
+                    >
+                      {displayNum(orderFood?.total_price) + 'đ'}
+                    </div>
+                    {orderFood.status === 0 ? (
                       <button
+                        type='submit'
                         disabled={addressValue === '' ? true : false}
                         className='sm:px-[2rem] sm:py-[1rem] sm:text-3xl 
                         disabled:bg-gray-200 disabled:text-black 
                         disabled:text-opacity-50 bg-orange-600 
-                        hover:enabled:bg-orange-900 text-white rounded-xl
-                        px-[1rem] py-[0.5rem]'
+                        hover:enabled:bg-orange-900 text-[0.9rem] text-white rounded-xl
+                        px-[0.5rem] py-[0.5rem]'
                       >
-                        Xác nhận
+                        Đặt đơn
                       </button>
-                    </form>
-                  ) : (
-                    <button
-                      disabled
-                      className=' px-[2rem] py-[1rem] text-3xl bg-gray-200 text-black text-opacity-50 rounded-xl'
-                    >
-                      Đã đặt
-                    </button>
-                  )}
+                    ) : (
+                      <button
+                        type='submit'
+                        disabled
+                        className=' px-[2rem] py-[1rem] text-3xl bg-gray-200 text-black text-opacity-50 rounded-xl'
+                      >
+                        Đã đặt
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+
+          <div
+            className='fixed bottom-0 z-[2] w-full sm:h-[20vh] h-[10vh] left-0 bg-white
+                
+        '
+            ref={bottomBar}
+          >
+            <div
+              className='flex items-center 
+            justify-between h-full 2xl:mx-[8rem] 
+            sm:mx-[5rem] mx-[1rem] gap-x-4'
+            >
+              <div className='flex items-center gap-x-4 sm:gap-x-8 justify-between'>
+                <Checkbox
+                  icon={
+                    <FaCheckCircle
+                      color='#F97316'
+                      style={{
+                        width: screen.width < 640 ? 20 : 40,
+                        height: screen.width < 640 ? 20 : 40
+                      }}
+                    />
+                  }
+                  name='my-input'
+                  checked={true}
+                  onChange={(value, event) => {}}
+                  borderColor='#F97316'
+                  borderRadius={9999}
+                  size={screen.width < 640 ? 20 : 40}
+                />
+                <button
+                  className='sm:px-[2rem] sm:py-[0.5rem] 2xl:text-3xl sm:text-2xl
+                        disabled:bg-gray-200 disabled:text-black 
+                        disabled:text-opacity-50 bg-red-600 
+                        hover:enabled:bg-orange-900 text-[0.9rem] text-white rounded-xl
+                        px-[0.5rem] py-[0.5rem]'
+                >
+                  Xoá
+                </button>
+              </div>
+              <div className='flex items-center justify-end gap-x-4'>
+                {screen.width >= 640 && (
+                  <div className='text-orange-500 text-xl sm:text-3xl'>Tổng thanh toán</div>
+                )}
+                <div
+                  className={`text-emerald-700 text-xl sm:text-4xl 
+            ${orderFood?.total_price >= Math.pow(10, 9) ? ' text-lg ' : ' text-xl'} `}
+                >
+                  {displayNum(orderFood?.total_price) + 'đ'}
+                </div>
+                {screen.width >= 640 && (
+                  <Link to='/order_food'>
+                    <button
+                      className='sm:px-[2rem] sm:py-[0.5rem] 2xl:text-3xl sm:text-2xl
+                         bg-white 
+                        hover:bg-orange-300 text-[0.9rem] text-orange-500 rounded-xl
+                        px-[0.9rem] py-[0.8rem]'
+                    >
+                      Quay lại giỏ hàng
+                    </button>
+                  </Link>
+                )}
+
+                <button
+                  disabled={addressValue === '' ? true : false}
+                  className='sm:px-[2rem] sm:py-[0.5rem]  2xl:text-3xl sm:text-2xl
+                        disabled:bg-gray-200 disabled:text-black 
+                        disabled:text-opacity-50 bg-orange-600 
+                        hover:enabled:bg-orange-900 text-[0.9rem] text-white rounded-xl
+                        px-[0.9rem] py-[0.8rem]'
+                >
+                  Đặt đơn
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
       </>
     )
   }

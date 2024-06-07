@@ -133,7 +133,9 @@
   width: 45vw;
   z-index: 1;
 }
-
+.leaflet-routing-container {
+  display: none;
+}
 /* .active {
   @apply text-blue-600;
 } */
