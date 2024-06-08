@@ -69,7 +69,7 @@ export default function Header() {
     <>
       <header className='fixed flex top-0 w-full h-20 shadow-lg items-center transition duration-300 z-[20] bg-orange-600'>
         <div className='ml-[0.7rem] sm:text-3xl text-xl italic text-white'>
-          <Link onClick={() => this.forceUpdate} to='/' className='focus:outline-none'>
+          <Link to='/' className='focus:outline-none'>
             vnFood
           </Link>
         </div>
@@ -112,6 +112,7 @@ export default function Header() {
               <input
                 type='search'
                 id='default-search'
+                autoComplete='off'
                 {...register('search')}
                 className={`${
                   expandingSearchBar && screen.width < 640

@@ -35,3 +35,32 @@ export function convertTime(num) {
 export function convertDate(date) {
   return date.substring(0, 10).replaceAll('-', '/')
 }
+
+export function getStatusRestaurantFromTime(
+  morningOpen,
+  morningClosed,
+  afternoonOpen,
+  afternoonClosed
+) {
+  const date = new Date()
+  const hour = date.getHours()
+  const minute = date.getMinutes()
+  if (hour < 12) {
+    if (
+      hour >= parseInt(morningOpen.split(':')[0]) &&
+      minute >= parseInt(morningOpen.split(':')[1]) &&
+      hour <= parseInt(morningClosed.split(':')[0]) &&
+      minute < parseInt(morningClosed.split(':')[1])
+    )
+      return 'Đang hoạt động'
+    else return 'Đã đóng cửa'
+  } else if (
+    hour >= parseInt(afternoonOpen.split(':')[0]) &&
+    minute >= parseInt(afternoonOpen.split(':')[1]) &&
+    hour <= parseInt(afternoonClosed.split(':')[0]) &&
+    minute < parseInt(afternoonClosed.split(':')[1]) &&
+    minute < parseInt(afternoonClosed.split(':')[1])
+  )
+    return 'Đang hoạt động'
+  else return 'Đã đóng cửa'
+}

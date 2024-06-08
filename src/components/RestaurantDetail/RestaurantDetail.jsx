@@ -10,6 +10,7 @@ import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import markerIconPng from 'leaflet/dist/images/marker-icon.png'
 import { Icon } from 'leaflet'
+import { getStatusRestaurantFromTime } from '../../utils/utils'
 export default function RestaurantDetail() {
   const { id } = useParams()
   const { data, status, isLoading, isSuccess } = useQuery({
@@ -25,9 +26,7 @@ export default function RestaurantDetail() {
     return null
   }
   const restaurantData = data?.data.restaurant
-  const date = new Date()
-  const hour = date.getHours()
-  const minute = date.getMinutes()
+
   if (isSuccess)
     return (
       <>
@@ -56,19 +55,12 @@ export default function RestaurantDetail() {
               <div className='italic text-xl bold text-green-600'>{restaurantData.name}</div>
               <div className='mt-[1rem]'>
                 <div className='text-gray-600'>
-                  {hour < 12
-                    ? hour >= parseInt(restaurantData.morning_open_time.split(':')[0]) &&
-                      minute >= parseInt(restaurantData.morning_open_time.split(':')[1]) &&
-                      hour <= parseInt(restaurantData.morning_closed_time.split(':')[0]) &&
-                      minute < parseInt(restaurantData.morning_closed_time.split(':')[1])
-                      ? 'Đang hoạt động'
-                      : 'Đã đóng cửa'
-                    : hour >= parseInt(restaurantData.afternoon_open_time.split(':')[0]) &&
-                      minute >= parseInt(restaurantData.afternoon_open_time.split(':')[1]) &&
-                      hour <= parseInt(restaurantData.afternoon_closed_time.split(':')[0]) &&
-                      minute < parseInt(restaurantData.afternoon_closed_time.split(':')[1])
-                    ? 'Đang hoạt động'
-                    : 'Đã đóng cửa'}
+                  {getStatusRestaurantFromTime(
+                    restaurantData.morning_open_time,
+                    restaurantData.morning_closed_time,
+                    restaurantData.afternoon_open_time,
+                    restaurantData.afternoon_closed_time
+                  )}
                 </div>
                 <div className='md:sm:flex gap-x-7'>
                   <div className='flex gap-x-7'>

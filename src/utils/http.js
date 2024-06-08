@@ -10,14 +10,14 @@ import {
 import { envConfig } from './env'
 
 const applicationJSONInstance = axios.create({
-  baseURL: envConfig.deployURL,
+  baseURL: envConfig.baseURL,
   headers: {
     'Content-Type': 'application/json'
   }
 })
 
 const multipartFormInstance = axios.create({
-  baseURL: envConfig.deployURL,
+  baseURL: envConfig.baseURL,
   headers: {
     'Content-Type': 'multipart/form-data'
   }
@@ -71,7 +71,7 @@ applicationJSONInstance.interceptors.response.use(
     if (error.response?.status !== HttpStatusCode.UnprocessableEntity) {
       const data = error.response?.data
       const message = data.message || error.message
-      // console.log(message)
+      console.log(message)
       // toast.error(message)
     }
     if (error.response?.status === HttpStatusCode.Unauthorized) {
