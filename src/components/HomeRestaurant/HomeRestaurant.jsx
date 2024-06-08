@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react'
 import useQueryConfig from '../../hooks/useQueryConfig'
 import { useQuery } from '@tanstack/react-query'
-import { searchRestaurantsAndFood } from '../../api/restaurants.api'
+import { getAllRestaurants, searchRestaurantsAndFood } from '../../api/restaurants.api'
 import mapround from '../../asset/img/mapround.png'
 import Restaurant from './Restaurant/Restaurant'
-import Food from './Food/Food'
 import { displayNum } from '../../utils/utils'
 import { PiListLight } from 'react-icons/pi'
 import { PiGridFourFill } from 'react-icons/pi'
 import { FaCheckCircle } from 'react-icons/fa'
 import Checkbox from 'react-custom-checkbox'
 import { createSearchParams, useNavigate } from 'react-router-dom'
-import { Link } from 'react-router-dom'
-export default function SearchResults() {
+import Food from './Food/Food'
+
+export default function HomeRestaurant() {
   const navigate = useNavigate()
   const params = useQueryConfig()
 
@@ -23,41 +23,47 @@ export default function SearchResults() {
   const [addressValue, setAddressValue] = useState(null)
 
   // console.log(params)
-  const { status, data, isSuccess } = useQuery({
-    queryKey: ['search', params],
+  const { data, isSuccess } = useQuery({
+    queryKey: ['searchAllRestaurants', 0],
     queryFn: () => {
-      return searchRestaurantsAndFood(params)
+      return getAllRestaurants()
     },
     keepPreviousData: true,
     staleTime: 1000
   })
   const searchData = data?.data
-
+  const { data: data2, isSuccess: isSuccess2 } = useQuery({
+    queryKey: ['searchByAddress', cityOption],
+    queryFn: () => {
+      return searchRestaurantsAndFood({ address: cityOption, mode: 2 })
+    },
+    keepPreviousData: true,
+    staleTime: 1000
+  })
+  const searchData2 = data2?.data
   console.log(searchData)
-  if (isSuccess)
+  if (isSuccess && isSuccess2)
     return (
       <>
         <div className={`w-full flex  gap-x-3`}>
           <div>
-            <Link to='/search_location'>
-              <div
-                className='bg-orange-500 px-[0.2rem] h-[26.3vh] mt-[2.8rem] 
+            <div
+              className='bg-orange-500 px-[0.2rem] h-[26.3vh] mt-[2.8rem] 
           sm:mt-[4.5rem] sm:h-[53.4vh]
           2xl:mt-[4.1rem]'
-              >
-                <div
-                  className=' w-[20vw] text-[0.7rem] sm:text-[1.3rem] h-[5vh] 
+            >
+              <div
+                className=' w-[20vw] text-[0.7rem] sm:text-[1.3rem] h-[5vh] 
             flex justify-center'
-                >
-                  <div className='text-center text-white italic'>
-                    Không tìm thấy gì ưng ý? Thử tìm kiếm theo phạm vi quanh nhà bạn!
-                  </div>
-                </div>
-                <div className='w-[20vw] sm:h-[20vw] flex justify-center'>
-                  <img className='mt-[4.5rem] sm:mt-[5rem]' src={mapround} />
+              >
+                <div className='text-center text-white italic'>
+                  Không tìm thấy gì ưng ý? Thử tìm kiếm theo phạm vi quanh nhà bạn!
                 </div>
               </div>
-            </Link>
+              <div className='w-[20vw] sm:h-[20vw] flex justify-center'>
+                <img className='mt-[4.5rem] sm:mt-[5rem]' src={mapround} />
+              </div>
+            </div>
             <button
               type='button'
               className={`rounded-sm mt-[2rem] h-[4vh] sm:h-[6vh] w-full
@@ -68,13 +74,6 @@ export default function SearchResults() {
                 if (cityOption === 'Thành phố Hồ Chí Minh' || cityOption === '')
                   setCityOption('Hà Nội')
                 else setCityOption('')
-                navigate({
-                  pathname: '/search',
-                  search: createSearchParams({
-                    ...params,
-                    address: 'Hà Nội'
-                  }).toString()
-                })
               }}
             >
               <div className='flex items-center gap-x-2 mx-[0.2rem] '>
@@ -108,13 +107,6 @@ export default function SearchResults() {
                 if (cityOption === 'Hà Nội' || cityOption === '')
                   setCityOption('Thành phố Hồ Chí Minh')
                 else setCityOption('')
-                navigate({
-                  pathname: '/search',
-                  search: createSearchParams({
-                    ...params,
-                    address: 'Thành phố Hồ Chí Minh'
-                  }).toString()
-                })
               }}
             >
               <div className='flex items-center gap-x-2 mx-[0.2rem]'>
@@ -141,56 +133,7 @@ export default function SearchResults() {
 
           <div className='w-full'>
             <div className='flex justify-between'>
-              <div className='text-[0.6rem] sm:text-lg '>
-                {option === 0 && (
-                  <>
-                    <div>
-                      <span>Tìm thấy&nbsp;</span>
-                      <span className='italic font-bold text-orange-500'>
-                        {searchData.restaurants.length + searchData.allFood.length}&nbsp;
-                      </span>
-                      <span>kết quả&nbsp;</span>
-                      <span className='italic font-bold text-orange-500'>
-                        &quot;{params.search}&quot;:&nbsp;
-                      </span>
-                    </div>
-                    <div>
-                      <span className='italic font-bold text-orange-500'>
-                        {searchData.restaurants.length}&nbsp;
-                      </span>
-                      <span>nhà hàng và&nbsp;</span>
-                      <span className='italic font-bold text-orange-500'>
-                        {searchData.allFood.length}&nbsp;
-                      </span>
-                      <span>món ăn</span>
-                    </div>
-                  </>
-                )}
-                {option === 1 && (
-                  <>
-                    <span>Tìm thấy&nbsp;</span>
-                    <span className='italic font-bold text-orange-500'>
-                      {searchData.restaurants.length}&nbsp;
-                    </span>
-                    <span>nhà hàng&nbsp;</span>
-                    <span className='italic font-bold text-orange-500'>
-                      &quot;{params.search}&quot;:&nbsp;
-                    </span>
-                  </>
-                )}
-                {option === 2 && (
-                  <>
-                    <span>Tìm thấy&nbsp;</span>
-                    <span className='italic font-bold text-orange-500'>
-                      {searchData.allFood.length}&nbsp;
-                    </span>
-                    <span>món ăn&nbsp;</span>
-                    <span className='italic font-bold text-orange-500'>
-                      &quot;{params.search}&quot;:&nbsp;
-                    </span>
-                  </>
-                )}
-              </div>
+              <div className='text-[0.6rem] sm:text-lg '></div>
               <div className='flex gap-x-2 sm:gap-x-8'>
                 <div
                   className={`h-[3.5vh] sm:h-[7vh] 2xl:h-[7.4vh] rounded-md 
@@ -247,8 +190,8 @@ export default function SearchResults() {
               } mt-[1rem]`}
             >
               {option === 0 &&
-                searchData &&
-                searchData.restaurants.map((restaurant, id) => {
+                searchData2 &&
+                searchData2.restaurants.map((restaurant, id) => {
                   return (
                     <Restaurant
                       key={restaurant._id}
@@ -258,13 +201,13 @@ export default function SearchResults() {
                   )
                 })}
               {option === 0 &&
-                searchData &&
-                searchData.allFood.map((food, id) => {
+                searchData2 &&
+                searchData2.allFood.map((food, id) => {
                   return <Food key={id} displayType={displayType} food={food} />
                 })}
               {option === 1 &&
-                searchData &&
-                searchData.restaurants.map((restaurant, id) => {
+                searchData2 &&
+                searchData2.restaurants.map((restaurant, id) => {
                   return (
                     <Restaurant
                       key={restaurant._id}
@@ -274,8 +217,8 @@ export default function SearchResults() {
                   )
                 })}
               {option === 2 &&
-                searchData &&
-                searchData.allFood.map((food, id) => {
+                searchData2 &&
+                searchData2.allFood.map((food, id) => {
                   return <Food key={id} displayType={displayType} food={food} />
                 })}
             </div>

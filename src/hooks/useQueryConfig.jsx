@@ -9,7 +9,8 @@ export default function useQueryConfig() {
       page: queryParams.page,
       limit: queryParams.limit,
       search: queryParams.search,
-      mode: queryParams.mode
+      mode: queryParams.mode,
+      address: queryParams.address
     },
     isUndefined
   )

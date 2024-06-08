@@ -7,3 +7,7 @@ export const getAllUserRestaurants = (id) =>
   applicationJSONInstance.get(`restaurant/restaurants/${id}`)
 export const searchRestaurantsAndFood = (params) =>
   applicationJSONInstance.get('restaurant/restaurants_and_food', { params })
+export const getRandomRestaurants = () =>
+  applicationJSONInstance.get('restaurant/random_restaurants')
+export const findNearbyRestaurants = (params) =>
+  applicationJSONInstance.get('find_nearby_restaurants', { params })

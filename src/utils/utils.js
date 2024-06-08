@@ -47,19 +47,22 @@ export function getStatusRestaurantFromTime(
   const minute = date.getMinutes()
   if (hour < 12) {
     if (
-      hour >= parseInt(morningOpen.split(':')[0]) &&
-      minute >= parseInt(morningOpen.split(':')[1]) &&
-      hour <= parseInt(morningClosed.split(':')[0]) &&
-      minute < parseInt(morningClosed.split(':')[1])
+      (hour > parseInt(morningOpen.split(':')[0]) ||
+        (hour === parseInt(morningOpen.split(':')[0]) &&
+          minute >= parseInt(morningOpen.split(':')[1]))) &&
+      (hour < parseInt(morningClosed.split(':')[0]) ||
+        (hour === parseInt(morningClosed.split(':')[0]) &&
+          minute < parseInt(morningClosed.split(':')[1])))
     )
       return 'Đang hoạt động'
     else return 'Đã đóng cửa'
   } else if (
-    hour >= parseInt(afternoonOpen.split(':')[0]) &&
-    minute >= parseInt(afternoonOpen.split(':')[1]) &&
-    hour <= parseInt(afternoonClosed.split(':')[0]) &&
-    minute < parseInt(afternoonClosed.split(':')[1]) &&
-    minute < parseInt(afternoonClosed.split(':')[1])
+    (hour > parseInt(afternoonOpen.split(':')[0]) ||
+      (hour === parseInt(afternoonOpen.split(':')[0]) &&
+        minute >= parseInt(afternoonOpen.split(':')[1]))) &&
+    (hour < parseInt(afternoonClosed.split(':')[0]) ||
+      (hour === parseInt(afternoonClosed.split(':')[0]) &&
+        minute < parseInt(afternoonClosed.split(':')[1])))
   )
     return 'Đang hoạt động'
   else return 'Đã đóng cửa'

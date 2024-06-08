@@ -11,6 +11,7 @@ import { AppContext } from './contexts/app.context'
 import OpenRestaurant from './pages/OpenRestaurant/OpenRestaurant'
 import PlaceOrder from './pages/PlaceOrder/PlaceOrder'
 import Search from './pages/Search/Search'
+import SearchByLocation from './components/SearchLocationResults/SearchLocationResults'
 // eslint-disable-next-line react-refresh/only-export-components
 function AdminProtectedRouter() {
   const { info } = useContext(AppContext)
@@ -26,6 +27,15 @@ function UserProtectedRouter() {
 
 export default function useRouteElement() {
   const routeElement = useRoutes([
+    {
+      path: '/search_location',
+      index: true,
+      element: (
+        <MainLayout>
+          <SearchByLocation />
+        </MainLayout>
+      )
+    },
     {
       path: '/search',
       index: true,

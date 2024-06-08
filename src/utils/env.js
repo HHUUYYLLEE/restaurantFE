@@ -4,7 +4,8 @@ const envConfig = {
   googleClientID: import.meta.env.VITE_GOOGLE_CLIENT_ID,
   opencageURL: import.meta.env.VITE_OPENCAGE_API,
   opencageKey: import.meta.env.VITE_OPENCAGE_KEY,
-  graphhopperKey: import.meta.env.VITE_GRAPHHOPPER_API_KEY
+  graphhopperKey: import.meta.env.VITE_GRAPHHOPPER_API_KEY,
+  graphhopperURL: import.meta.env.VITE_GRAPHHOPPER_API
 }
 
 const webName = 'vnFood'

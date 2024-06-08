@@ -198,10 +198,11 @@ export default function OrderDetail() {
       }
     })
   })
-  const bottomBar = useRef()
+  const bottomBar = useRef(null)
   window.addEventListener('scroll', (event) => {
-    if (window.scrollY > 500) bottomBar.current.style.visibility = 'visible'
-    else bottomBar.current.style.visibility = 'hidden'
+    if (bottomBar.current.style)
+      if (window.scrollY > 500) bottomBar.current.style.visibility = 'visible'
+      else bottomBar.current.style.visibility = 'hidden'
   })
 
   if (isSuccess && restaurantSuccess) {
@@ -420,7 +421,7 @@ export default function OrderDetail() {
           </div>
 
           <div
-            className='fixed bottom-0 z-[2] w-full sm:h-[20vh] h-[10vh] left-0 bg-white
+            className='sticky bottom-0 z-[2] w-full sm:h-[20vh] h-[10vh] left-0 bg-white
                 
         '
             ref={bottomBar}
