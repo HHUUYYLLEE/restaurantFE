@@ -467,6 +467,19 @@ export default function SearchResults() {
             </div>
           </div>
         )}
+        {isError && (
+          <div className='flex justify-between mt-[0.5rem]'>
+            <div>
+              <div>
+                <span>Không tìm thấy nhà hàng nào trong phạm vi&nbsp;</span>
+
+                <span className='italic font-bold text-orange-500'>
+                  {displayUnit === 'km' ? `${displayRadius} km` : `${displayRadius} m`}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
         {/* <div className='bg-white mt-[1rem]'>
             <div className='grid grid-cols-3'>
               {options.map((data, id) => {
