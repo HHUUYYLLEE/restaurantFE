@@ -10,4 +10,4 @@ export const searchRestaurantsAndFood = (params) =>
 export const getRandomRestaurants = () =>
   applicationJSONInstance.get('restaurant/random_restaurants')
 export const findNearbyRestaurants = (params) =>
-  applicationJSONInstance.get('find_nearby_restaurants', { params })
+  applicationJSONInstance.get('restaurant/find_nearby_restaurants', { params })

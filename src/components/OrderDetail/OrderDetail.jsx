@@ -271,7 +271,7 @@ export default function OrderDetail() {
                       setSearchQuery({ q: e.target.value, key: envConfig.opencageKey })
                     }}
                     className='focus:outline-[#8AC0FF] sm:w-[53vw] w-[50vw]
-                  border font-inter-500 border-[#E6E6E6] sm:text-lg rounded-xl 
+                  border font-inter-500 border-[#ff822e] sm:text-lg rounded-xl 
                   sm:opacity-40 sm:hover:opacity-100 duration-500
                   px-[0.5rem] py-[0.2rem]'
                   />

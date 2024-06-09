@@ -200,7 +200,7 @@ export default function UserProfile() {
                   {...register('username')}
                   className='sm:w-[35vw] 
                   w-[55vw] focus:outline-none placeholder:text-[0.7rem] placeholder:text-[#ee4c0c7e]
-                  placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] 
+                  placeholder:font-inter-400 border font-inter-500 border-[#ff822e]
                   text-lg rounded-xl py-2 px-[1rem]'
                 />
               </div>
@@ -215,7 +215,8 @@ export default function UserProfile() {
                   defaultValue={dataUser.phone_number}
                   {...register('phone_number')}
                   className='sm:w-[35vw] w-[55vw] focus:outline-none  placeholder:text-[#ee4c0c7e] 
-                   placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg 
+                   placeholder:font-inter-400 border font-inter-500 border-[#ff822e] text-lg 
+                   focus:placeholder:text-transparent
                    rounded-xl py-2 px-[1rem] placeholder:text-[0.7rem]'
                 />
               </div>
@@ -233,8 +234,8 @@ export default function UserProfile() {
                   defaultValue={dataUser.address}
                   {...register('address')}
                   className='sm:w-[35vw] w-[55vw] focus:outline-none placeholder:text-[0.7rem]
-                  placeholder:text-[#ee4c0c7e] placeholder:font-inter-400 border font-inter-500
-                    border-[#E6E6E6] text-lg  rounded-xl py-2 px-[1rem]'
+                  placeholder:text-[#ee4c0c7e] focus:placeholder:text-transparent placeholder:font-inter-400 border font-inter-500
+                  border-[#ff822e] text-lg  rounded-xl py-2 px-[1rem]'
                 />
               </div>
               <button

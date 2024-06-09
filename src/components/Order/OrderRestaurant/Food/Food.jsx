@@ -95,7 +95,7 @@ export default function Food({ food_id, quantity, refetch, status }) {
                         {...register('quantity')}
                         className='sm:w-[6vw] w-[10vw] text-right priceInput focus:outline-[#8AC0FF] 
                         placeholder:text-[#4F4F4F] 
-                         border font-inter-500 border-[#E6E6E6] text-xs sm:text-lg px-[0.3rem]'
+                         border font-inter-500 border-[#ff822e] text-xs sm:text-lg px-[0.3rem]'
                       />
                       <button type='submit' className='hover:bg-slate-200'>
                         <IoCheckmarkCircleSharp

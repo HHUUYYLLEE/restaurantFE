@@ -119,8 +119,9 @@ export default function LoginModal({ closeModalLogin }) {
                   autoComplete='on'
                   {...register('email')}
                   className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] 
-                  placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] 
-                  text-xl rounded-xl w-full sm:py-6 px-[2rem]'
+                  placeholder:font-inter-400 border font-inter-500 border-[#ff822e] 
+                  text-xl rounded-xl w-full sm:py-6 px-[2rem]
+                  focus:placeholder:text-transparent'
                 />
                 <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
                   {errors.email?.message}
@@ -136,8 +137,9 @@ export default function LoginModal({ closeModalLogin }) {
                   autoComplete='on'
                   {...register('password')}
                   className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] 
-                  placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] 
-                  text-xl rounded-xl w-full sm:py-6 px-[2rem]'
+                  placeholder:font-inter-400 border font-inter-500 border-[#ff822e]
+                  text-xl rounded-xl w-full sm:py-6 px-[2rem]
+                  focus:placeholder:text-transparent'
                 />
                 <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
                   {errors.password?.message}

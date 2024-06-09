@@ -164,7 +164,7 @@ export default function Food({ displayType, food }) {
                       {...register('quantity')}
                       onChange={(e) => setInputState(e.target.value)}
                       className={` priceInput focus:outline-[#f97416b4] sm:h-full
-                   h-[3.3vw]
+                   h-[3.3vw] border-[#ff822e]
                   placeholder:text-[#4F4F4F] sm:placeholder:text-sm placeholder:text-[0rem] 
                   sm:border-[0.2rem] sm:rounded-xl sm:py-[0.2rem] border-[0.1rem]
                 font-inter-500 border-[#f974162a] rounded-md sm:text-sm text-[0.3rem] pl-[0.15rem] 

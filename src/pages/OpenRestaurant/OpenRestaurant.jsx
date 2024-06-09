@@ -250,7 +250,8 @@ export default function OpenRestaurant() {
                   autoComplete='off'
                   {...register('name')}
                   className='w-full focus:outline-[#8AC0FF] placeholder:text-[#6666667e] 
-                placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] 
+                placeholder:font-inter-400 focus:placeholder:text-transparent border font-inter-5004
+                border-[#ff822e] 
                 text-lg rounded-xl sm:py-2 sm:px-[2rem] px-[1rem] py-[0.3rem]'
                 />
                 <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
@@ -268,7 +269,7 @@ export default function OpenRestaurant() {
                   placeholder='Mô tả'
                   autoComplete='off'
                   {...register('desc')}
-                  className=' h-[18vh]  w-full focus:outline-[#8AC0FF] 
+                  className=' h-[18vh] focus:placeholder:text-transparent w-full focus:outline-[#8AC0FF] 
                 placeholder:text-[#6666667e] placeholder:font-inter-400 border 
                 font-inter-500 border-[#E6E6E6] text-lg rounded-xl sm:py-[0.7rem] sm:px-[2rem]
                 py-[0.3rem] px-[1rem]'
@@ -306,7 +307,7 @@ export default function OpenRestaurant() {
                     }}
                     className='2xl:w-[4vw] sm:w-[4.7vw] w-[12vw] sm:ml-[0.5rem] ml-[1rem]
                     focus:outline-[#8AC0FF] placeholder:text-[#6666667e] 
-                    placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg 
+                    placeholder:font-inter-400 border font-inter-500 border-[#ff822e] text-lg 
                     rounded-xl sm:py-2 sm:pl-[0.7rem] pl-[0.4rem] pr-[0.4rem]'
                   />
                   <div className='text-lg sm:ml-[0.5rem] ml-[0.2rem]'>:</div>
@@ -332,7 +333,7 @@ export default function OpenRestaurant() {
                     }}
                     className='2xl:w-[4vw] sm:w-[4.7vw] w-[12vw] sm:ml-[0.5rem] ml-[0.2rem]
                     focus:outline-[#8AC0FF] placeholder:text-[#6666667e] 
-                    placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg 
+                    placeholder:font-inter-400 border font-inter-500 border-[#ff822e] text-lg 
                     rounded-xl sm:py-2 sm:pl-[0.7rem] pl-[0.4rem] pr-[0.4rem]'
                   />
                   <div className='text-lg italic ml-[0.5rem]'>&#8212;</div>
@@ -355,7 +356,7 @@ export default function OpenRestaurant() {
                     }}
                     className='2xl:w-[4vw] sm:w-[4.7vw] w-[12vw] sm:ml-[0.5rem] ml-[0.2rem]
                     focus:outline-[#8AC0FF] placeholder:text-[#6666667e] 
-                    placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg 
+                    placeholder:font-inter-400 border font-inter-500 border-[#ff822e] text-lg 
                     rounded-xl sm:py-2 sm:pl-[0.7rem] pl-[0.4rem] pr-[0.4rem]'
                   />
                   <div className='text-lg sm:ml-[0.5rem] ml-[0.2rem]'>:</div>
@@ -381,7 +382,7 @@ export default function OpenRestaurant() {
                     }}
                     className='2xl:w-[4vw] sm:w-[4.7vw] w-[12vw] sm:ml-[0.5rem] ml-[0.2rem]
                     focus:outline-[#8AC0FF] placeholder:text-[#6666667e] 
-                    placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg 
+                    placeholder:font-inter-400 border font-inter-500 border-[#ff822e] text-lg 
                     rounded-xl sm:py-2 sm:pl-[0.7rem] pl-[0.4rem] pr-[0.4rem]'
                   />
                 </div>
@@ -407,7 +408,7 @@ export default function OpenRestaurant() {
                     }}
                     className='2xl:w-[4vw] sm:w-[4.7vw] w-[12vw] sm:ml-[0.5rem] ml-[1rem]
                     focus:outline-[#8AC0FF] placeholder:text-[#6666667e] 
-                    placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg 
+                    placeholder:font-inter-400 border font-inter-500 border-[#ff822e] text-lg 
                     rounded-xl sm:py-2 sm:pl-[0.7rem] pl-[0.4rem] pr-[0.4rem]'
                   />
                   <div className='text-lg sm:ml-[0.5rem] ml-[0.2rem]'>:</div>
@@ -433,7 +434,7 @@ export default function OpenRestaurant() {
                     }}
                     className='2xl:w-[4vw] sm:w-[4.7vw] w-[12vw] sm:ml-[0.5rem] ml-[0.2rem]
                     focus:outline-[#8AC0FF] placeholder:text-[#6666667e] 
-                    placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg 
+                    placeholder:font-inter-400 border font-inter-500 border-[#ff822e] text-lg 
                     rounded-xl sm:py-2 sm:pl-[0.7rem] pl-[0.4rem] pr-[0.4rem]'
                   />
                   <div className='text-lg italic ml-[0.5rem]'>&#8212;</div>
@@ -454,7 +455,7 @@ export default function OpenRestaurant() {
                     }}
                     className='2xl:w-[4vw] sm:w-[4.7vw] w-[12vw] sm:ml-[0.5rem] ml-[0.2rem]
                     focus:outline-[#8AC0FF] placeholder:text-[#6666667e] 
-                    placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg 
+                    placeholder:font-inter-400 border font-inter-500 border-[#ff822e] text-lg 
                     rounded-xl sm:py-2 sm:pl-[0.7rem] pl-[0.4rem] pr-[0.4rem]'
                   />
                   <div className='text-lg sm:ml-[0.5rem] ml-[0.2rem]'>:</div>
@@ -480,7 +481,7 @@ export default function OpenRestaurant() {
                     }}
                     className='2xl:w-[4vw] sm:w-[4.7vw] w-[12vw] sm:ml-[0.5rem] ml-[0.2rem]
                     focus:outline-[#8AC0FF] placeholder:text-[#6666667e] 
-                    placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] text-lg 
+                    placeholder:font-inter-400 border font-inter-500 border-[#ff822e] text-lg 
                     rounded-xl sm:py-2 sm:pl-[0.7rem] pl-[0.4rem] pr-[0.4rem]'
                   />
                 </div>
@@ -515,8 +516,9 @@ export default function OpenRestaurant() {
                       }}
                       className='focus:outline-[#8AC0FF] sm:w-[35vw] w-[50vw]
                     sm:placeholder:text-base placeholder:text-[0.7rem]
+                    focus:placeholder:text-transparent
                     placeholder:text-[#4F4F4F] placeholder:font-inter-400 
-                    border font-inter-500 border-[#E6E6E6] text-lg rounded-xl 
+                    border font-inter-500 border-[#ff822e] text-lg rounded-xl 
                     px-[0.5rem] py-[0.2rem]'
                     />
                     {data &&
@@ -582,6 +584,7 @@ export default function OpenRestaurant() {
                 {...register('address')}
                 className='w-full mt-[1rem] sm:text-base text-xs
                 focus:outline-none caret-transparent cursor-default 
+                focus:placeholder:text-transparent
                 placeholder:text-[#777070] placeholder:font-inter-400 border 
                 font-inter-500 border-[#E6E6E6] rounded-xl px-[0.5rem] py-[0.2rem]'
               />
@@ -639,7 +642,7 @@ export default function OpenRestaurant() {
                             autoComplete='off'
                             className='w-[13vw] chair sm:w-[5vw] priceInput focus:outline-[#8AC0FF] 
                 placeholder:text-[#4F4F4F] placeholder:font-inter-400 border 
-                font-inter-500 border-[#E6E6E6] sm:text-lg text-xs rounded-xl 
+                font-inter-500 border-[#ff822e] sm:text-lg text-xs rounded-xl 
                 py-2 px-[0.7rem] 2xl:px-[1rem]'
                             defaultValue={tableChair[index].chair}
                             onInput={(e) => {
@@ -661,7 +664,7 @@ export default function OpenRestaurant() {
                             defaultValue={tableChair[index].table}
                             className='w-[13vw] table sm:w-[5vw] priceInput focus:outline-[#8AC0FF] 
               placeholder:text-[#4F4F4F] placeholder:font-inter-400 border 
-              font-inter-500 border-[#E6E6E6] sm:text-lg text-xs rounded-xl
+              font-inter-500 border-[#ff822e] sm:text-lg text-xs rounded-xl
                py-2 px-[0.7rem] 2xl:px-[1rem]'
                             onInput={(e) => {
                               setTableChair([

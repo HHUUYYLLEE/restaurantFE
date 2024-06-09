@@ -167,7 +167,7 @@ export default function Food({ displayType, food }) {
                    h-[3.3vw]
                   placeholder:text-[#4F4F4F] sm:placeholder:text-sm placeholder:text-[0rem] 
                   sm:border-[0.2rem] sm:rounded-xl sm:py-[0.2rem] border-[0.1rem]
-                font-inter-500 border-[#f974162a] rounded-md sm:text-sm text-[0.3rem] pl-[0.15rem] 
+                font-inter-500 border-[#ff822e] rounded-md sm:text-sm text-[0.3rem] pl-[0.15rem] 
                 sm:pl-[0.3rem]
                 ${
                   displayType === 0

@@ -19,12 +19,12 @@ export default function Restaurant({ displayType, restaurant }) {
           ${displayType === 0 ? ' sm:h-[26vh] w-full ' : ' sm:h-[18vh] '}`}
           >
             <div
-              className={`sm:mt-[0.2rem] sm:ml-3 mx-[0.2rem] 
-            line-clamp-2 text-ellipsis overflow-hidden  sm:h-[7vh] sm:leading-5
+              className={` sm:ml-3 mx-[0.2rem] 
+            line-clamp-2 text-ellipsis overflow-hidden sm:h-[7vh] sm:leading-5
             ${
               displayType === 0
-                ? ' h-[3.4vh] text-[0.5rem] sm:text-[1.2rem] sm:mt-[1rem]'
-                : ' sm:text-[0.9rem] text-[0.5rem] sm:mt-[0.3rem] mt-[0.2rem]'
+                ? ' h-[3.4vh] text-[0.5rem] sm:text-[1.2rem] mt-[0.5rem] sm:mt-[1rem]'
+                : ' sm:text-[0.9rem] text-[0.5rem] sm:mt-[0.3rem] mt-[0.2rem] h-[3.5vh]'
             }
            `}
             >

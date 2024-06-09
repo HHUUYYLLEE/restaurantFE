@@ -100,7 +100,7 @@ export default function RestaurantFood() {
                               {...register('quantity')}
                               className='sm:w-[5vw] w-[6vw] priceInput focus:outline-[#8AC0FF] sm:h-full h-[1.2vh]
                             placeholder:text-[#4F4F4F] sm:placeholder:text-sm placeholder:text-[0rem] border 
-                            font-inter-500 border-[#E6E6E6] sm:text-lg text-[0.3rem] pl-[0.15rem] sm:pl-[0.3rem]'
+                            font-inter-500 border-[#ff822e] focus:placeholder:text-transparent sm:text-lg text-[0.3rem] pl-[0.15rem] sm:pl-[0.3rem]'
                             />
                             <button type='submit' className='hover:bg-slate-200'>
                               <IoCheckmarkCircleSharp

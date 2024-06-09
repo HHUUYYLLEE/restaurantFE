@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext, useRef } from 'react'
 import useQueryConfig from '../../hooks/useQueryConfig'
 import { useQuery } from '@tanstack/react-query'
-import { searchRestaurantsAndFood } from '../../api/restaurants.api'
+import { searchRestaurantsAndFood, findNearbyRestaurants } from '../../api/restaurants.api'
 import mapround from '../../asset/img/mapround.png'
 import Restaurant from './Restaurant/Restaurant'
 import { displayNum } from '../../utils/utils'
@@ -16,48 +16,95 @@ import 'leaflet/dist/leaflet.css'
 import 'leaflet-routing-machine'
 import 'lrm-graphhopper'
 import L from 'leaflet'
-import markerIconPng from 'leaflet/dist/images/marker-icon.png'
+import markerIconPng from '../../asset/img/red_map_pin.png'
 import { useDebounce } from '@uidotdev/usehooks'
 import { AppContext } from '../../contexts/app.context'
 import { envConfig } from '../../utils/env'
 import { getSearchLocation } from '../../api/openstreetmap.api'
-import { findNearbyRestaurants } from '../../api/restaurants.api'
+
 import { FaAngleDown } from 'react-icons/fa'
 import { FaAngleUp } from 'react-icons/fa'
 
 export default function SearchResults() {
   const [option, setOption] = useState(0)
   const [displayType, setDisplayType] = useState(0)
-  const [addressValue, setAddressValue] = useState(null)
+  const [addressValue, setAddressValue] = useState('')
   const [markerPos, setMarkerPos] = useState(['', ''])
   const [latLng, setLatLng] = useState(undefined)
   const [searchQuery, setSearchQuery] = useState(null)
   const [searchQuery2, setSearchQuery2] = useState(null)
   const [searchParams, setSearchParams] = useDebounce([searchQuery], 1000)
   const [searchParams2, setSearchParams2] = useDebounce([searchQuery2], 1000)
-  const { mapDraw, setMapDraw } = useContext(AppContext)
+  const [redrawMarkers, setRedrawMarkers] = useState(false)
+  const [redrawCircles, setRedrawCircles] = useState(false)
+  const { mapDraw, setMapDraw, markersGroup, setMarkersGroup } = useContext(AppContext)
+  const { leafletMap } = useContext(AppContext)
   const [enableSearchLatLng, setEnableSearchLatLng] = useState(false)
   const [snapMap, setSnapMap] = useState(false)
   const [latLngValueInput, setLatLngValueInput] = useState(['', ''])
   const [enableSearchResults, setEnableSearchResults] = useState(false)
-  const [radius, setRadius] = useState(0)
+  const [radius, setRadius] = useState('')
   const options = ['km', 'm']
   const [unit, setUnit] = useState('km')
-  const defaultOption = options[0]
+  const [dropDownState, setDropDownState] = useState(false)
   // console.log(params)
-  const { status, data, isSuccess, refetch } = useQuery({
-    queryKey: ['searchRestaurantsOnMap', ...latLngValueInput, radius],
-    queryFn: () => {
-      return findNearbyRestaurants({
+  const { status, data, isSuccess, isError, refetch } = useQuery({
+    queryKey: ['searchRestaurantsOnMap'],
+    queryFn: async () => {
+      const data = await findNearbyRestaurants({
         lat: latLngValueInput[0],
         lng: latLngValueInput[1],
-        radius: radius
+        radius: radius,
+        unit: unit
       })
+
+      if (!redrawMarkers) {
+        const layerGroup = new L.LayerGroup()
+        for (const restaurant of data.data.restaurants) {
+          const marker = L.marker([restaurant.lat, restaurant.lng])
+          marker.addTo(layerGroup).bindPopup(
+            `<a href="./restaurant/${restaurant._id}">
+              <img src='${restaurant.main_avatar_url}'>
+              </img></a><div>${restaurant.name}</div>
+              <div>${
+                restaurant.distance < 1000
+                  ? Math.trunc(restaurant.distance).toString().replace('.', ',') + ' m'
+                  : (Math.trunc(restaurant.distance) / 1000).toString().replace('.', ',') + ' km'
+              }</div></a>
+              `
+          )
+        }
+        layerGroup.addTo(leafletMap)
+        setMarkersGroup(layerGroup)
+        setRedrawMarkers(true)
+      } else {
+        leafletMap.removeLayer(markersGroup)
+        const layerGroup = new L.LayerGroup()
+        for (const restaurant of data.data.restaurants) {
+          const marker = L.marker([restaurant.lat, restaurant.lng])
+          marker.addTo(layerGroup).bindPopup(
+            `<a href="./restaurant/${restaurant._id}">
+              <img src='${restaurant.main_avatar_url}'>
+              </img></a><div>${restaurant.name}</div>
+              <div>${
+                restaurant.distance < 1000
+                  ? Math.trunc(restaurant.distance).toString().replace('.', ',') + ' m'
+                  : (Math.trunc(restaurant.distance) / 1000).toString().replace('.', ',') + ' km'
+              }</div></a>
+              `
+          )
+        }
+        layerGroup.addTo(leafletMap)
+        setMarkersGroup(layerGroup)
+      }
+      return data
     },
     keepPreviousData: true,
     staleTime: 1000,
-    enabled: false
+    enabled: false,
+    retry: false
   })
+
   const {
     status: status2,
     data: data2,
@@ -85,7 +132,7 @@ export default function SearchResults() {
     staleTime: 1000,
     enabled: enableSearchLatLng
   })
-  function HandleSuccess({ isSuccess2, data }) {
+  function HandleSuccess({ isSuccess3, data3 }) {
     useEffect(() => {
       if (isSuccess3) {
         setAddressValue(data3.data.results[0].formatted)
@@ -99,7 +146,6 @@ export default function SearchResults() {
   HandleSuccess({ isSuccess3, data3 })
   const searchData = data?.data
 
-  console.log(searchData)
   function MyComponent() {
     const map = useMapEvents({
       click: (e) => {
@@ -130,24 +176,38 @@ export default function SearchResults() {
 
     return null
   }
-
+  const refDropDown = useRef(null)
+  const handleClickOutside = (event) => {
+    if (refDropDown.current && !refDropDown.current.contains(event.target)) {
+      setDropDownState(false)
+    }
+  }
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
   return (
     <>
-      <div className={`mt-[12rem] w-[90%] mx-auto`}>
+      <div className={`mt-[7rem] w-[90%] mx-auto`}>
+        <div className='text-orange-500 italic text-[1.3rem] sm:text-[1.6rem] flex justify-center'>
+          Chọn điểm xuất phát trên bản đồ
+        </div>
         <div>
           <input
             type='text'
             id='address'
             name='address'
-            placeholder='Địa chỉ được nhập từ trên'
+            placeholder='Địa chỉ được nhập tự động'
             autoComplete='off'
-            // readOnly
+            readOnly
             value={addressValue}
             // {...register('address')}
             className='w-full mt-[1rem] sm:text-base text-xs
-                focus:outline-none caret-transparent cursor-default 
+                focus:outline-none caret-transparent cursor-default bg-[#c7bbbb]
                 placeholder:text-[#777070] placeholder:font-inter-400 border 
-                font-inter-500 border-[#E6E6E6] rounded-xl px-[0.5rem] py-[0.2rem]'
+                font-inter-500  rounded-xl px-[0.5rem] py-[0.2rem]'
           />
           <div className='flex justify-between mt-[1rem] gap-x-2'>
             <input
@@ -159,7 +219,7 @@ export default function SearchResults() {
               // {...register('lat', { readOnly: true })}
               value={latLngValueInput[0]}
               className='sm:w-[25vw] w-[39vw] sm:text-base text-xs focus:outline-none 
-                  caret-transparent cursor-default border font-inter-500
+                  caret-transparent cursor-default border font-inter-500 bg-[#c7bbbb]
                    border-[#E6E6E6] rounded-xl px-[0.5rem] sm:py-[0.2rem]'
             />
             <input
@@ -171,34 +231,111 @@ export default function SearchResults() {
               // {...register('lng', { readOnly: true })}
               value={latLngValueInput[1]}
               className='sm:w-[25vw] w-[39vw] sm:text-base text-xs focus:outline-none 
-                  caret-transparent cursor-default border font-inter-500 
+                  caret-transparent cursor-default border font-inter-500 bg-[#c7bbbb]
                   border-[#E6E6E6] rounded-xl px-[0.5rem] sm:py-[0.2rem]'
             />
           </div>
           <div className='flex justify-center gap-x-2'>
             <input
-              type='text'
-              id='address'
-              name='address'
+              type='number'
+              id='radius'
+              name='radius'
               placeholder='Nhập bán kính'
               autoComplete='off'
               // readOnly
-              value={addressValue}
+              value={radius}
+              onInput={(e) => {
+                setRadius(e.target.value)
+              }}
               // {...register('address')}
-              className='w-[32%] mt-[1rem] sm:text-base text-xs
-                focus:outline-none caret-transparent cursor-default 
+              className='w-[32%] sm:w-[11%] mt-[1rem] sm:text-base text-xs
+                focus:outline-none priceInput
+                border-[#ff822e] focus:placeholder:text-transparent
                 placeholder:text-[#777070] placeholder:font-inter-400 border 
-                font-inter-500 border-[#E6E6E6] rounded-xl px-[0.5rem] py-[0.2rem]'
+                font-inter-500 rounded-xl px-[0.5rem] py-[0.2rem]'
             />
-          </div>
-          <div className='relative'>
-            <div></div>
+            <div className='relative' ref={refDropDown}>
+              <div
+                className=' w-[13.5vw] bg-orange-500 h-[3vh] mt-[1.1rem] 
+            rounded-lg cursor-pointer sm:w-[5vw] sm:h-[4.8vh] flex items-center
+            hover:bg-green-600'
+                onClick={() => {
+                  setDropDownState(!dropDownState)
+                }}
+              >
+                <div
+                  className='mx-[0.2rem] sm:mx-[0.4rem] sm:w-[4vw] w-[13vw] 
+                flex items-center justify-between'
+                >
+                  <div className='text-white'>{unit}</div>
+                  {dropDownState ? (
+                    <FaAngleUp style={{ color: 'white' }} />
+                  ) : (
+                    <FaAngleDown style={{ color: 'white' }} />
+                  )}
+                </div>
+              </div>
+              {dropDownState && (
+                <div className='absolute'>
+                  <div className='border-[0.09rem] border-slate-400 rounded'>
+                    {options.map((option, id) => {
+                      return (
+                        <div
+                          key={id}
+                          className='cursor-pointer'
+                          onClick={() => {
+                            setUnit(option)
+                            setDropDownState(false)
+                          }}
+                        >
+                          <div className='w-[12.4vw] sm:w-[5vw] border-b-[0.11rem] hover:bg-slate-400'>
+                            <div className='ml-[0.19rem]'>{option}</div>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         <div className='flex justify-center mt-[1rem]'>
           <button
-            className=' py-[0.3rem] bg-orange-500 rounded-md px-[0.5rem] text-white'
-            onClick={refetch}
+            className=' py-[0.3rem] sm:py-[0.5rem] sm:px-[1.2rem] 
+            bg-orange-500 rounded-md px-[0.5rem] text-white
+            hover:bg-green-600'
+            onClick={() => {
+              if (latLngValueInput[0] === '' || radius === '') return
+              if (!redrawCircles) {
+                const clickCircle = L.circle(
+                  { lat: latLngValueInput[0], lng: latLngValueInput[1] },
+                  {
+                    color: 'orange',
+                    fillColor: 'orange',
+                    fillOpacity: 0.3,
+                    radius: unit === 'km' ? radius * 1000 : radius
+                  }
+                ).addTo(leafletMap)
+                clickCircle.addTo(leafletMap)
+                setMapDraw(clickCircle)
+                setRedrawCircles(true)
+              } else {
+                leafletMap.removeControl(mapDraw)
+                const clickCircle = L.circle(
+                  { lat: latLngValueInput[0], lng: latLngValueInput[1] },
+                  {
+                    color: 'orange',
+                    fillColor: 'orange',
+                    fillOpacity: 0.3,
+                    radius: unit === 'km' ? radius * 1000 : radius
+                  }
+                ).addTo(leafletMap)
+                clickCircle.addTo(leafletMap)
+                setMapDraw(clickCircle)
+              }
+              refetch()
+            }}
           >
             Tìm
           </button>
@@ -257,8 +394,8 @@ export default function SearchResults() {
             center={[21.028511, 105.804817]}
             zoom={13}
             style={{
-              height: screen.width <= 640 ? '30vh' : 'full',
-              width: screen.width >= 1536 ? '80vw' : screen.width >= 640 ? '80vw' : '90vw'
+              height: screen.width <= 640 ? '30vh' : '85vh',
+              width: screen.width >= 1536 ? '89vw' : screen.width >= 640 ? '89vw' : '90vw'
             }}
             zoomSnap='0.1'
           >
@@ -279,38 +416,53 @@ export default function SearchResults() {
             />
           </MapContainer>
         </div>
-        <div className='flex justify-end mt-[0.5rem]'>
-          <div className='flex gap-x-2 sm:gap-x-8'>
-            <div
-              className={`h-[3.5vh] sm:h-[7vh] 2xl:h-[7.4vh] rounded-md 
+        {isSuccess && searchData && (
+          <div className='flex justify-between mt-[0.5rem]'>
+            <div>
+              <div>
+                <span>Tìm thấy&nbsp;</span>
+                <span className='italic font-bold text-orange-500'>
+                  {searchData.restaurants.length}&nbsp;
+                </span>
+                <span>nhà hàng&nbsp;</span>
+                <span>trong phạm vi&nbsp;</span>
+                <span className='italic font-bold text-orange-500'>
+                  {unit === 'km' ? `${radius} km` : `${radius} m`}
+                </span>
+              </div>
+            </div>
+            <div className='flex gap-x-2 sm:gap-x-8'>
+              <div
+                className={`h-[3.5vh] sm:h-[7vh] 2xl:h-[7.4vh] rounded-md 
                 ${displayType === 0 ? ' bg-[#a5909079] ' : ' bg-[#EEE] '}
                 `}
-              onClick={() => setDisplayType(0)}
-            >
-              <PiListLight
-                style={{
-                  width: screen.width < 640 ? '7vw' : '3.5vw',
-                  height: screen.width < 640 ? '7vw' : '3.5vw',
-                  color: '#F97316'
-                }}
-              />
-            </div>
-            <div
-              className={`h-[3.5vh] sm:h-[7vh] 2xl:h-[7.4vh] rounded-md 
+                onClick={() => setDisplayType(0)}
+              >
+                <PiListLight
+                  style={{
+                    width: screen.width < 640 ? '7vw' : '3.5vw',
+                    height: screen.width < 640 ? '7vw' : '3.5vw',
+                    color: '#F97316'
+                  }}
+                />
+              </div>
+              <div
+                className={`h-[3.5vh] sm:h-[7vh] 2xl:h-[7.4vh] rounded-md 
                 ${displayType === 1 ? ' bg-[#a5909079] ' : ' bg-[#EEE] '}
                 `}
-              onClick={() => setDisplayType(1)}
-            >
-              <PiGridFourFill
-                style={{
-                  width: screen.width < 640 ? '7vw' : '3.5vw',
-                  height: screen.width < 640 ? '7vw' : '3.5vw',
-                  color: '#F97316'
-                }}
-              />
+                onClick={() => setDisplayType(1)}
+              >
+                <PiGridFourFill
+                  style={{
+                    width: screen.width < 640 ? '7vw' : '3.5vw',
+                    height: screen.width < 640 ? '7vw' : '3.5vw',
+                    color: '#F97316'
+                  }}
+                />
+              </div>
             </div>
           </div>
-        </div>
+        )}
         {/* <div className='bg-white mt-[1rem]'>
             <div className='grid grid-cols-3'>
               {options.map((data, id) => {
@@ -333,8 +485,9 @@ export default function SearchResults() {
             displayType === 0 ? ' gap-y-[0.6rem] ' : ' grid-cols-3 sm:grid-cols-4 gap-x-2 gap-y-3  '
           } mt-[1rem]`}
         >
-          {searchData &&
-            searchData.restaurants.map((restaurant, id) => {
+          {isSuccess &&
+            searchData &&
+            searchData?.restaurants.map((restaurant, id) => {
               return (
                 <Restaurant
                   key={restaurant._id}

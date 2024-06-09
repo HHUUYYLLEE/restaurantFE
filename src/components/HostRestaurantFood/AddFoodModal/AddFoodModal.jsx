@@ -91,8 +91,8 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
                   autoComplete='on'
                   {...register('name')}
                   className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] 
-                  placeholder:font-inter-400 border font-inter-500 
-                  border-[#E6E6E6] text-sm rounded-xl px-[4vw] w-[30vw] sm:px-[1rem] sm:w-[18vw]'
+                  placeholder:font-inter-400 border font-inter-500  focus:placeholder:text-transparent
+                  border-[#ff822e] text-sm rounded-xl px-[4vw] w-[30vw] sm:px-[1rem] sm:w-[18vw]'
                 />
                 <div className='mt-1 min-h-[1.75rem] text-xs text-red-600'>
                   {errors.name?.message}
@@ -107,8 +107,8 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
                   autoComplete='on'
                   {...register('price')}
                   className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] 
-                  placeholder:font-inter-400 border font-inter-500 
-                  border-[#E6E6E6] text-sm rounded-xl px-[4vw] w-[30vw] sm:w-[18vw]'
+                  placeholder:font-inter-400 border font-inter-500 focus:placeholder:text-transparent
+                  border-[#ff822e] text-sm rounded-xl px-[4vw] w-[30vw] sm:w-[18vw]'
                 />
                 <div className='mt-1 flex min-h-[1.75rem] text-xs text-red-600'>
                   {errors.price?.message}
@@ -127,7 +127,8 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
               }}
               className='focus:outline-[#8AC0FF] w-full priceInput 
               placeholder:text-[#4F4F4F] placeholder:font-inter-400 border 
-              font-inter-500 border-[#E6E6E6] text-sm px-[1rem] rounded-xl '
+              font-inter-500 border-[#ff822e] text-sm px-[1rem] rounded-xl 
+              focus:placeholder:text-transparent'
             />
             <div className='mt-1 flex min-h-[1.75rem] text-xs text-red-600'>
               {errors.quantity?.message}
@@ -144,6 +145,7 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
                 className='resize-none h-[18vh] w-full 
                 focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] 
                 placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] 
+                focus:placeholder:text-transparent
                 text-xs rounded-xl px-[1rem] py-[0.5rem]'
               />
 

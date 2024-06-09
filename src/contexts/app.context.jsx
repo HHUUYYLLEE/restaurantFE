@@ -12,7 +12,9 @@ const initialAppContext = {
   leafletMap: null,
   setLeafletMap: () => null,
   mapDraw: null,
-  setMapDraw: () => null
+  setMapDraw: () => null,
+  markersGroup: [],
+  setMarkersGroup: () => null
 }
 
 export const AppContext = createContext(initialAppContext)
@@ -23,6 +25,8 @@ export const AppProvider = ({ children }) => {
   const [info, setInfo] = useState(initialAppContext.info)
   const [leafletMap, setLeafletMap] = useState(initialAppContext.leafletMap)
   const [mapDraw, setMapDraw] = useState(initialAppContext.mapDraw)
+  const [markersGroup, setMarkersGroup] = useState(initialAppContext.markersGroup)
+
   return (
     <AppContext.Provider
       value={{
@@ -35,7 +39,9 @@ export const AppProvider = ({ children }) => {
         leafletMap,
         setLeafletMap,
         mapDraw,
-        setMapDraw
+        setMapDraw,
+        markersGroup,
+        setMarkersGroup
       }}
     >
       {children}

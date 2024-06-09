@@ -123,8 +123,8 @@ export default function SignupModal({ closeModalSignup }) {
                   autoComplete='on'
                   {...register('email')}
                   className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F]
-                  sm:w-full w-[69vw]
-                  placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] 
+                  sm:w-full w-[69vw] focus:placeholder:text-transparent
+                  placeholder:font-inter-400 border font-inter-500 border-[#ff822e]
                   sm:text-xl rounded-xl sm:py-1 sm:px-[2rem] px-[1rem]'
                 />
                 <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
@@ -140,8 +140,8 @@ export default function SignupModal({ closeModalSignup }) {
                   autoComplete='on'
                   {...register('phone_number')}
                   className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F]
-                  sm:w-full w-[69vw]
-                  placeholder:font-inter-400 border font-inter-500 border-[#E6E6E6] 
+                  sm:w-full w-[69vw] focus:placeholder:text-transparent
+                  placeholder:font-inter-400 border font-inter-500 border-[#ff822e]
                   sm:text-xl rounded-xl sm:py-1 sm:px-[2rem] px-[1rem]'
                 />
                 <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
@@ -158,8 +158,8 @@ export default function SignupModal({ closeModalSignup }) {
                 autoComplete='on'
                 {...register('password')}
                 className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F]
-                sm:w-full w-[69vw]
-                placeholder:font-inter-400 border font-inter-500 sm:mt-0  border-[#E6E6E6] 
+                sm:w-full w-[69vw] focus:placeholder:text-transparent
+                placeholder:font-inter-400 border font-inter-500 sm:mt-0 border-[#ff822e] 
                 sm:text-xl rounded-xl sm:py-1 sm:px-[2rem] px-[1rem]'
               />
               <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
@@ -175,8 +175,8 @@ export default function SignupModal({ closeModalSignup }) {
                 autoComplete='on'
                 {...register('confirm_password')}
                 className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F]
-                sm:w-full w-[69vw]
-                placeholder:font-inter-400 border font-inter-500 sm:mt-0  border-[#E6E6E6] 
+                sm:w-full w-[69vw] focus:placeholder:text-transparent
+                placeholder:font-inter-400 border font-inter-500 sm:mt-0 border-[#ff822e]
                 sm:text-xl rounded-xl sm:py-1 sm:px-[2rem] px-[1rem]'
               />
               <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
