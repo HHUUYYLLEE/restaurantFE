@@ -44,6 +44,8 @@ export default function SearchResults() {
   const [latLngValueInput, setLatLngValueInput] = useState(['', ''])
   const [enableSearchResults, setEnableSearchResults] = useState(false)
   const [radius, setRadius] = useState('')
+  const [displayRadius, setDisplayRadius] = useState(0)
+  const [displayUnit, setDisplayUnit] = useState(0)
   const options = ['km', 'm']
   const [unit, setUnit] = useState('km')
   const [dropDownState, setDropDownState] = useState(false)
@@ -307,6 +309,8 @@ export default function SearchResults() {
             hover:bg-green-600'
             onClick={() => {
               if (latLngValueInput[0] === '' || radius === '') return
+              setDisplayRadius(radius)
+              setDisplayUnit(unit)
               if (!redrawCircles) {
                 const clickCircle = L.circle(
                   { lat: latLngValueInput[0], lng: latLngValueInput[1] },
@@ -427,7 +431,7 @@ export default function SearchResults() {
                 <span>nhà hàng&nbsp;</span>
                 <span>trong phạm vi&nbsp;</span>
                 <span className='italic font-bold text-orange-500'>
-                  {unit === 'km' ? `${radius} km` : `${radius} m`}
+                  {displayUnit === 'km' ? `${displayRadius} km` : `${displayRadius} m`}
                 </span>
               </div>
             </div>
