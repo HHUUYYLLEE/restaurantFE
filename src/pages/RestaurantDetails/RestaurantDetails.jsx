@@ -1,7 +1,7 @@
 import RestaurantDetail from '../../components/RestaurantDetail/RestaurantDetail'
 import RestaurantFood from '../../components/RestaurantFood/RestaurantFood'
 import { useState } from 'react'
-import ReviewList from '../../components/ReviewList/ReviewList'
+import ReviewsList from '../../components/ReviewsList/ReviewsList'
 export default function RestaurantDetails() {
   const [option, setOption] = useState(0)
   const [reviews, setReviews] = useState()
@@ -38,7 +38,7 @@ export default function RestaurantDetails() {
               <hr className='h-[0.1rem] border-none bg-gray-400' />
               {option === 0 && <RestaurantFood />}
               {option === 1 && (
-                <ReviewList
+                <ReviewsList
                   reviews={reviews}
                   setReviews={setReviews}
                   getReviewSuccess={getReviewSuccess}

@@ -15,8 +15,8 @@ import { isAxiosUnprocessableEntityError } from '../../utils/utils'
 import { Oval } from 'react-loader-spinner'
 import Modal from 'react-modal'
 import { useParams } from 'react-router-dom'
-import ReviewList from './ReviewsList/ReviewList'
-export default function Review({ reviews, setReviews, getReviewSuccess, restaurantId }) {
+import Review from './Review/Review'
+export default function ReviewList({ reviews, setReviews, getReviewSuccess, restaurantId }) {
   const { id: restaurant_id } = useParams()
   useEffect(() => {
     Modal.setAppElement('body')
@@ -346,7 +346,9 @@ export default function Review({ reviews, setReviews, getReviewSuccess, restaura
               </div>
             </form>
           </div>
-          {reviews?.length > 0 && <ReviewList reviewsList={reviews} />}
+          {reviews?.map((data, id) => {
+            return <Review key={id} review={data} />
+          })}
         </div>
         {createAReview.isPending ? (
           <>
