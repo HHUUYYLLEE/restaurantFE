@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { getRestaurant } from '../../api/restaurants.api'
 import { Carousel } from 'react-responsive-carousel'
@@ -9,6 +9,8 @@ import { FaClock } from 'react-icons/fa'
 import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import markerIconPng from 'leaflet/dist/images/marker-icon.png'
+import { FaRegEdit } from 'react-icons/fa'
+
 import { Icon } from 'leaflet'
 export default function RestaurantDetail() {
   const { id } = useParams()
@@ -55,20 +57,40 @@ export default function RestaurantDetail() {
             <div className='mx-[1rem] py-[1rem]'>
               <div className='italic text-xl bold text-green-600'>{restaurantData.name}</div>
               <div className='mt-[1rem]'>
-                <div className='text-gray-600'>
-                  {hour < 12
-                    ? hour >= parseInt(restaurantData.morning_open_time.split(':')[0]) &&
-                      minute >= parseInt(restaurantData.morning_open_time.split(':')[1]) &&
-                      hour <= parseInt(restaurantData.morning_closed_time.split(':')[0]) &&
-                      minute < parseInt(restaurantData.morning_closed_time.split(':')[1])
+                <div className='flex items-center justify-between'>
+                  <div className='text-gray-600'>
+                    {hour < 12
+                      ? hour >= parseInt(restaurantData.morning_open_time.split(':')[0]) &&
+                        minute >= parseInt(restaurantData.morning_open_time.split(':')[1]) &&
+                        hour <= parseInt(restaurantData.morning_closed_time.split(':')[0]) &&
+                        minute < parseInt(restaurantData.morning_closed_time.split(':')[1])
+                        ? 'Đang hoạt động'
+                        : 'Đã đóng cửa'
+                      : hour >= parseInt(restaurantData.afternoon_open_time.split(':')[0]) &&
+                        minute >= parseInt(restaurantData.afternoon_open_time.split(':')[1]) &&
+                        hour <= parseInt(restaurantData.afternoon_closed_time.split(':')[0]) &&
+                        minute < parseInt(restaurantData.afternoon_closed_time.split(':')[1])
                       ? 'Đang hoạt động'
-                      : 'Đã đóng cửa'
-                    : hour >= parseInt(restaurantData.afternoon_open_time.split(':')[0]) &&
-                      minute >= parseInt(restaurantData.afternoon_open_time.split(':')[1]) &&
-                      hour <= parseInt(restaurantData.afternoon_closed_time.split(':')[0]) &&
-                      minute < parseInt(restaurantData.afternoon_closed_time.split(':')[1])
-                    ? 'Đang hoạt động'
-                    : 'Đã đóng cửa'}
+                      : 'Đã đóng cửa'}
+                  </div>
+                  <div className='relative '>
+                    <Link to={`../../update_restaurant/${id}`}>
+                      <div className='absolute right-1 sm:w-[15vw] hover:bg-slate-100'>
+                        <div className='sm:flex sm:items-center'>
+                          <FaRegEdit
+                            style={{
+                              width: screen.width < 640 ? '8vw' : '3vw',
+                              height: screen.width < 640 ? '8vw' : '3vw',
+                              color: 'orange'
+                            }}
+                          />
+                          {screen.width > 640 && (
+                            <div className='text-green-500'>Cập nhật thông tin</div>
+                          )}
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
                 </div>
                 <div className='md:sm:flex gap-x-7'>
                   <div className='flex gap-x-7'>

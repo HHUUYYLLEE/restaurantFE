@@ -10,7 +10,7 @@ import { clearAccessTokenFromLS } from '../../utils/auth'
 import { toast } from 'react-toastify'
 import { BsCart4 } from 'react-icons/bs'
 import SignupModal from '../SignupModal/SignupModal'
-import { searchRestaurantsAndFood } from '../../api/restaurants.api'
+import { simpleSearchRestaurantsAndFood } from '../../api/restaurants.api'
 import { useQuery } from '@tanstack/react-query'
 import { useDebounce } from '@uidotdev/usehooks'
 export default function Header() {
@@ -27,7 +27,7 @@ export default function Header() {
   const { data } = useQuery({
     queryKey: ['search', searchParams],
     queryFn: () => {
-      return searchRestaurantsAndFood({ search: searchParams })
+      return simpleSearchRestaurantsAndFood({ search: searchParams })
     },
     keepPreviousData: true,
     enabled: allResultsToggle
@@ -123,22 +123,26 @@ export default function Header() {
               pl-10 py-3 sm:w-full text-sm border border-gray-300 rounded-[10px] `}
                 placeholder={screen.width >= 640 ? 'Tìm kiếm,...' : ''}
                 onInput={(e) => {
-                  setSearch(e.target.value)
-                  if (e.target.value) setAllResultsToggle(true)
-                  else setAllResultsToggle(false)
+                  if (e.target.value) {
+                    setSearch(e.target.value)
+                    setAllResultsToggle(true)
+                  } else setAllResultsToggle(false)
                 }}
                 onFocus={() => {
                   setShowSearchResults(true)
                   setExpandingSearchBar(true)
                 }}
               ></input>
-              <div className='absolute mt-[1.3rem] sm:mt-0'>
+              <div className='absolute sm:ml-0 ml-[-5.4rem] w-[93vw] mt-[1.3rem] sm:mt-0 max-h-[50vh] overflow-y-scroll'>
                 {showSearchResults &&
                   data &&
                   data?.data?.data?.map((data) => {
                     return (
                       <div key={data._id}>
-                        <div className='w-[93vw] sm:w-[50vw] h-[7.5vh] sm:h-[10vh] hover:bg-[#fff5f1] bg-white ml-[-5.3rem] sm:ml-0'>
+                        <div
+                          className=' sm:w-[50vw] h-[7.5vh] sm:h-[10vh] hover:bg-[#fff5f1]
+                         bg-white  sm:mr-0'
+                        >
                           <Link to={`/restaurant/${data.restaurant_id || data._id}`}>
                             <div
                               onClick={() => {
@@ -159,11 +163,12 @@ export default function Header() {
                       </div>
                     )
                   })}
+
                 {allResultsToggle && (
-                  <Link to={`/search?search=${search}&mode=2`}>
+                  <Link to={`/search?search=${search}`}>
                     <div
-                      className='w-[93vw] flex justify-center items-center sm:w-[50vw] h-[4.3vh] sm:h-[5vh] bg-white 
-                  ml-[-5.3rem] sm:ml-0 text-orange-500 hover:bg-[#fff5f1]'
+                      className='flex justify-center items-center sm:w-[50vw] h-[4.3vh] sm:h-[5vh] bg-white 
+                  sm:ml-0 text-orange-500 hover:bg-[#fff5f1]'
                     >
                       Xem tất cả kết quả
                     </div>

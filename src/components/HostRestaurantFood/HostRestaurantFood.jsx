@@ -10,14 +10,22 @@ import 'leaflet/dist/leaflet.css'
 import { displayNum } from '../../utils/utils'
 import { useState } from 'react'
 import AddFoodModal from './AddFoodModal/AddFoodModal'
-
+import EditFoodModal from './EditFoodModal/EditFoodModal'
 export default function HostRestaurantFood() {
   const [addFoodModal, setAddFoodModal] = useState(false)
+  const [editFoodModal, setEditFoodModal] = useState(false)
+
   const openAddFoodModal = () => {
     setAddFoodModal(true)
   }
   const closeAddFoodModal = () => {
     setAddFoodModal(false)
+  }
+  const openEditFoodModal = () => {
+    setEditFoodModal(true)
+  }
+  const closeEditFoodModal = () => {
+    setEditFoodModal(false)
   }
   const { id } = useParams()
   const { data, status, isLoading, isSuccess } = useQuery({
@@ -47,56 +55,68 @@ export default function HostRestaurantFood() {
           {data &&
             foodData.map((food) => {
               return (
-                <div
-                  key={food._id}
-                  className='flex sm:mx-[1rem] sm:h-[28vh] h-[9vh] 
+                <div key={food._id}>
+                  {editFoodModal && (
+                    <EditFoodModal
+                      closeEditFoodModal={closeEditFoodModal}
+                      food_id={food._id}
+                      name={food.name}
+                      price={food.price}
+                      desc={food.desc}
+                      quantity={food.quantity}
+                      image_url={food.image_url}
+                    />
+                  )}
+                  <div
+                    className='flex sm:mx-[1rem] sm:h-[28vh] h-[9vh] 
                   sm:my-[1rem] mx-[0.3rem] my-[0.1rem] sm:w-[25vw] w-[38vw] relative gap-x-2
                   border rounded-md sm:border-4'
-                >
-                  <img
-                    src={food.image_url}
-                    referrerPolicy='no-referrer'
-                    className='sm:w-[12vw] w-[18vw] sm:h-full h-[8vh]'
-                  />
-                  <div className='relative'>
-                    <div
-                      className='absolute flex cursor-pointer bottom-[0.2rem] right-[0.2rem] 
-                    sm:bottom-[0.6rem] sm:right-[0.5rem] gap-x-1 sm:gap-x-3'
-                    >
-                      <div className='cursor-pointer rounded-full'>
-                        <TiPencil
-                          style={{
-                            width: screen.width >= 640 ? '1.6vw' : '3.4vw',
-                            height: screen.width >= 640 ? '1.6vw' : '3.4vw',
-                            color: 'green'
-                          }}
-                        />
-                      </div>
-                      <div className='cursor-pointer rounded-full'>
-                        <FaRegTrashAlt
-                          style={{
-                            width: screen.width >= 640 ? '1.4vw' : '3.0vw',
-                            height: screen.width >= 640 ? '1.4vw' : '3.0vw',
-                            color: 'red'
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    <div>
+                  >
+                    <img
+                      src={food.image_url}
+                      referrerPolicy='no-referrer'
+                      className='sm:w-[12vw] w-[18vw] sm:h-full h-[8vh]'
+                    />
+                    <div className='relative'>
                       <div
-                        className='2xl:text-[1.1rem] sm:text-[1rem] sm:w-full 
+                        className='absolute flex cursor-pointer bottom-[0.2rem] right-[0.2rem] 
+                    sm:bottom-[0.6rem] sm:right-[0.5rem] gap-x-1 sm:gap-x-3'
+                      >
+                        <div className='cursor-pointer rounded-full' onClick={openEditFoodModal}>
+                          <TiPencil
+                            style={{
+                              width: screen.width >= 640 ? '1.6vw' : '3.4vw',
+                              height: screen.width >= 640 ? '1.6vw' : '3.4vw',
+                              color: 'green'
+                            }}
+                          />
+                        </div>
+                        <div className='cursor-pointer rounded-full'>
+                          <FaRegTrashAlt
+                            style={{
+                              width: screen.width >= 640 ? '1.4vw' : '3.0vw',
+                              height: screen.width >= 640 ? '1.4vw' : '3.0vw',
+                              color: 'red'
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <div
+                          className='2xl:text-[1.1rem] sm:text-[1rem] sm:w-full 
                       sm:mt-[1rem] sm:h-[10.2vh] 2xl:h-[3rem] h-[4vh] sm:leading-[1.4rem] 
                       2xl:leading-[1.6rem] leading-[0.6rem] w-[15vw] text-[0.44rem] 
                       overflow-hidden text-ellipsis line-clamp-3 mt-[0.2rem]'
-                      >
-                        {food.name}
-                      </div>
-                      <div
-                        className='sm:text-2xl 2xl:text-3xl sm:mt-[1rem] text-yellow-600
+                        >
+                          {food.name}
+                        </div>
+                        <div
+                          className='sm:text-2xl 2xl:text-3xl sm:mt-[1rem] text-yellow-600
                       text-[0.6rem] font-poppins-400'
-                      >
-                        {displayNum(food.price)}
+                        >
+                          {displayNum(food.price)}
+                        </div>
                       </div>
                     </div>
                   </div>

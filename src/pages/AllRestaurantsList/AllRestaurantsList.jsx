@@ -1,4 +1,3 @@
-import SearchResults from '../../components/SearchResults/SearchResults'
 import HomeRestaurant from '../../components/HomeRestaurant/HomeRestaurant'
 export default function AllRestaurantsList() {
   return (

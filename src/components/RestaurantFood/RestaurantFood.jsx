@@ -66,18 +66,14 @@ export default function RestaurantFood() {
   const foodData = data?.data.allFood
   if (isSuccess)
     return (
-      <div className='bg-white'>
-        <div className='flex ml-[1rem] py-[0.3rem] gap-x-[3rem]'>
-          <div className='sm:text-4xl text-orange-500 italic'>Các món ăn</div>
-        </div>
-        <hr className='h-[0.1rem] border-none bg-gray-400' />
+      <div className=''>
         <div className='grid sm:grid-cols-3 grid-cols-2 gap-x-2 pb-[2rem] sm:mt-0 mt-[1rem]'>
           {data &&
             foodData.map((food) => {
               return (
                 <div
                   key={food._id}
-                  className='flex sm:mx-[1rem] sm:h-[28vh] h-[9vh] 
+                  className='flex sm:mx-[1rem] sm:h-[28vh] h-[8.3vh] 
                   sm:my-[1rem] mx-[0.3rem] my-[0.1rem] sm:w-[25vw] w-[38vw] relative gap-x-2
                   border rounded-md sm:border-4'
                 >

@@ -12,6 +12,7 @@ import OpenRestaurant from './pages/OpenRestaurant/OpenRestaurant'
 import PlaceOrder from './pages/PlaceOrder/PlaceOrder'
 import Search from './pages/Search/Search'
 import SearchByLocation from './components/SearchLocationResults/SearchLocationResults'
+import UpdateRestaurant from './pages/UpdateRestaurant'
 // eslint-disable-next-line react-refresh/only-export-components
 function AdminProtectedRouter() {
   const { info } = useContext(AppContext)
@@ -100,6 +101,15 @@ export default function useRouteElement() {
           element: (
             <MainLayout>
               <HostRestaurantDetails />
+            </MainLayout>
+          )
+        },
+        {
+          path: '/update_restaurant/:id',
+          index: true,
+          element: (
+            <MainLayout>
+              <UpdateRestaurant />
             </MainLayout>
           )
         }

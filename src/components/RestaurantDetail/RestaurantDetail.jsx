@@ -11,12 +11,23 @@ import 'leaflet/dist/leaflet.css'
 import markerIconPng from 'leaflet/dist/images/marker-icon.png'
 import { Icon } from 'leaflet'
 import { getStatusRestaurantFromTime } from '../../utils/utils'
-export default function RestaurantDetail() {
+import { MdDining } from 'react-icons/md'
+
+export default function RestaurantDetail({
+  reviews,
+  setReviews,
+  setGetReviewSuccess,
+  setRestaurantId
+}) {
   const { id } = useParams()
   const { data, status, isLoading, isSuccess } = useQuery({
-    queryKey: ['restaurantDetail', id],
-    queryFn: () => {
-      return getRestaurant(id)
+    queryKey: ['restaurantDetail', id, reviews],
+    queryFn: async () => {
+      const data = await getRestaurant(id)
+      setReviews(data?.data.reviews)
+      setRestaurantId(id)
+      setGetReviewSuccess(true)
+      return data
     },
     placeholderData: keepPreviousData
   })
@@ -30,8 +41,8 @@ export default function RestaurantDetail() {
   if (isSuccess)
     return (
       <>
-        <div className='md:sm:grid md:sm:grid-cols-7 md:sm:gap-x-5 pb-[2rem]'>
-          <div className='md:sm:col-span-3 flex items-center justify-center'>
+        <div className='sm:grid sm:grid-cols-7 sm:gap-x-5 '>
+          <div className='sm:col-span-3 flex items-center justify-center'>
             <Carousel
               showArrows={true}
               width={screen.width >= 1536 ? 500 : screen.width >= 640 ? 450 : 300}
@@ -50,7 +61,7 @@ export default function RestaurantDetail() {
                 })}
             </Carousel>
           </div>
-          <div className='md:sm:col-start-4 md:sm:col-span-4 bg-white'>
+          <div className='sm:col-start-4 sm:col-span-4 bg-white'>
             <div className='mx-[1rem] py-[1rem]'>
               <div className='italic text-xl bold text-green-600'>{restaurantData.name}</div>
               <div className='mt-[1rem]'>
@@ -62,7 +73,7 @@ export default function RestaurantDetail() {
                     restaurantData.afternoon_closed_time
                   )}
                 </div>
-                <div className='md:sm:flex gap-x-7'>
+                <div className='sm:flex gap-x-7'>
                   <div className='flex gap-x-7'>
                     <div>
                       <div className='text-yellow-600'>Sáng</div>
@@ -122,6 +133,23 @@ export default function RestaurantDetail() {
                 </MapContainer>
               </div>
             </div>
+          </div>
+        </div>
+        <div className='bg-white mt-[2rem] w-full'>
+          <div className='flex gap-x-1 px-[1rem] sm:px-[1.3rem] items-center'>
+            <MdDining
+              style={{
+                color: 'red',
+                width: screen.width < 640 ? '5vw' : '2.5vw',
+                height: screen.width < 640 ? '5vw' : '2.5vw'
+              }}
+            />
+            <div className=' text-orange-500 italic sm:text-[1.5rem]'>Giới thiệu</div>
+          </div>
+
+          <hr className='h-[0.1rem] border-none bg-gray-400' />
+          <div className='px-[1rem] py-[1rem] text-xs sm:text-[1rem] sm:leading-6 2xl:leading-5'>
+            {restaurantData.desc}
           </div>
         </div>
       </>

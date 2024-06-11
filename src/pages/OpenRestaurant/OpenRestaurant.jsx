@@ -189,53 +189,8 @@ export default function OpenRestaurant() {
   }
   return (
     <>
-      {createARestaurantMutation.isPending ? (
-        <>
-          <Modal
-            style={{
-              overlay: {
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                zIndex: 20
-              },
-              content: {
-                top: '50%',
-                left: '50%',
-                right: 'auto',
-                bottom: 'auto',
-                marginRight: '-50%',
-                transform: 'translate(-50%, -50%)',
-                paddingLeft: '3vw',
-                paddingRight: '3vw',
-                paddingTop: '2vw',
-                paddingBottom: '4vw',
-                borderWidth: '0px',
-                borderRadius: '1rem'
-              }
-            }}
-            isOpen={true}
-          >
-            <div className='text-[#4FA94D] font-dmsans-700 mb-[5vh] text-3xl'>Đang cập nhật</div>
-            <TailSpin
-              height='200'
-              width='200'
-              color='#4fa94d'
-              ariaLabel='tail-spin-loading'
-              radius='5'
-              visible={true}
-              wrapperStyle={{ display: 'flex', justifyContent: 'center' }}
-            />
-          </Modal>
-        </>
-      ) : (
-        <></>
-      )}
       <form onSubmit={onSubmit}>
-        <div className='mt-36 mx-auto sm:grid sm:grid-cols-15 w-[90vw] gap-x-4'>
+        <div className='mt-32 mx-auto sm:grid sm:grid-cols-15 w-[90vw] gap-x-4'>
           <div className='sm:col-span-9'>
             <div className='flex items-center gap-x-4'>
               <div className='sm:text-xl sm:w-[10vw] text-xs w-[16vw] text-orange-500'>
@@ -254,19 +209,42 @@ export default function OpenRestaurant() {
                 border-[#ff822e] 
                 text-lg rounded-xl sm:py-2 sm:px-[2rem] px-[1rem] py-[0.3rem]'
                 />
-                <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
-                  {errors.name?.message}
-                </div>
               </div>
             </div>
+            <div className='mt-1 flex min-h-[1.75rem] ml-[16vw] text-lg text-red-600'>
+              {errors.name?.message}
+            </div>
+            <div className='flex items-center gap-x-4'>
+              <div className='sm:text-xl sm:w-[10vw] text-xs w-[16vw] text-orange-500'>
+                Loại nhà hàng
+              </div>
+              <div className='w-full'>
+                <input
+                  type='text'
+                  id='category'
+                  name='category'
+                  placeholder='Quán ăn, tiệc cưới, giới văn phòng, món Việt...'
+                  autoComplete='off'
+                  {...register('category')}
+                  className='w-full focus:outline-[#8AC0FF] placeholder:text-[#6666667e] 
+                placeholder:font-inter-400 focus:placeholder:text-transparent border font-inter-5004
+                border-[#ff822e] 
+                text-lg rounded-xl sm:py-2 sm:px-[2rem] px-[1rem] py-[0.3rem]'
+                />
+              </div>
+            </div>
+            <div className='mt-1 flex min-h-[1.75rem] ml-[16vw] text-lg text-red-600'>
+              {errors.category?.message}
+            </div>
             <div className='mt-[1rem] flex items-center gap-x-4'>
-              <div className='sm:text-xl text-xs sm:w-[10vw] text-orange-500 w-[16vw]'>Mô tả</div>
+              <div className='sm:text-xl text-xs sm:w-[10vw] text-orange-500 w-[16vw]'>
+                Giới thiệu
+              </div>
               <div className='w-full '>
                 <textarea
                   type='text'
                   id='desc'
                   name='desc'
-                  placeholder='Mô tả'
                   autoComplete='off'
                   {...register('desc')}
                   className=' h-[18vh] focus:placeholder:text-transparent w-full focus:outline-[#8AC0FF] 
@@ -274,10 +252,10 @@ export default function OpenRestaurant() {
                 font-inter-500 border-[#E6E6E6] text-lg rounded-xl sm:py-[0.7rem] sm:px-[2rem]
                 py-[0.3rem] px-[1rem]'
                 />
-                <div className='mt-1 min-h-[1.75rem] text-lg text-red-600'>
-                  {errors.desc?.message}
-                </div>
               </div>
+            </div>
+            <div className='mt-1 min-h-[1.75rem] ml-[16vw] text-lg text-red-600'>
+              {errors.desc?.message}
             </div>
             <div className=' flex items-center'>
               <div className='sm:text-xl text-xs sm:w-[10vw] w-[16vw] text-orange-500'>
@@ -824,6 +802,51 @@ export default function OpenRestaurant() {
           </div>
         </div>
       </form>
+      {createARestaurantMutation.isPending ? (
+        <>
+          <Modal
+            style={{
+              overlay: {
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                zIndex: 20
+              },
+              content: {
+                top: '50%',
+                left: '50%',
+                right: 'auto',
+                bottom: 'auto',
+                marginRight: '-50%',
+                transform: 'translate(-50%, -50%)',
+                paddingLeft: '3vw',
+                paddingRight: '3vw',
+                paddingTop: '2vw',
+                paddingBottom: '4vw',
+                borderWidth: '0px',
+                borderRadius: '1rem'
+              }
+            }}
+            isOpen={true}
+          >
+            <div className='text-[#4FA94D] font-dmsans-700 mb-[5vh] text-3xl'>Đang cập nhật</div>
+            <TailSpin
+              height='200'
+              width='200'
+              color='#4fa94d'
+              ariaLabel='tail-spin-loading'
+              radius='5'
+              visible={true}
+              wrapperStyle={{ display: 'flex', justifyContent: 'center' }}
+            />
+          </Modal>
+        </>
+      ) : (
+        <></>
+      )}
     </>
   )
 }

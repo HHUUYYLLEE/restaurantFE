@@ -7,12 +7,20 @@ import Modal from 'react-modal'
 import { displayNum } from '../../../utils/utils'
 import { useForm } from 'react-hook-form'
 import { useEffect, useRef, useState } from 'react'
-import { addFood } from '../../../api/food.api'
+import { updateFood } from '../../../api/food.api'
 import { isAxiosUnprocessableEntityError } from '../../../utils/utils'
 import { AiOutlineClose } from 'react-icons/ai'
 import { TailSpin } from 'react-loader-spinner'
 
-export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
+export default function EditFoodModal({
+  closeEditFoodModal,
+  food_id,
+  name,
+  price,
+  desc,
+  quantity,
+  image_url
+}) {
   const {
     register,
     handleSubmit,
@@ -22,23 +30,23 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
     mode: 'all',
     resolver: yupResolver(schemaFood)
   })
-  const [previewImage, setPreviewImage] = useState('#')
+  const [previewImage, setPreviewImage] = useState()
   const previewImageElement = useRef()
   useEffect(() => {
     Modal.setAppElement('body')
   })
-  const addFoodMutation = useMutation({
-    mutationFn: (body) => addFood(body)
+  const updateFoodMutation = useMutation({
+    mutationFn: (body) => updateFood(body)
   })
 
   const onSubmit = handleSubmit((data) => {
-    data.restaurant_id = restaurant_id
+    data.food_id = food_id
     data.quantity = parseInt(data.quantity)
     data.price = parseInt(data.price.replace(/\D/g, ''))
     data.status = 1
     data.image = data.image[0]
     console.log(data)
-    addFoodMutation.mutate(data, {
+    updateFoodMutation.mutate(data, {
       onSuccess: () => {
         // toast.success('Tạo món ăn thành công!') //。(20)
         window.location.reload()
@@ -58,7 +66,7 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
       <div
         className='overlay'
         onClick={() => {
-          closeAddFoodModal()
+          closeEditFoodModal()
           setPreviewImage('#')
         }}
       ></div>
@@ -66,7 +74,7 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
         <div className='relative'>
           <div
             onClick={() => {
-              closeAddFoodModal()
+              closeEditFoodModal()
               setPreviewImage('#')
             }}
             className='absolute right-0 top-[-0.5rem] 
@@ -78,7 +86,7 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
           </div>
 
           <div className='flex justify-between items-center'>
-            <div className='font-inter-700 sm:text-2xl'>Thêm một món ăn</div>
+            <div className='font-inter-700 sm:text-2xl'>Sửa thông tin món ăn</div>
           </div>
           <form className='w-[70vw] sm:w-[40vw]' onSubmit={onSubmit} noValidate>
             <div className='mt-[1rem] flex gap-x-8 sm:justify-between'>
@@ -88,7 +96,8 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
                   id='name'
                   name='name'
                   placeholder='Tên món ăn'
-                  autoComplete='on'
+                  defaultValue={name}
+                  autoComplete='off'
                   {...register('name')}
                   className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] 
                   placeholder:font-inter-400 border font-inter-500  focus:placeholder:text-transparent
@@ -104,7 +113,8 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
                   id='price'
                   name='price'
                   placeholder='Giá'
-                  autoComplete='on'
+                  autoComplete='off'
+                  defaultValue={displayNum(price)}
                   {...register('price')}
                   className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] 
                   placeholder:font-inter-400 border font-inter-500 focus:placeholder:text-transparent
@@ -121,6 +131,7 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
               name='quantity'
               placeholder='Số lượng'
               {...register('quantity')}
+              defaultValue={quantity}
               onInput={(e) => {
                 console.log(e.target.value)
                 e.target.value = displayNum(e.target.value)
@@ -140,6 +151,7 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
                 id='desc'
                 name='desc'
                 autoComplete='off'
+                defaultValue={desc}
                 {...register('desc')}
                 className='resize-none h-[18vh] w-full 
                 focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] 
@@ -155,7 +167,7 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
 
             <div className=' flex'>
               <div>
-                <div>Ảnh minh hoạ</div>
+                <div>Ảnh minh hoạ (Hãy thêm ảnh khác)</div>
                 <input
                   type='file'
                   id='image'
@@ -225,7 +237,7 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
                 zIndex: 29
               }
             }}
-            isOpen={addFoodMutation.isPending}
+            isOpen={updateFoodMutation.isPending}
           >
             <>
               <div className='text-[#4FA94D] font-dmsans-700 mb-[5vh] text-3xl'>Đang xử lý...</div>

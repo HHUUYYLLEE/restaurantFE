@@ -36,6 +36,7 @@
     "react-leaflet": "^4.2.1",
     "react-loader-spinner": "^6.1.1-0",
     "react-modal": "^3.16.1",
+    "react-paginate": "^8.2.0",
     "react-photoswipe-gallery": "^3.0.1",
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.20.1",

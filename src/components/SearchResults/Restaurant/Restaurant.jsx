@@ -8,12 +8,24 @@ export default function Restaurant({ displayType, restaurant }) {
     <>
       <Link to={`/restaurant/${restaurant._id}`}>
         <div className={displayType === 0 ? ' flex ' : '  '}>
-          <img
-            src={restaurant.main_avatar_url}
-            className={`h-[18.7vw] sm:h-[26vh] cursor-pointer
-              ${displayType === 1 ? ' w-full ' : ' sm:w-[16.4vw] w-[20.3vw]'}`}
-            referrerPolicy='no-referrer'
-          />
+          <div
+            className={`cursor-pointer
+              ${
+                displayType === 1
+                  ? ' max-w-[26vw] max-h-[9.3vh] sm:max-w-[15.6vw] sm:max-h-[26vh] '
+                  : ' sm:max-h-[26vh] sm:max-w-[20.3vw] max-w-[29vw] max-h-[9.4vh]'
+              }`}
+          >
+            <img
+              className={`${
+                displayType === 1
+                  ? ' w-[26vw] h-[9.3vh] sm:w-[15.6vw] sm:h-[26vh] '
+                  : ' sm:w-[20.3vw] sm:h-[26vh] w-[29vw] h-[9.4vh] '
+              }`}
+              src={restaurant.main_avatar_url}
+              referrerPolicy='no-referrer'
+            />
+          </div>
           <div
             className={`bg-white cursor-pointer  h-[9.33vh]
           ${displayType === 0 ? ' sm:h-[26vh] w-full ' : ' sm:h-[18vh] '}`}

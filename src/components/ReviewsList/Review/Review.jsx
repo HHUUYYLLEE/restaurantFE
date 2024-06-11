@@ -1,0 +1,342 @@
+import { useRef, useState, useEffect } from 'react'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useForm } from 'react-hook-form'
+import { reviewSchema } from '../../../utils/rules'
+import { useMutation } from '@tanstack/react-query'
+import { createReview, updateReview, deleteReview } from '../../../api/review.api'
+import { FaRegStar } from 'react-icons/fa'
+import { FaStar } from 'react-icons/fa'
+import { getInfoFromLS } from '../../../utils/auth'
+import { GrUpload } from 'react-icons/gr'
+import { FaImages } from 'react-icons/fa'
+import { FaAngleDown } from 'react-icons/fa'
+import { FaAngleUp } from 'react-icons/fa'
+import { isAxiosUnprocessableEntityError } from '../../../utils/utils'
+import { Oval } from 'react-loader-spinner'
+import Modal from 'react-modal'
+import { useParams } from 'react-router-dom'
+export default function Review({ review }) {
+  const { id: restaurant_id } = useParams()
+  useEffect(() => {
+    Modal.setAppElement('body')
+  })
+  const { avatar_url } = getInfoFromLS()
+  const [dropDownState, setDropDownState] = useState(false)
+  const previewImageElements = [useRef(), useRef(), useRef(), useRef(), useRef()]
+  const [invalidScore, setInvalidScore] = useState(false)
+  const [score, setScore] = useState([0, 0, 0, 0, 0])
+  const scoreNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+  const scores = ['Vị trí', 'Giá cả', 'Chất lượng', 'Phục vụ', 'Không gian']
+  const refDropDown = useRef(null)
+  const handleClickOutside = (event) => {
+    if (refDropDown.current && !refDropDown.current.contains(event.target)) {
+      let i = 0
+      if (dropDownState)
+        for (const temp of score)
+          if (temp === 0) {
+            i++
+            setInvalidScore(true)
+          }
+      if (i === 0) setInvalidScore(false)
+      setDropDownState(false)
+    }
+  }
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  })
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    mode: 'all',
+    resolver: yupResolver(reviewSchema)
+  })
+  const createAReview = useMutation({
+    mutationFn: (body) => createReview(body)
+  })
+  const updateReview = useMutation({
+    mutationFn: (body) => updateReview(body)
+  })
+  const deleteReview = useMutation({
+    mutationFn: (body) => deleteReview(body)
+  })
+  const onSubmit = handleSubmit((data) => {
+    for (const temp of score)
+      if (temp === 0) {
+        setInvalidScore(true)
+        return
+      }
+    data.quality_score = score[0]
+    data.service_score = score[1]
+    data.location_score = score[2]
+    data.price_score = score[3]
+    data.area_score = score[4]
+    data.restaurant_id = restaurant_id
+    console.log(data)
+    createAReview.mutate(data, {
+      onSuccess: () => {},
+      onError: (error) => {
+        console.log(error)
+        if (isAxiosUnprocessableEntityError(error)) {
+          const formError = error.response?.data?.errors
+          console.log(formError)
+          // if (formError) {
+          //   setError('username', {
+          //     message: formError.username?.msg,
+          //     type: 'Server'
+          //   })
+          // }
+        }
+      }
+    })
+  })
+
+  return (
+    <div className=''>
+      <div className='mt-[1rem] sm:mx-[1rem] mx-[0.2rem] grid gap-y-2'>
+        <div className='flex sm:gap-x-7 justify-center'>
+          <div className='sm:w-[8vw] w-[17vw]'></div>
+          <div className='flex justify-between w-[65vw]'>
+            <div className='sm:flex sm:gap-x-1 sm:items-center'>
+              <div className='relative' ref={refDropDown}>
+                <div
+                  onClick={() => {
+                    setInvalidScore(false)
+                    if (dropDownState)
+                      for (const temp of score)
+                        if (temp === 0) {
+                          setInvalidScore(true)
+                        }
+                    setDropDownState(!dropDownState)
+                  }}
+                  className='bg-orange-500 flex justify-center items-center 
+          italic px-[0.3rem] rounded-md sm:px-[3rem] cursor-pointer sm:py-[0.5rem]'
+                >
+                  <div className='text-white sm:text-lg'>Điểm đánh giá</div>
+                  <div className='flex justify-end'>
+                    {dropDownState ? (
+                      <FaAngleUp
+                        style={{
+                          color: 'white',
+                          width: screen.width < 640 ? '3vw' : '1vw',
+                          height: screen.width < 640 ? '3vw' : '1vw'
+                        }}
+                      />
+                    ) : (
+                      <FaAngleDown
+                        style={{
+                          color: 'white',
+                          width: screen.width < 640 ? '3vw' : '1vw',
+                          height: screen.width < 640 ? '3vw' : '1vw'
+                        }}
+                      />
+                    )}
+                  </div>
+                </div>
+                {dropDownState && (
+                  <div className='absolute w-[93vw] sm:w-[35vw] ml-[-5rem] sm:ml-0'>
+                    <div
+                      className='border-[0.09rem] border-slate-400 bg-white
+                 rounded'
+                    >
+                      <div className='flex gap-x-1'>
+                        <div className='grid gap-y-2 sm:gap-y-3'>
+                          {scores.map((data, id) => {
+                            return (
+                              <div key={id}>
+                                <div className='flex gap-x-1 sm:text-[1.2rem]'>
+                                  <div className=''>{data}:</div>
+                                  <div></div>
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                        <div className='grid gap-y-3 sm:gap-y-4'>
+                          {scores.map((data, id) => {
+                            return (
+                              <div key={id} className='flex gap-x-1'>
+                                {scoreNumbers.map((data, i) => {
+                                  return (
+                                    <div key={i}>
+                                      {parseInt(score[id]) >= i + 1 ? (
+                                        <div
+                                          className='cursor-pointer'
+                                          onClick={() => {
+                                            setScore(
+                                              score.map((data, index) => {
+                                                if (index === id) data = i + 1
+                                                return data
+                                              })
+                                            )
+                                          }}
+                                        >
+                                          <FaStar
+                                            style={{
+                                              color: 'orange',
+                                              width: screen.width < 640 ? '' : '2vw',
+                                              height: screen.width < 640 ? '' : '2vw'
+                                            }}
+                                          />
+                                        </div>
+                                      ) : (
+                                        <div
+                                          className='cursor-pointer'
+                                          onClick={() => {
+                                            setScore(
+                                              score.map((data, index) => {
+                                                if (index === id) data = i + 1
+                                                return data
+                                              })
+                                            )
+                                          }}
+                                        >
+                                          <FaRegStar
+                                            style={{
+                                              color: 'orange',
+                                              width: screen.width < 640 ? '' : '2vw',
+                                              height: screen.width < 640 ? '' : '2vw'
+                                            }}
+                                          />
+                                        </div>
+                                      )}
+                                    </div>
+                                  )
+                                })}
+                                <div className='flex sm:mt-[0.2rem]'>
+                                  <span
+                                    className={` text-sm sm:text-[1.4rem]
+                          ${
+                            score[id] === 10
+                              ? ' text-green-500 '
+                              : score[id] === 1
+                              ? ' text-red-500 '
+                              : ' text-orange-500 '
+                          }`}
+                                  >
+                                    {score[id] === 0 ? `\u00A0\u00A0\u00A0\u00A0` : score[id]}
+                                  </span>
+                                  <span className='text-sm sm:text-[1.4rem]'>/</span>
+                                  <span className='text-green-500 text-sm sm:text-[1.4rem]'>
+                                    10
+                                  </span>
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              {invalidScore && <div className='text-red-500'>Hãy đánh giá</div>}
+            </div>
+            <button
+              type='submit'
+              form='review'
+              className=' bg-green-500 
+        rounded-lg text-white px-[0.5rem] sm:px-[0.9rem] italic'
+            >
+              Đăng
+            </button>
+          </div>
+        </div>
+        <div className='flex justify-between sm:justify-center sm:gap-x-7'>
+          <div
+            className='sm:max-w-[8vw] sm:max-h-[8vw] 
+    rounded-full overflow-hidden flex max-w-[17vw] max-h-[17vw]'
+          >
+            <img className='sm:w-[8vw] sm:h-[8vw] flex w-[17vw] h-[17vw]' src={avatar_url} />
+          </div>
+          <div>
+            <textarea
+              {...register('comment')}
+              name='comment'
+              id='comment'
+              placeholder='Viết đánh giá'
+              className='border-[0.2rem] rounded-lg 
+      px-[0.5rem] py-[0.4rem] focus:outline-none
+      border-slate-200 w-[65vw] resize-none h-[15vh] sm:h-[20vh]'
+            ></textarea>
+            <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600 mb-1'>
+              {errors.comment?.message}
+            </div>
+            <div>
+              <input
+                type='file'
+                id='images'
+                name='images'
+                accept='image/*'
+                {...register('images')}
+                className='z-[-1000] absolute'
+                multiple
+                onChange={(e) => {
+                  for (const element of previewImageElements) {
+                    element.current.src = '#'
+                    element.current.style.display = 'none'
+                  }
+                  if (e.target.files) {
+                    if (e.target.files.length <= 5) {
+                      let i = 0
+                      for (const file of e.target.files) {
+                        previewImageElements[i].current.src = URL.createObjectURL(file)
+                        previewImageElements[i].current.style.display = 'block'
+                        i++
+                      }
+                    }
+                  }
+                }}
+              />
+              <div className='mb-[1rem]'>
+                <label htmlFor='images'>
+                  <div
+                    className='flex hover:bg-green-500 cursor-pointer justify-center
+            gap-x-2 sm:gap-x-4 sm:px-[1rem] sm:py-[0.6rem] items-center
+             px-[0.4rem] py-[0.3rem] rounded-lg bg-orange-500'
+                  >
+                    <FaImages
+                      style={{
+                        color: 'white',
+                        width: screen.width < 640 ? '5vw' : '2vw',
+                        height: screen.width < 640 ? '5vw' : '2vw'
+                      }}
+                    />
+                    <GrUpload
+                      style={{
+                        color: 'white',
+                        width: screen.width < 640 ? '5vw' : '2vw',
+                        height: screen.width < 640 ? '5vw' : '2vw'
+                      }}
+                    />
+                  </div>
+                  <div className='flex justify-center text-orange-500'>Tối đa 5 ảnh</div>
+                </label>
+                <div className='flex justify-between gap-x-[0.1rem] sm:gap-x-0'>
+                  {previewImageElements.map((element, key) => {
+                    return (
+                      <div key={key}>
+                        <img
+                          src='#'
+                          className='w-[11vw] h-[11vw]'
+                          onError={(e) => {
+                            e.target.style.display = 'none'
+                          }}
+                          ref={element}
+                        />
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

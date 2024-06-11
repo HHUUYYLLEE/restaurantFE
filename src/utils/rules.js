@@ -69,17 +69,22 @@ export const schemaRestaurantProfile = yup.object({
           return schema.min(afternoon_minute_open + 1, 'Giờ giấc phải hợp lý')
       }
     ),
-  desc: yup.string().required('Hãy mô tả 1 chút gì đó')
+  desc: yup.string().required('Hãy giới thiệu 1 chút gì đó'),
+  category: yup.string().required('Hãy liệt kê một số loại nhà hàng')
 })
 
 export const schemaFood = yup.object({
   name: yup.string().required('Phải đặt tên món ăn'),
   quantity: yup.string().required('Phải nhập số lượng'),
-  desc: yup.string().required('Hãy mô tả gì đó về món này'),
+  desc: yup.string().required('Hãy giới thiệu gì đó về món này'),
   price: yup.string().required('Phải nhập giá'),
   image: yup.mixed().required('Cần ảnh minh hoạ')
 })
 
 export const orderInputSchema = yup.object({
   quantity: yup.string().required(' ')
+})
+
+export const reviewSchema = yup.object({
+  comment: yup.string().required('Bình luận không được trống')
 })
