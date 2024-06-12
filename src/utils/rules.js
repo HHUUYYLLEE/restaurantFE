@@ -75,7 +75,6 @@ export const schemaRestaurantProfile = yup.object({
 
 export const schemaFood = yup.object({
   name: yup.string().required('Phải đặt tên món ăn'),
-  quantity: yup.string().required('Phải nhập số lượng'),
   desc: yup.string().required('Hãy giới thiệu gì đó về món này'),
   price: yup.string().required('Phải nhập giá'),
   image: yup.mixed().required('Cần ảnh minh hoạ')

@@ -28,7 +28,7 @@ import ReactPaginate from 'react-paginate'
 import { VscTriangleLeft } from 'react-icons/vsc'
 import { VscTriangleRight } from 'react-icons/vsc'
 import { HN, TPHCM, categories } from '../../constants/optionsList'
-export default function SearchResults() {
+export default function SearchLocationResults() {
   const [displayType, setDisplayType] = useState(0)
   const [addressValue, setAddressValue] = useState('Hà Nội')
   const [markerPos, setMarkerPos] = useState(['', ''])
@@ -70,6 +70,7 @@ export default function SearchResults() {
   const options2 = ['Tất cả', '1-2', '2-3', '3-4', '4-5', '5-6', '6-7', '7-8', '8-9', '9-10']
   const [displayOption2, setDisplayOption2] = useState('Tất cả')
   const [displayAddressValue, setDisplayAddressValue] = useState('')
+  const [instructions, setInstructions] = useState({})
   // console.log(params)
   const { status, data, isLoading, isFetching, isSuccess, isError, refetch } = useQuery({
     queryKey: ['searchRestaurantsOnMap'],
@@ -117,14 +118,15 @@ export default function SearchResults() {
         for (const restaurant of data.data.restaurants) {
           const marker = L.marker([restaurant.lat, restaurant.lng])
           marker.addTo(layerGroup).bindPopup(
-            `<a href="./restaurant/${restaurant._id}">
+            `<div>
+            <a href="./restaurant/${restaurant._id}">
               <img src='${restaurant.main_avatar_url}'>
-              </img></a><div>${restaurant.name}</div>
+              </img><div>${restaurant.name}</div>
               <div>${
                 restaurant.distance < 1000
                   ? Math.trunc(restaurant.distance).toString().replace('.', ',') + ' m'
                   : (Math.trunc(restaurant.distance) / 1000).toString().replace('.', ',') + ' km'
-              }</div></a>
+              }</div></a></div>
               `
           )
         }
@@ -169,17 +171,29 @@ export default function SearchResults() {
   function HandleSuccess({ isSuccess3, data3 }) {
     useEffect(() => {
       if (isSuccess3) {
-        setDisplayAddressValue(data3.data.results[0].formatted)
+        setDisplayAddressValue(data3?.data.results[0].formatted)
         setLatLngValueInput([
-          data3.data.results[0].geometry.lat,
-          data3.data.results[0].geometry.lng
+          data3?.data.results[0].geometry.lat,
+          data3?.data.results[0].geometry.lng
         ])
       }
-    }, [isSuccess3])
+    }, [isSuccess3, data3?.data.results])
   }
   HandleSuccess({ isSuccess3, data3 })
   const searchData = data?.data
-
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((e) => {
+      setLatLng({ lat: e.coords.latitude, lng: e.coords.longitude })
+      setMarkerPos([e.coords.latitude, e.coords.longitude])
+      setSnapMap(true)
+      setEnableSearchLatLng(true)
+      setLatLngValueInput([e.coords.latitude, e.coords.longitude])
+      setSearchQuery2({
+        q: e.coords.latitude + ',' + e.coords.longitude,
+        key: envConfig.opencageKey
+      })
+    })
+  }, [])
   function MyComponent() {
     const map = useMapEvents({
       click: (e) => {

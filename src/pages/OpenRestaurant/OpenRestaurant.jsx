@@ -83,7 +83,7 @@ export default function OpenRestaurant() {
   })
   useEffect(() => {
     Modal.setAppElement('body')
-  })
+  }, [])
   const previewImageElements = [useRef(), useRef(), useRef(), useRef(), useRef()]
 
   useEffect(() => {

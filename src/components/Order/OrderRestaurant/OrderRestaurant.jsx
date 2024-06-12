@@ -19,7 +19,7 @@ import Food from './Food/Food'
 
 export default function OrderRestaurant({ id, restaurant_id, status, total_price }) {
   const { data: restaurant_data, isSuccess: restaurantSuccess } = useQuery({
-    queryKey: ['restaurantDetail', restaurant_id],
+    queryKey: ['restaurantDetailOrder', restaurant_id],
     queryFn: () => {
       return getRestaurant(restaurant_id)
     },

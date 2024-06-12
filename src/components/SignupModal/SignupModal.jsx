@@ -32,7 +32,7 @@ export default function SignupModal({ closeModalSignup }) {
 
   useEffect(() => {
     Modal.setAppElement('body')
-  })
+  }, [])
   const signUpAccontMutation = useMutation({
     mutationFn: (body) => signUpAccount(body)
   })

@@ -15,7 +15,7 @@ import { Icon } from 'leaflet'
 export default function RestaurantDetail() {
   const { id } = useParams()
   const { data, status, isLoading, isSuccess } = useQuery({
-    queryKey: ['restaurantDetail', id],
+    queryKey: ['restaurantDetailHost', id],
     queryFn: () => {
       return getRestaurant(id)
     },
@@ -41,13 +41,13 @@ export default function RestaurantDetail() {
               thumbWidth={screen.width < 640 ? 46 : 80}
             >
               <div>
-                <img src={data?.data.restaurant.main_avatar_url} referrerPolicy='no-referrer' />
+                <img referrerPolicy='no-referrer' src={data?.data.restaurant.main_avatar_url} />
               </div>
               {data &&
                 restaurantData.images.map((image, key) => {
                   return (
                     <div key={key}>
-                      <img src={image} referrerPolicy='no-referrer' />
+                      <img referrerPolicy='no-referrer' src={image} />
                     </div>
                   )
                 })}

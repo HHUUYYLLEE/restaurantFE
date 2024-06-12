@@ -5,10 +5,15 @@ import { FaMinusCircle } from 'react-icons/fa'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
-import { useState, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { orderFood } from '../../../api/order_food.api'
+import { Oval } from 'react-loader-spinner'
+import Modal from 'react-modal'
 
 export default function Food({ displayType, food }) {
+  useEffect(() => {
+    Modal.setAppElement('body')
+  }, [])
   const {
     register,
     handleSubmit,
@@ -82,11 +87,11 @@ export default function Food({ displayType, food }) {
       <div className={displayType === 0 ? ' flex w-full ' : ' w-[20vw] sm:w-[16.3vw]'}>
         <Link to={`/restaurant/${food.restaurant_id}`}>
           <img
+            referrerPolicy='no-referrer'
             src={food.image_url}
             alt=''
             className={`h-[18.7vw] sm:h-[26vh] cursor-pointer
             ${displayType === 1 ? ' w-full ' : ' sm:w-[21.6vw] w-[29.5vw] '}`}
-            referrerPolicy='no-referrer'
           />
         </Link>
         <div
@@ -145,19 +150,21 @@ export default function Food({ displayType, food }) {
             ${displayType === 0 ? ' w-[20vw] justify-end ' : ' justify-center '}`}
                 >
                   <form onSubmit={onSubmit2} key={food._id}>
-                    <button type='submit' onClick={() => setInputState(1)}>
-                      <BsFillPlusCircleFill
-                        style={{
-                          width: screen.width < 640 ? '3.3vw' : '1.6vw',
-                          height: screen.width < 640 ? '3.3vw' : '1.6vw',
-                          color: '#F97316'
-                        }}
-                      />
-                    </button>
+                    <div className='flex items-center'>
+                      <button type='submit' onClick={() => setInputState(1)}>
+                        <BsFillPlusCircleFill
+                          style={{
+                            width: screen.width < 640 ? '3.3vw' : '1.6vw',
+                            height: screen.width < 640 ? '3.3vw' : '1.6vw',
+                            color: '#F97316'
+                          }}
+                        />
+                      </button>
+                    </div>
                   </form>
                   <form onSubmit={onSubmit} className='flex items-center'>
                     <input
-                      type='text'
+                      type='number'
                       id={'quantity' + food._id}
                       name='quantity'
                       autoComplete='off'
@@ -182,6 +189,50 @@ export default function Food({ displayType, food }) {
           </div>
         </div>
       </div>
+      {orderFoodMutation.isPending && (
+        <>
+          <Modal
+            style={{
+              overlay: {
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                zIndex: 20
+              },
+              content: {
+                top: '50%',
+                left: '50%',
+                right: 'auto',
+                bottom: 'auto',
+                marginRight: '-50%',
+                backgroundColor: 'rgba(0, 0, 0, 0)',
+                transform: 'translate(-50%, -50%)',
+                paddingLeft: '3vw',
+                paddingRight: '3vw',
+                paddingTop: '2vw',
+                paddingBottom: '4vw',
+                borderWidth: '0px',
+                borderRadius: '1rem'
+              }
+            }}
+            isOpen={true}
+          >
+            <Oval
+              height='150'
+              width='150'
+              color='rgb(249,115,22)'
+              secondaryColor='rgba(249,115,22,0.5)'
+              ariaLabel='tail-spin-loading'
+              radius='5'
+              visible={true}
+              wrapperStyle={{ display: 'flex', justifyContent: 'center' }}
+            />
+          </Modal>
+        </>
+      )}
     </>
   )
 }

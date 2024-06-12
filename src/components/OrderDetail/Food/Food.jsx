@@ -32,9 +32,9 @@ export default function Food({ food_id, quantity }) {
         <div className='flex justify-between sm:h-[25vh] py-[0.2rem]'>
           <div className='flex items-center gap-x-[0.4rem] w-[100vw] sm:w-[80vw]'>
             <img
+              referrerPolicy='no-referrer'
               src={foodData.image_url}
               className='sm:w-[9vw] sm:h-[9vw] w-[14vw] h-[14vw]'
-              referrerPolicy='no-referrer'
             ></img>
             <div>
               <div className='sm:text-xl sm:w-[60vw] text-sm line-clamp-1 text-ellipsis overlow-hidden'>

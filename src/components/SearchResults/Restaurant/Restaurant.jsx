@@ -17,13 +17,13 @@ export default function Restaurant({ displayType, restaurant }) {
               }`}
           >
             <img
+              referrerPolicy='no-referrer'
               className={`${
                 displayType === 1
                   ? ' w-[26vw] h-[9.3vh] sm:w-[15.6vw] sm:h-[26vh] '
                   : ' sm:w-[20.3vw] sm:h-[26vh] w-[29vw] h-[9.4vh] '
               }`}
               src={restaurant.main_avatar_url}
-              referrerPolicy='no-referrer'
             />
           </div>
           <div

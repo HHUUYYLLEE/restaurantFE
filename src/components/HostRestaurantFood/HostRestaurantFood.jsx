@@ -11,6 +11,9 @@ import { displayNum } from '../../utils/utils'
 import { useState } from 'react'
 import AddFoodModal from './AddFoodModal/AddFoodModal'
 import EditFoodModal from './EditFoodModal/EditFoodModal'
+import { Oval } from 'react-loader-spinner'
+import Modal from 'react-modal'
+
 export default function HostRestaurantFood() {
   const [addFoodModal, setAddFoodModal] = useState(false)
   const [editFoodModal, setEditFoodModal] = useState(false)
@@ -73,8 +76,8 @@ export default function HostRestaurantFood() {
                   border rounded-md sm:border-4'
                   >
                     <img
-                      src={food.image_url}
                       referrerPolicy='no-referrer'
+                      src={food.image_url}
                       className='sm:w-[12vw] w-[18vw] sm:h-full h-[8vh]'
                     />
                     <div className='relative'>
@@ -88,15 +91,6 @@ export default function HostRestaurantFood() {
                               width: screen.width >= 640 ? '1.6vw' : '3.4vw',
                               height: screen.width >= 640 ? '1.6vw' : '3.4vw',
                               color: 'green'
-                            }}
-                          />
-                        </div>
-                        <div className='cursor-pointer rounded-full'>
-                          <FaRegTrashAlt
-                            style={{
-                              width: screen.width >= 640 ? '1.4vw' : '3.0vw',
-                              height: screen.width >= 640 ? '1.4vw' : '3.0vw',
-                              color: 'red'
                             }}
                           />
                         </div>

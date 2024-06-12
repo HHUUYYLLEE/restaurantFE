@@ -40,7 +40,7 @@ export default function UpdateRestaurant() {
     isLoading: isLoading3,
     isSuccess: isSuccess3
   } = useQuery({
-    queryKey: ['restaurantDetail', id],
+    queryKey: ['restaurantDetailUpdate', id],
     queryFn: async () => {
       const restaurantData = await getRestaurant(id)
       restaurantData.data.restaurant.table_chair.map((data) => {
@@ -108,7 +108,7 @@ export default function UpdateRestaurant() {
   })
   useEffect(() => {
     Modal.setAppElement('body')
-  })
+  }, [])
   const previewImageElements = [useRef(), useRef(), useRef(), useRef(), useRef()]
 
   useEffect(() => {

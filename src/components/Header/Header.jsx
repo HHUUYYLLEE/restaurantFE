@@ -225,7 +225,7 @@ export default function Header() {
           >
             <div onClick={toggleMenu} className='flex items-center'>
               <div className='bg-gray-300 rounded-full w-[3rem] h-[3rem] flex items-center overflow-hidden justify-center'>
-                <img src={info?.avatar_url} referrerPolicy='no-referrer' alt='' className='' />
+                <img referrerPolicy='no-referrer' src={info?.avatar_url} className='' />
               </div>
               <div className='font-semibold ml-2 text-white'>{info?.username}</div>
             </div>

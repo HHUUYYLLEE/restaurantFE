@@ -11,6 +11,7 @@ import { addFood } from '../../../api/food.api'
 import { isAxiosUnprocessableEntityError } from '../../../utils/utils'
 import { AiOutlineClose } from 'react-icons/ai'
 import { TailSpin } from 'react-loader-spinner'
+import { Oval } from 'react-loader-spinner'
 
 export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
   const {
@@ -26,14 +27,13 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
   const previewImageElement = useRef()
   useEffect(() => {
     Modal.setAppElement('body')
-  })
+  }, [])
   const addFoodMutation = useMutation({
     mutationFn: (body) => addFood(body)
   })
 
   const onSubmit = handleSubmit((data) => {
     data.restaurant_id = restaurant_id
-    data.quantity = parseInt(data.quantity)
     data.price = parseInt(data.price.replace(/\D/g, ''))
     data.status = 1
     data.image = data.image[0]
@@ -78,7 +78,7 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
           </div>
 
           <div className='flex justify-between items-center'>
-            <div className='font-inter-700 sm:text-2xl'>Thêm một món ăn</div>
+            <div className='font-inter-700 italic text-orange-500 sm:text-2xl'>Thêm một món ăn</div>
           </div>
           <form className='w-[70vw] sm:w-[40vw]' onSubmit={onSubmit} noValidate>
             <div className='mt-[1rem] flex gap-x-8 sm:justify-between'>
@@ -100,7 +100,7 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
               </div>
               <div>
                 <input
-                  type='text'
+                  type='number'
                   id='price'
                   name='price'
                   placeholder='Giá'
@@ -108,30 +108,12 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
                   {...register('price')}
                   className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] 
                   placeholder:font-inter-400 border font-inter-500 focus:placeholder:text-transparent
-                  border-[#ff822e] text-sm rounded-xl px-[4vw] w-[30vw] sm:w-[18vw]'
+                  border-[#ff822e] text-sm rounded-xl sm:px-[1vw] px-[4vw] w-[30vw] sm:w-[18vw]'
                 />
                 <div className='mt-1 flex min-h-[1.75rem] text-xs text-red-600'>
                   {errors.price?.message}
                 </div>
               </div>
-            </div>
-            <input
-              type='number'
-              id='quantity'
-              name='quantity'
-              placeholder='Số lượng'
-              {...register('quantity')}
-              onInput={(e) => {
-                console.log(e.target.value)
-                e.target.value = displayNum(e.target.value)
-              }}
-              className='focus:outline-[#8AC0FF] w-full priceInput 
-              placeholder:text-[#4F4F4F] placeholder:font-inter-400 border 
-              font-inter-500 border-[#ff822e] text-sm px-[1rem] rounded-xl 
-              focus:placeholder:text-transparent'
-            />
-            <div className='mt-1 flex min-h-[1.75rem] text-xs text-red-600'>
-              {errors.quantity?.message}
             </div>
 
             <div>
@@ -198,48 +180,50 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
               </button>
             </div>
           </form>
-          <Modal
-            style={{
-              overlay: {
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                zIndex: 28
-              },
-              content: {
-                top: '50%',
-                left: '50%',
-                right: 'auto',
-                bottom: 'auto',
-                marginRight: '-50%',
-                transform: 'translate(-50%, -50%)',
-                paddingLeft: '3vw',
-                paddingRight: '3vw',
-                paddingTop: '2vw',
-                paddingBottom: '4vw',
-                borderWidth: '0px',
-                borderRadius: '1rem',
-                zIndex: 29
-              }
-            }}
-            isOpen={addFoodMutation.isPending}
-          >
+          {addFoodMutation.isPending && (
             <>
-              <div className='text-[#4FA94D] font-dmsans-700 mb-[5vh] text-3xl'>Đang xử lý...</div>
-              <TailSpin
-                height='200'
-                width='200'
-                color='#4fa94d'
-                ariaLabel='tail-spin-loading'
-                radius='5'
-                visible={true}
-                wrapperStyle={{ display: 'flex', justifyContent: 'center' }}
-              />
+              <Modal
+                style={{
+                  overlay: {
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    zIndex: 27
+                  },
+                  content: {
+                    top: '50%',
+                    left: '50%',
+                    right: 'auto',
+                    bottom: 'auto',
+                    marginRight: '-50%',
+                    backgroundColor: 'rgba(0, 0, 0, 0)',
+                    transform: 'translate(-50%, -50%)',
+                    paddingLeft: '3vw',
+                    paddingRight: '3vw',
+                    paddingTop: '2vw',
+                    paddingBottom: '4vw',
+                    borderWidth: '0px',
+                    borderRadius: '1rem'
+                  }
+                }}
+                isOpen={true}
+              >
+                <Oval
+                  height='150'
+                  width='150'
+                  color='rgb(249,115,22)'
+                  secondaryColor='rgba(249,115,22,0.5)'
+                  ariaLabel='tail-spin-loading'
+                  radius='5'
+                  visible={true}
+                  wrapperStyle={{ display: 'flex', justifyContent: 'center' }}
+                />
+              </Modal>
             </>
-          </Modal>
+          )}
         </div>
       </div>
     </div>

@@ -29,7 +29,7 @@ export default function LoginModal({ closeModalLogin }) {
   })
   useEffect(() => {
     Modal.setAppElement('body')
-  })
+  }, [])
   const loginAccontMutation = useMutation({
     mutationFn: (body) => loginAccount(body)
   })

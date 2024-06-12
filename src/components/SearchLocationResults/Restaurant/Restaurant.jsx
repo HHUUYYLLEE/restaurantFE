@@ -9,10 +9,10 @@ export default function Restaurant({ displayType, restaurant }) {
       <Link to={`/restaurant/${restaurant._id}`}>
         <div className={displayType === 0 ? ' flex ' : '  '}>
           <img
+            referrerPolicy='no-referrer'
             src={restaurant.main_avatar_url}
             className={`h-[18.7vw] sm:h-[26vh] cursor-pointer
               ${displayType === 1 ? ' w-full ' : ' sm:w-[16.4vw] w-[20.3vw]'}`}
-            referrerPolicy='no-referrer'
           />
           <div
             className={`bg-white cursor-pointer  h-[9.33vh]

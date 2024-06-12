@@ -6,10 +6,10 @@ export default function Restaurant({ restaurant }) {
       <Link to={`/restaurant/${restaurant._id}`}>
         <div className=''>
           <img
+            referrerPolicy='no-referrer'
             src={restaurant.main_avatar_url}
             alt=''
             className='h-[15vh] md:sm:h-[20vh] w-full cursor-pointer'
-            referrerPolicy='no-referrer'
           />
           <div className='bg-white cursor-pointer h-[10vh] md:sm:h-[13vh]'>
             <div

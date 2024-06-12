@@ -169,7 +169,7 @@ export default function OrderDetail() {
   const restaurant_id = orderFood?.restaurant_id
   const orderFoodList = order_detail?.data.orderFoodList
   const { data: restaurant_data, isSuccess: restaurantSuccess } = useQuery({
-    queryKey: ['restaurantDetail', restaurant_id],
+    queryKey: ['restaurantOrderDetail', restaurant_id],
     queryFn: () => {
       return getRestaurant(restaurant_id)
     },

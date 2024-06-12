@@ -136,6 +136,15 @@
 .leaflet-routing-container {
   display: none;
 }
+.leaflet-popup-content > div {
+  width: 20vw;
+}
+.likeButton:hover {
+  fill: orange;
+}
+.dislikeButton:hover {
+  fill: red;
+}
 /* .active {
   @apply text-blue-600;
 } */

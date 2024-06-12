@@ -8,17 +8,32 @@ import { FaRegClock } from 'react-icons/fa'
 import { FaClock } from 'react-icons/fa'
 import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
+import redMapPin from '../../asset/img/red_map_pin.png'
 import markerIconPng from 'leaflet/dist/images/marker-icon.png'
+
 import { Icon } from 'leaflet'
 import { getStatusRestaurantFromTime } from '../../utils/utils'
 import { MdDining } from 'react-icons/md'
+import { MdOutlineComment } from 'react-icons/md'
+import { FaArrowCircleDown } from 'react-icons/fa'
+import { useEffect, useContext } from 'react'
+import { AppContext } from '../../contexts/app.context'
+import { envConfig } from '../../utils/env'
 
+import 'leaflet/dist/leaflet.css'
+import 'leaflet-routing-machine'
+import 'lrm-graphhopper'
+import L from 'leaflet'
 export default function RestaurantDetail({
+  setOption,
   reviews,
   setReviews,
   setGetReviewSuccess,
   setRestaurantId
 }) {
+  const { leafletMap } = useContext(AppContext)
+
+  const scores = ['Vị trí', 'Giá cả', 'Chất lượng', 'Phục vụ', 'Không gian']
   const { id } = useParams()
   const { data, status, isLoading, isSuccess } = useQuery({
     queryKey: ['restaurantDetail', id, reviews],
@@ -27,17 +42,49 @@ export default function RestaurantDetail({
       setReviews(data?.data.reviews)
       setRestaurantId(id)
       setGetReviewSuccess(true)
+      window.scrollTo(0, 0)
       return data
     },
     placeholderData: keepPreviousData
   })
-  function DisableZoom() {
+  const restaurantData = data?.data.restaurant
+  function Routing() {
     const map = useMap()
-    map.scrollWheelZoom.disable()
+    const { setLeafletMap } = useContext(AppContext)
+    useEffect(() => {
+      setLeafletMap(map)
+      navigator.geolocation.getCurrentPosition((e) => {
+        const newRoutingMap = L.Routing.control({
+          waypoints: [
+            L.latLng(e.coords.latitude, e.coords.longitude),
+            L.latLng(restaurantData.lat, restaurantData.lng)
+          ],
+          router: L.Routing.graphHopper(envConfig.graphhopperKey),
+          createMarker: () => {
+            return null
+          },
+          language: 'en',
+          fitSelectedRoutes: true
+        })
+        newRoutingMap.on('routeselected', (e) => {
+          console.log(e)
+        })
+        newRoutingMap.on('routingerror', (e) => {})
+        newRoutingMap.addTo(leafletMap)
+      })
+    }, [map, setLeafletMap])
+
     return null
   }
-  const restaurantData = data?.data.restaurant
 
+  const dataScores = [
+    data?.data.restaurant.location_score,
+    data?.data.restaurant.price_score,
+    data?.data.restaurant.quality_score,
+    data?.data.restaurant.service_score,
+    data?.data.restaurant.area_score
+  ]
+  const average_score = data?.data.restaurant.average_score
   if (isSuccess)
     return (
       <>
@@ -49,13 +96,13 @@ export default function RestaurantDetail({
               thumbWidth={screen.width < 640 ? 46 : 80}
             >
               <div>
-                <img src={data?.data.restaurant.main_avatar_url} referrerPolicy='no-referrer' />
+                <img referrerPolicy='no-referrer' src={data?.data.restaurant.main_avatar_url} />
               </div>
               {data &&
                 restaurantData.images.map((image, key) => {
                   return (
                     <div key={key}>
-                      <img src={image} referrerPolicy='no-referrer' />
+                      <img referrerPolicy='no-referrer' src={image} />
                     </div>
                   )
                 })}
@@ -92,6 +139,127 @@ export default function RestaurantDetail({
                   </div>
                 </div>
               </div>
+              {average_score > 0 ? (
+                <div className='sm:flex'>
+                  <div className='w-[11vw] h-[11vw] sm:w-[5vw] sm:h-[5vw] relative rounded-full '>
+                    <div className='w-[11vw] h-[11vw] sm:w-[5vw] sm:h-[5vw]  rounded-full  '>
+                      <div className='w-[11vw] h-[11vw] sm:w-[5vw] sm:h-[5vw]  inline-block '>
+                        <div
+                          className={`inline-block text-[1rem] mt-[50%] ml-[50%] 
+                    translate-x-[-50%] translate-y-[-50%] sm:text-[1.3rem] 2xl:text-[1.6rem] first-letter:${
+                      average_score >= 7
+                        ? ' text-green-500 '
+                        : average_score >= 5
+                        ? ' text-yellow-400 '
+                        : ' text-red-500 '
+                    }`}
+                        >
+                          {average_score}
+                        </div>
+                      </div>
+                    </div>
+
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      version='1.1'
+                      width={`${screen.width < 640 ? '11vw' : '5vw'}`}
+                      height={`${screen.width < 640 ? '11vw' : '5vw'}`}
+                      className='absolute top-0 left-0'
+                      id='svg_circle'
+                      strokeDasharray={screen.width >= 1536 ? 190 : screen.width >= 640 ? 160 : 113}
+                      strokeDashoffset={
+                        screen.width >= 1536
+                          ? 190 * (1 - average_score / 10)
+                          : screen.width >= 640
+                          ? 160 * (1 - average_score / 10)
+                          : 113 * (1 - average_score / 10)
+                      }
+                      transform='rotate(-90)'
+                    >
+                      <circle
+                        cx={`${screen.width < 640 ? '5.5vw' : '2.5vw'}`}
+                        cy={`${screen.width < 640 ? '5.5vw' : '2.5vw'}`}
+                        r={`${screen.width < 640 ? '5vw' : '2vw'}`}
+                        strokeLinecap='round'
+                        className={`fill-none stroke-[0.5vw] ${
+                          average_score >= 7
+                            ? ' stroke-green-500 '
+                            : average_score >= 5
+                            ? ' stroke-yellow-400 '
+                            : ' stroke-red-500 '
+                        }}`}
+                      ></circle>
+                    </svg>
+                  </div>
+                  <div className='flex items-center sm:gap-x-8 gap-x-0'>
+                    <div className='flex items-center'>
+                      {dataScores.map((data, i) => {
+                        return (
+                          <div key={i} className='2xl:w-[6rem] sm:w-[4.5rem] w-[3.5rem]'>
+                            <div className='text-center'>
+                              <div>
+                                <div
+                                  className={`sm:text-[1.5rem] ${
+                                    data >= 7
+                                      ? ' text-green-500 '
+                                      : data >= 5
+                                      ? ' text-yellow-400 '
+                                      : ' text-red-500 '
+                                  }`}
+                                >
+                                  {data}
+                                </div>
+                                <div className='sm:text-xs text-[0.6rem] text-slate-500'>
+                                  {scores[i]}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+
+                    {screen.width > 640 && (
+                      <div
+                        className='flex gap-x-3 items-center cursor-pointer'
+                        onClick={() => {
+                          window.scrollTo({
+                            top: 950,
+                            behavior: 'smooth'
+                          })
+                          setOption(1)
+                        }}
+                      >
+                        <div className=''>
+                          <div className='flex gap-x-3'>
+                            <MdOutlineComment
+                              style={{
+                                color: 'orange',
+                                width: '2vw',
+                                height: '2vw'
+                              }}
+                            />
+                            <div className='text-[1.2rem]'>{reviews?.length}</div>
+                          </div>
+                          <div className=' mt-[0.4rem] text-[0.6rem] text-slate-500'>đánh giá</div>
+                        </div>
+                        <FaArrowCircleDown
+                          style={{
+                            color: 'orange',
+                            width: '1.5vw',
+                            height: '1.5vw'
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className='flex items-center gap-x-2'>
+                  <MdOutlineComment />
+                  <div className='italic text-slate-400'>Chưa có đánh giá</div>
+                </div>
+              )}
               <div className='flex gap-x-1 mt-[1rem] font-inter-400'>
                 <MdOutlinePinDrop
                   style={{
@@ -111,12 +279,12 @@ export default function RestaurantDetail({
                     width: screen.width >= 1536 ? '45vw' : screen.width >= 640 ? '45vw' : '75vw'
                   }}
                 >
-                  <DisableZoom></DisableZoom>
+                  <Routing></Routing>
                   <Marker
                     position={[restaurantData.lat, restaurantData.lng]}
                     icon={
                       new Icon({
-                        iconUrl: markerIconPng,
+                        iconUrl: redMapPin,
                         iconSize: [25, 41],
                         iconAnchor: [12, 41]
                       })
