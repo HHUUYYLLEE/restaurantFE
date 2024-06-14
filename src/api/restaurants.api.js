@@ -15,3 +15,5 @@ export const findNearbyRestaurants = (params) =>
   applicationJSONInstance.get('restaurant/find_nearby_restaurants', { params })
 export const simpleSearchRestaurantsAndFood = (params) =>
   applicationJSONInstance.get('restaurant/simple_restaurants_and_food', { params })
+export const findBloggerRestaurants = (params) =>
+  applicationJSONInstance.get('restaurant/find_blogger_restaurants', { params })

@@ -5,11 +5,11 @@ import { isAxiosUnprocessableEntityError } from '../../../utils/utils'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
-import { toast } from 'react-toastify'
 import { schemaEditUserProfile } from '../../../utils/rules'
 import { useRef } from 'react'
-import { TailSpin } from 'react-loader-spinner'
 import Modal from 'react-modal'
+import { Oval } from 'react-loader-spinner'
+import { GrUpload } from 'react-icons/gr'
 
 export default function UserProfile() {
   const user_id = getInfoFromLS()._id
@@ -97,59 +97,14 @@ export default function UserProfile() {
 
   return (
     <>
-      {editUserProfileMutation.isPending || editUserAvatarMutation.isPending ? (
-        <>
-          <Modal
-            style={{
-              overlay: {
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                zIndex: 20
-              },
-              content: {
-                top: '50%',
-                left: '50%',
-                right: 'auto',
-                bottom: 'auto',
-                marginRight: '-50%',
-                transform: 'translate(-50%, -50%)',
-                paddingLeft: '3vw',
-                paddingRight: '3vw',
-                paddingTop: '2vw',
-                paddingBottom: '4vw',
-                borderWidth: '0px',
-                borderRadius: '1rem'
-              }
-            }}
-            isOpen={true}
-          >
-            <div className='text-[#4FA94D] font-dmsans-700 mb-[5vh] text-3xl'>Đang cập nhật</div>
-            <TailSpin
-              height='200'
-              width='200'
-              color='#4fa94d'
-              ariaLabel='tail-spin-loading'
-              radius='5'
-              visible={true}
-              wrapperStyle={{ display: 'flex', justifyContent: 'center' }}
-            />
-          </Modal>
-        </>
-      ) : (
-        <></>
-      )}
       {dataUser && (
         <div className='sm:m-auto m-auto sm:grid sm:grid-cols-[15] sm:w-[72vw] w-[92vw] p-2 gap-12'>
           <div className='sm:col-span-5'>
             <div className=''>
               <div>
                 <div className='text-lg text-orange-600'>Ảnh đại diện</div>
-
                 <img
+                  referrerPolicy='no-referrer'
                   src={dataUser?.avatar_url}
                   className='w-[10rem] h-[10rem] mt-4'
                   onError={(e) => {
@@ -164,7 +119,7 @@ export default function UserProfile() {
                     name='avatar'
                     accept='image/*'
                     {...registerAvatar('avatar')}
-                    className='bg-transparent focus:outline-none'
+                    className='absolute z-[-1000] left-0'
                     onChange={(e) => {
                       const [file] = e.target.files
                       if (file) {
@@ -175,12 +130,27 @@ export default function UserProfile() {
                       }
                     }}
                   />
+                  <label htmlFor='avatar'>
+                    <div
+                      className=' hover:bg-green-800 cursor-pointer justify-center
+                     sm:py-[0.3rem] 
+                     py-[0.4rem] w-[10rem] flex items-center  rounded-lg bg-green-500'
+                    >
+                      <GrUpload
+                        style={{
+                          color: 'white',
+                          width: screen.width < 640 ? '5vw' : '2vw',
+                          height: screen.width < 640 ? '5vw' : '2vw'
+                        }}
+                      />
+                    </div>
+                  </label>
                   <button
-                    className='sm:mt-[3rem] hover:bg-[#0366FF] bg-orange-500  
-                  text-white py-[1rem] px-[1rem] font-ibm-plex-serif-700 rounded-lg
-                  mt-[2rem] 2xl:w-[14vw] sm:w-[16vw] w-[57vw]'
+                    className=' hover:bg-green-500 bg-orange-500 w-[10rem]
+                  text-white py-[0.3rem] px-[0.5rem] font-ibm-plex-serif-700 rounded-lg
+                  mt-[2rem] sm:px-[0.8rem] sm:py-[0.4rem] italic'
                   >
-                    Cập nhật ảnh đại diện
+                    Cập nhật ảnh
                   </button>
                 </form>
               </div>
@@ -189,15 +159,11 @@ export default function UserProfile() {
           <div className='sm:col-start-6 sm:col-span-10 sm:mt-0 mt-[3rem]'>
             <form key={1} onSubmit={onSubmit}>
               <div className='flex items-center gap-x-4'>
-                <div className='sm:text-xl text-orange-600 sm:w-[9vw] w-[19vw]'>Username</div>
+                <div className='sm:text-xl text-orange-600 sm:w-[9vw] w-[19vw]'>Email</div>
                 <input
                   type='text'
-                  id='username'
-                  name='username'
-                  placeholder='tên mặc định là "newUser"'
-                  autoComplete='off'
-                  defaultValue={dataUser.username}
-                  {...register('username')}
+                  defaultValue={dataUser.email}
+                  disabled
                   className='sm:w-[35vw] 
                   w-[55vw] focus:outline-none placeholder:text-[0.7rem] placeholder:text-[#ee4c0c7e]
                   placeholder:font-inter-400 border font-inter-500 border-[#ff822e]
@@ -205,50 +171,100 @@ export default function UserProfile() {
                 />
               </div>
               <div className='sm:mt-[3rem] mt-[1rem] flex items-center gap-x-4'>
-                <div className='sm:text-xl sm:w-[9vw] text-orange-600 w-[19vw]'>SĐT</div>
+                <div className='sm:text-xl sm:w-[9vw] text-orange-600 w-[19vw]'>Username</div>
                 <input
                   type='text'
-                  id='phone_number'
-                  name='phone_number'
-                  placeholder='Số điện thoại'
-                  autoComplete='off'
-                  defaultValue={dataUser.phone_number}
-                  {...register('phone_number')}
+                  id='username'
+                  name='username'
+                  placeholder='Tên mặc định là "newUser"'
+                  defaultValue={dataUser.username}
+                  {...register('username')}
                   className='sm:w-[35vw] w-[55vw] focus:outline-none  placeholder:text-[#ee4c0c7e] 
                    placeholder:font-inter-400 border font-inter-500 border-[#ff822e] text-lg 
                    focus:placeholder:text-transparent
                    rounded-xl py-2 px-[1rem] placeholder:text-[0.7rem]'
                 />
               </div>
-              <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
-                {errors.phone_number?.message}
-              </div>
-              <div className='sm:mt-[1rem] flex items-center gap-x-4'>
-                <div className='sm:text-xl sm:w-[9vw] w-[19vw] text-orange-600'>Địa chỉ</div>
+
+              <div className='sm:mt-[3rem] mt-[1rem] flex items-center gap-x-4'>
+                <div className='sm:text-xl sm:w-[9vw] w-[19vw] text-orange-600'>SĐT</div>
                 <input
                   type='text'
-                  id='address'
-                  name='address'
-                  placeholder='Địa chỉ'
-                  autoComplete='off'
-                  defaultValue={dataUser.address}
-                  {...register('address')}
+                  id='phone_number'
+                  name='phone_number'
+                  defaultValue={dataUser.phone_number}
+                  {...register('phone_number')}
                   className='sm:w-[35vw] w-[55vw] focus:outline-none placeholder:text-[0.7rem]
                   placeholder:text-[#ee4c0c7e] focus:placeholder:text-transparent placeholder:font-inter-400 border font-inter-500
                   border-[#ff822e] text-lg  rounded-xl py-2 px-[1rem]'
                 />
               </div>
-              <button
-                className='sm:mt-[3rem] hover:bg-[#0366FF] bg-orange-500  
-                  text-white py-[1rem] px-[1rem] font-ibm-plex-serif-700 rounded-lg
-                  mt-[2rem] 2xl:w-[12vw] sm:w-[14vw] w-[57vw]'
-              >
-                Cập nhật thông tin
-              </button>
+              <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
+                {errors.phone_number?.message}
+              </div>
+              <div className='flex sm:gap-x-[5rem] gap-x-[1rem] sm:mt-[0.7rem]'>
+                <button
+                  type='submit'
+                  className=' hover:bg-green-500 bg-orange-500  
+                  text-white py-[0.3rem] px-[0.5rem] sm:px-[0.8rem] sm:py-[0.4rem] 
+                  font-ibm-plex-serif-700 rounded-lg italic
+                   '
+                >
+                  Cập nhật thông tin
+                </button>
+                <button
+                  type='button'
+                  className=' hover:bg-red-700 bg-red-500  
+                  text-white py-[0.3rem] px-[0.5rem] sm:px-[0.8rem] sm:py-[0.4rem] 
+                  font-ibm-plex-serif-700 rounded-lg italic'
+                >
+                  Đổi mật khẩu
+                </button>
+              </div>
             </form>
           </div>
         </div>
       )}
+      <Modal
+        style={{
+          overlay: {
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 27
+          },
+          content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            backgroundColor: 'rgba(0, 0, 0, 0)',
+            transform: 'translate(-50%, -50%)',
+            paddingLeft: '3vw',
+            paddingRight: '3vw',
+            paddingTop: '2vw',
+            paddingBottom: '4vw',
+            borderWidth: '0px',
+            borderRadius: '1rem'
+          }
+        }}
+        isOpen={editUserProfileMutation.isPending || editUserAvatarMutation.isPending}
+      >
+        <Oval
+          height='150'
+          width='150'
+          color='rgb(249,115,22)'
+          secondaryColor='rgba(249,115,22,0.5)'
+          ariaLabel='tail-spin-loading'
+          radius='5'
+          visible={true}
+          wrapperStyle={{ display: 'flex', justifyContent: 'center' }}
+        />
+      </Modal>
     </>
   )
 }

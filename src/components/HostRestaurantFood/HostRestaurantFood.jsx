@@ -47,7 +47,8 @@ export default function HostRestaurantFood() {
           <div className='sm:text-4xl text-orange-500 italic'>Các món ăn</div>
           <button
             onClick={() => openAddFoodModal()}
-            className='rounded-lg sm:py-[1rem] py-[0.5rem] hover:bg-green-700 sm:px-[2rem] px-[1rem]
+            className='rounded-lg sm:py-[0.6rem] py-[0.3rem] hover:bg-green-700 sm:px-[0.8rem] 
+            px-[1rem]
              bg-orange-600 text-white'
           >
             Thêm món ăn
@@ -80,7 +81,7 @@ export default function HostRestaurantFood() {
                       src={food.image_url}
                       className='sm:w-[12vw] w-[18vw] sm:h-full h-[8vh]'
                     />
-                    <div className='relative'>
+                    <div className='relative w-full'>
                       <div
                         className='absolute flex cursor-pointer bottom-[0.2rem] right-[0.2rem] 
                     sm:bottom-[0.6rem] sm:right-[0.5rem] gap-x-1 sm:gap-x-3'

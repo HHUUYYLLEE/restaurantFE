@@ -17,7 +17,10 @@ export default function Restaurant({ restaurant }) {
                 {restaurant.name}
               </div>
             </div>
-            <div className=' mx-3 sm:text-xs 2xl:text-sm text-xs text-ellipsis sm:line-clamp-3 2xl:line-clamp-5  text-gray-600'>
+            <div
+              className=' mx-3 sm:text-xs 2xl:text-sm text-xs text-ellipsis 2xl:line-clamp-2 sm:line-clamp-3 
+              text-gray-600'
+            >
               {restaurant.address}
             </div>
           </div>

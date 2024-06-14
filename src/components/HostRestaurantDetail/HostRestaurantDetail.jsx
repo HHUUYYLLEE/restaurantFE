@@ -4,13 +4,10 @@ import { getRestaurant } from '../../api/restaurants.api'
 import { Carousel } from 'react-responsive-carousel'
 import 'react-responsive-carousel/lib/styles/carousel.css'
 import { MdOutlinePinDrop } from 'react-icons/md'
-import { FaRegClock } from 'react-icons/fa'
-import { FaClock } from 'react-icons/fa'
-import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
-import markerIconPng from 'leaflet/dist/images/marker-icon.png'
 import { FaRegEdit } from 'react-icons/fa'
-
+import diningIcon from '../../asset/img/dining.png'
 import { Icon } from 'leaflet'
 export default function RestaurantDetail() {
   const { id } = useParams()
@@ -21,11 +18,7 @@ export default function RestaurantDetail() {
     },
     placeholderData: keepPreviousData
   })
-  function DisableZoom() {
-    const map = useMap()
-    map.scrollWheelZoom.disable()
-    return null
-  }
+
   const restaurantData = data?.data.restaurant
   const date = new Date()
   const hour = date.getHours()
@@ -125,13 +118,12 @@ export default function RestaurantDetail() {
                     width: screen.width >= 1536 ? '45vw' : screen.width >= 640 ? '45vw' : '75vw'
                   }}
                 >
-                  <DisableZoom></DisableZoom>
                   <Marker
                     position={[restaurantData.lat, restaurantData.lng]}
                     icon={
                       new Icon({
-                        iconUrl: markerIconPng,
-                        iconSize: [25, 41],
+                        iconUrl: diningIcon,
+                        iconSize: [80, 80],
                         iconAnchor: [12, 41]
                       })
                     }

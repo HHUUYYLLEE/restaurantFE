@@ -9,11 +9,11 @@ import { signUpAccount, loginGoogleAccount } from '../../api/user.api'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 import Modal from 'react-modal'
-import { TailSpin } from 'react-loader-spinner'
+import { Oval } from 'react-loader-spinner'
 import { getInfoFromLS } from '../../utils/auth'
 import { isAxiosUnprocessableEntityError } from '../../utils/utils'
 import { GoogleLogin } from '@react-oauth/google'
-
+import { GrUpload } from 'react-icons/gr'
 export default function SignupModal({ closeModalSignup }) {
   const { setIsAuthenticated, setInfo, isAuthenticated } = useContext(AppContext)
   const navigate = useNavigate()
@@ -192,7 +192,7 @@ export default function SignupModal({ closeModalSignup }) {
                   name='avatar'
                   accept='image/*'
                   {...register('avatar')}
-                  className='w-full'
+                  className='absolute z-[-1000] text-transparent left-0'
                   onChange={(e) => {
                     const [file] = e.target.files
                     if (file) {
@@ -201,6 +201,21 @@ export default function SignupModal({ closeModalSignup }) {
                     }
                   }}
                 />
+                <label htmlFor='avatar'>
+                  <div
+                    className=' hover:bg-green-800 cursor-pointer justify-center
+                     sm:py-[0.3rem] 
+                     py-[0.4rem] w-[10rem] flex items-center  rounded-lg bg-green-500'
+                  >
+                    <GrUpload
+                      style={{
+                        color: 'white',
+                        width: screen.width < 640 ? '5vw' : '2vw',
+                        height: screen.width < 640 ? '5vw' : '2vw'
+                      }}
+                    />
+                  </div>
+                </label>
                 <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
                   {errors.avatar?.message}
                 </div>
@@ -214,7 +229,10 @@ export default function SignupModal({ closeModalSignup }) {
                 ref={previewImageElement}
               />
             </div>
-            <div className='w-full sm:flex sm:justify-between items-center 2xl:mt-14 sm:mt-[1.5rem] mt-[1rem]'>
+            <div
+              className='w-full sm:flex sm:justify-between items-center 
+            sm:mt-[1.5rem] mt-[1rem]'
+            >
               <div className='sm:block sm:justify-start flex justify-center'>
                 <button
                   type='submit'
@@ -243,52 +261,48 @@ export default function SignupModal({ closeModalSignup }) {
               </div>
             </div>
           </form>
-          <Modal
-            style={{
-              overlay: {
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                zIndex: 28
-              },
-              content: {
-                top: '50%',
-                left: '50%',
-                right: 'auto',
-                bottom: 'auto',
-                marginRight: '-50%',
-                transform: 'translate(-50%, -50%)',
-                paddingLeft: '3vw',
-                paddingRight: '3vw',
-                paddingTop: '2vw',
-                paddingBottom: '4vw',
-                borderWidth: '0px',
-                borderRadius: '1rem',
-                zIndex: 29
-              }
-            }}
-            isOpen={signUpAccontMutation.isPending}
-          >
-            <>
-              <div className='text-[#4FA94D] font-dmsans-700 mb-[5vh] text-3xl'>
-                Đang đăng ký...
-              </div>
-              <TailSpin
-                height='200'
-                width='200'
-                color='#4fa94d'
-                ariaLabel='tail-spin-loading'
-                radius='5'
-                visible={true}
-                wrapperStyle={{ display: 'flex', justifyContent: 'center' }}
-              />
-            </>
-          </Modal>
         </div>
       </div>
+      <Modal
+        style={{
+          overlay: {
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 27
+          },
+          content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            backgroundColor: 'rgba(0, 0, 0, 0)',
+            transform: 'translate(-50%, -50%)',
+            paddingLeft: '3vw',
+            paddingRight: '3vw',
+            paddingTop: '2vw',
+            paddingBottom: '4vw',
+            borderWidth: '0px',
+            borderRadius: '1rem'
+          }
+        }}
+        isOpen={signUpAccontMutation.isPending}
+      >
+        <Oval
+          height='150'
+          width='150'
+          color='rgb(249,115,22)'
+          secondaryColor='rgba(249,115,22,0.5)'
+          ariaLabel='tail-spin-loading'
+          radius='5'
+          visible={true}
+          wrapperStyle={{ display: 'flex', justifyContent: 'center' }}
+        />
+      </Modal>
     </div>
   )
 }

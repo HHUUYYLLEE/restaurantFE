@@ -9,7 +9,7 @@ import { loginAccount, loginGoogleAccount } from '../../api/user.api'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 import Modal from 'react-modal'
-import { TailSpin } from 'react-loader-spinner'
+import { Oval } from 'react-loader-spinner'
 import { getInfoFromLS } from '../../utils/auth'
 import { GoogleLogin } from '@react-oauth/google'
 
@@ -61,7 +61,6 @@ export default function LoginModal({ closeModalLogin }) {
     loginAccontMutation.mutate(data, {
       onSuccess: (data) => {
         console.log(data?.data.data.user.role)
-        // toast.success('Đăng nhập thành công !') //。(20)
         setInfo(getInfoFromLS())
         closeModalLogin()
         setIsAuthenticated(true)
@@ -104,9 +103,9 @@ export default function LoginModal({ closeModalLogin }) {
           </div> */}
           <div>
             <div className='w-full justify-between items-center'>
-              <div className='font-inter-700 sm:text-3xl text-2xl'>Đăng nhập</div>
-              <div className='font-ibm-plex-serif-400 sm:text-xl sm:mt-[0.7rem] text-sm mt-[0.5rem]'>
-                Đăng nhập tài khoản để tiếp tục
+              <div className='font-inter-700 sm:text-3xl text-2xl text-green-500'>Đăng nhập</div>
+              <div className='font-ibm-plex-serif-400 sm:text-xl text-orange-500 sm:mt-[0.7rem] text-sm mt-[0.5rem]'>
+                Đăng nhập để quay trở lại vnFood.
               </div>
             </div>
             <form className='w-full' onSubmit={onSubmit} noValidate>
@@ -149,7 +148,7 @@ export default function LoginModal({ closeModalLogin }) {
               <div className='w-full flex justify-center items-center sm:pt-5 pt-3'>
                 <button
                   type='submit'
-                  className='bg-[#0366FF] hover:bg-green-500 text-white 
+                  className='bg-orange-500 hover:bg-green-500 text-white 
                   sm:py-[1.2rem] sm:px-[7rem] px-[2rem] py-[0.5rem] font-ibm-plex-serif-700 rounded-lg'
                 >
                   Đăng nhập
@@ -172,53 +171,49 @@ export default function LoginModal({ closeModalLogin }) {
                 />
               </div>
             </form>
-            <Modal
-              style={{
-                overlay: {
-                  position: 'fixed',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                  zIndex: 28
-                },
-                content: {
-                  top: '50%',
-                  left: '50%',
-                  right: 'auto',
-                  bottom: 'auto',
-                  marginRight: '-50%',
-                  transform: 'translate(-50%, -50%)',
-                  paddingLeft: '3vw',
-                  paddingRight: '3vw',
-                  paddingTop: '2vw',
-                  paddingBottom: '4vw',
-                  borderWidth: '0px',
-                  borderRadius: '1rem',
-                  zIndex: 29
-                }
-              }}
-              isOpen={loginAccontMutation.isPending}
-            >
-              <>
-                <div className='text-[#4FA94D] font-dmsans-700 mb-[5vh] text-3xl'>
-                  Đang đăng nhập...
-                </div>
-                <TailSpin
-                  height='200'
-                  width='200'
-                  color='#4fa94d'
-                  ariaLabel='tail-spin-loading'
-                  radius='5'
-                  visible={true}
-                  wrapperStyle={{ display: 'flex', justifyContent: 'center' }}
-                />
-              </>
-            </Modal>
           </div>
         </div>
       </div>
+      <Modal
+        style={{
+          overlay: {
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 27
+          },
+          content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            backgroundColor: 'rgba(0, 0, 0, 0)',
+            transform: 'translate(-50%, -50%)',
+            paddingLeft: '3vw',
+            paddingRight: '3vw',
+            paddingTop: '2vw',
+            paddingBottom: '4vw',
+            borderWidth: '0px',
+            borderRadius: '1rem'
+          }
+        }}
+        isOpen={loginAccontMutation.isPending}
+      >
+        <Oval
+          height='150'
+          width='150'
+          color='rgb(249,115,22)'
+          secondaryColor='rgba(249,115,22,0.5)'
+          ariaLabel='tail-spin-loading'
+          radius='5'
+          visible={true}
+          wrapperStyle={{ display: 'flex', justifyContent: 'center' }}
+        />
+      </Modal>
     </div>
   )
 }

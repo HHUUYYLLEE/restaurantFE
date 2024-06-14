@@ -1,2 +1,2 @@
-import PlaceOrder from './PlaceOrder'
-export default PlaceOrder
+import CompletedOrder from '. CompletedOrder'
+export default CompletedOrder

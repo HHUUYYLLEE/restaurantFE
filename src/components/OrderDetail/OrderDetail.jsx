@@ -1,28 +1,21 @@
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { getAllUserOrders, placeAnOrder } from '../../api/order_food.api'
+import { placeAnOrder } from '../../api/order_food.api'
 import { getOrder } from '../../api/order_food.api'
 import 'react-responsive-carousel/lib/styles/carousel.css'
-import { BsCart4 } from 'react-icons/bs'
-import { FaRegTimesCircle } from 'react-icons/fa'
 import 'leaflet/dist/leaflet.css'
 import { getSearchLocation } from '../../api/openstreetmap.api'
-import { useState, useEffect, useContext, useRef } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
-import { orderInputSchema } from '../../utils/rules'
-import { IoCheckmarkCircleSharp } from 'react-icons/io5'
 import { displayNum, isAxiosUnprocessableEntityError } from '../../utils/utils'
-import { toast } from 'react-toastify'
 import { MdOutlinePinDrop } from 'react-icons/md'
 import { getInfoFromLS } from '../../utils/auth'
-import { MapContainer, TileLayer, useMapEvents, Marker, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, useMapEvents, useMap } from 'react-leaflet'
 import { envConfig } from '../../utils/env'
 import { CiShop } from 'react-icons/ci'
 import { getRestaurant } from '../../api/restaurants.api'
 import Food from './Food/Food'
-import markerIconPng from 'leaflet/dist/images/marker-icon.png'
-import { Icon } from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-routing-machine'
 import 'lrm-graphhopper'
@@ -30,9 +23,8 @@ import L from 'leaflet'
 import { useDebounce } from '@uidotdev/usehooks'
 import { AppContext } from '../../contexts/app.context'
 import { FaPhoneAlt } from 'react-icons/fa'
-import Checkbox from 'react-custom-checkbox'
-import { FaCheckCircle } from 'react-icons/fa'
-
+import diningIcon from '../../asset/img/dining.png'
+import humanIcon from '../../asset/img/human.png'
 export default function OrderDetail() {
   const { leafletMap } = useContext(AppContext)
   const phone_number = getInfoFromLS().phone_number
@@ -41,19 +33,35 @@ export default function OrderDetail() {
   const navigate = useNavigate()
 
   const [enableSearchResults, setEnableSearchResults] = useState(false)
-  const [latLng, setLatLng] = useState(undefined)
 
   const [latLngValueInput, setLatLngValueInput] = useState(['', ''])
-  const [markerPos, setMarkerPos] = useState(['', ''])
   const [addressValue, setAddressValue] = useState('')
   const [searchQuery, setSearchQuery] = useState(null)
   const [searchQuery2, setSearchQuery2] = useState(null)
   const [searchParams, setSearchParams] = useDebounce([searchQuery], 1000)
   const [searchParams2, setSearchParams2] = useDebounce([searchQuery2], 1000)
   const [enableSearchLatLng, setEnableSearchLatLng] = useState(false)
-  const [snapMap, setSnapMap] = useState(false)
   const [routingRedraw, setRoutingRedraw] = useState(false)
   const { mapDraw, setMapDraw } = useContext(AppContext)
+  const { data: order_detail, isSuccess } = useQuery({
+    queryKey: ['order_list', id],
+    queryFn: () => {
+      return getOrder(id)
+    },
+    placeholderData: keepPreviousData
+  })
+  const orderFood = order_detail?.data.orderFood
+  const restaurant_id = orderFood?.restaurant_id
+  const orderFoodList = order_detail?.data.orderFoodList
+  const { data: restaurant_data, isSuccess: restaurantSuccess } = useQuery({
+    queryKey: ['restaurantOrderDetail', restaurant_id],
+    queryFn: () => {
+      return getRestaurant(restaurant_id)
+    },
+    placeholderData: keepPreviousData,
+    enabled: !!restaurant_id
+  })
+  const restaurantData = restaurant_data?.data.restaurant
   const { handleSubmit } = useForm({
     mode: 'all'
   })
@@ -96,20 +104,53 @@ export default function OrderDetail() {
     }, [isSuccess2])
   }
   HandleSuccess({ isSuccess2, data })
-  const { data: order_detail, isSuccess } = useQuery({
-    queryKey: ['order_list', id],
-    queryFn: () => {
-      return getOrder(id)
-    },
-    placeholderData: keepPreviousData
-  })
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((e) => {
+      const newRoutingMap = L.Routing.control({
+        waypoints: [
+          L.latLng(e.coords.latitude, e.coords.longitude),
+          L.latLng(restaurantData?.lat, restaurantData?.lng)
+        ],
+        router: L.Routing.graphHopper(envConfig.graphhopperKey),
+        createMarker: (i, wp) => {
+          if (i === 0)
+            return L.marker(wp.latLng, {
+              icon: new L.Icon({
+                iconUrl: humanIcon,
+                iconSize: [60, 80]
+              })
+            })
+          else
+            return L.marker(wp.latLng, {
+              icon: new L.Icon({
+                iconUrl: diningIcon,
+                iconSize: [41, 41]
+              })
+            })
+        },
+        language: 'en',
+        fitSelectedRoutes: true
+      })
+      newRoutingMap.on('routeselected', (e) => {
+        console.log(e)
+      })
+      newRoutingMap.on('routingerror', (e) => {})
+      newRoutingMap.addTo(leafletMap)
+      setRoutingRedraw(true)
+      setMapDraw(newRoutingMap)
+      setLatLngValueInput([e.coords.latitude, e.coords.longitude])
+      setSearchQuery2({
+        q: e.coords.latitude + ',' + e.coords.longitude,
+        key: envConfig.opencageKey
+      })
+      setEnableSearchLatLng(true)
+    })
+  }, [leafletMap, restaurantData?.lat, restaurantData?.lng, setMapDraw])
 
   function MyComponent() {
     const map = useMapEvents({
       click: (e) => {
-        setLatLng({ lat: e.latlng.lat, lng: e.latlng.lng })
-        setMarkerPos([e.latlng.lat, e.latlng.lng])
-        setSnapMap(true)
         setEnableSearchLatLng(true)
         setLatLngValueInput([e.latlng.lat, e.latlng.lng])
         setSearchQuery2({ q: e.latlng.lat + ',' + e.latlng.lng, key: envConfig.opencageKey })
@@ -119,6 +160,22 @@ export default function OrderDetail() {
               L.latLng(e.latlng.lat, e.latlng.lng),
               L.latLng(restaurantData.lat, restaurantData.lng)
             ],
+            createMarker: (i, wp) => {
+              if (i === 0)
+                return L.marker(wp.latLng, {
+                  icon: new L.Icon({
+                    iconUrl: humanIcon,
+                    iconSize: [60, 80]
+                  })
+                })
+              else
+                return L.marker(wp.latLng, {
+                  icon: new L.Icon({
+                    iconUrl: diningIcon,
+                    iconSize: [41, 41]
+                  })
+                })
+            },
             router: L.Routing.graphHopper(envConfig.graphhopperKey),
             fitSelectedRoutes: true
           })
@@ -136,6 +193,22 @@ export default function OrderDetail() {
               L.latLng(e.latlng.lat, e.latlng.lng),
               L.latLng(restaurantData.lat, restaurantData.lng)
             ],
+            createMarker: (i, wp) => {
+              if (i === 0)
+                return L.marker(wp.latLng, {
+                  icon: new L.Icon({
+                    iconUrl: humanIcon,
+                    iconSize: [60, 80]
+                  })
+                })
+              else
+                return L.marker(wp.latLng, {
+                  icon: new L.Icon({
+                    iconUrl: diningIcon,
+                    iconSize: [41, 41]
+                  })
+                })
+            },
             router: L.Routing.graphHopper(envConfig.graphhopperKey),
             fitSelectedRoutes: true
           })
@@ -149,34 +222,17 @@ export default function OrderDetail() {
     return null
   }
 
-  function ResetCenterView({ latLng }) {
+  function ResetCenterView() {
     const map = useMap()
     const { setLeafletMap } = useContext(AppContext)
 
     useEffect(() => {
       setLeafletMap(map)
     }, [map, setLeafletMap])
-    useEffect(() => {
-      if (snapMap) {
-        map.flyTo(latLng, map.getZoom())
-        setSnapMap(false)
-      }
-    }, [map, latLng])
 
     return null
   }
-  const orderFood = order_detail?.data.orderFood
-  const restaurant_id = orderFood?.restaurant_id
-  const orderFoodList = order_detail?.data.orderFoodList
-  const { data: restaurant_data, isSuccess: restaurantSuccess } = useQuery({
-    queryKey: ['restaurantOrderDetail', restaurant_id],
-    queryFn: () => {
-      return getRestaurant(restaurant_id)
-    },
-    placeholderData: keepPreviousData,
-    enabled: !!restaurant_id
-  })
-  const restaurantData = restaurant_data?.data.restaurant
+
   const onSubmit = handleSubmit((data) => {
     data.order_food_id = orderFood?._id
     data.address = addressValue
@@ -197,12 +253,6 @@ export default function OrderDetail() {
         }
       }
     })
-  })
-  const bottomBar = useRef(null)
-  window.addEventListener('scroll', (event) => {
-    if (bottomBar.current.style)
-      if (window.scrollY > 500) bottomBar.current.style.visibility = 'visible'
-      else bottomBar.current.style.visibility = 'hidden'
   })
 
   if (isSuccess && restaurantSuccess) {
@@ -282,14 +332,10 @@ export default function OrderDetail() {
                         <div key={key}>
                           <div
                             className='sm:w-[53vw] w-[50vw] cursor-pointer 
-                          
                           hover:bg-slate-200 bg-white'
                             onClick={() => {
-                              setLatLng([data.geometry.lat, data.geometry.lng])
                               setEnableSearchResults(false)
-                              setSnapMap(true)
                               setAddressValue(data.formatted)
-                              setMarkerPos([data.geometry.lat, data.geometry.lng])
                               setLatLngValueInput([data.geometry.lat, data.geometry.lng])
                               if (!routingRedraw) {
                                 const newRoutingMap = L.Routing.control({
@@ -297,6 +343,22 @@ export default function OrderDetail() {
                                     L.latLng(data.geometry.lat, data.geometry.lng),
                                     L.latLng(restaurantData.lat, restaurantData.lng)
                                   ],
+                                  createMarker: (i, wp) => {
+                                    if (i === 0)
+                                      return L.marker(wp.latLng, {
+                                        icon: new L.Icon({
+                                          iconUrl: humanIcon,
+                                          iconSize: [60, 80]
+                                        })
+                                      })
+                                    else
+                                      return L.marker(wp.latLng, {
+                                        icon: new L.Icon({
+                                          iconUrl: diningIcon,
+                                          iconSize: [41, 41]
+                                        })
+                                      })
+                                  },
                                   router: L.Routing.graphHopper(envConfig.graphhopperKey),
                                   fitSelectedRoutes: true
                                 })
@@ -312,6 +374,22 @@ export default function OrderDetail() {
                                     L.latLng(data.geometry.lat, data.geometry.lng),
                                     L.latLng(restaurantData.lat, restaurantData.lng)
                                   ],
+                                  createMarker: (i, wp) => {
+                                    if (i === 0)
+                                      return L.marker(wp.latLng, {
+                                        icon: new L.Icon({
+                                          iconUrl: humanIcon,
+                                          iconSize: [60, 80]
+                                        })
+                                      })
+                                    else
+                                      return L.marker(wp.latLng, {
+                                        icon: new L.Icon({
+                                          iconUrl: diningIcon,
+                                          iconSize: [41, 41]
+                                        })
+                                      })
+                                  },
                                   router: L.Routing.graphHopper(envConfig.graphhopperKey),
                                   fitSelectedRoutes: true
                                 })
@@ -331,7 +409,7 @@ export default function OrderDetail() {
                 </div>
               </div>
               <MapContainer
-                center={[21.028511, 105.804817]}
+                center={[restaurantData.lat, restaurantData.lng]}
                 zoom={13}
                 style={{
                   height: screen.width <= 640 ? '30vh' : 'full',
@@ -339,15 +417,9 @@ export default function OrderDetail() {
                 }}
                 zoomSnap='0.1'
               >
-                <ResetCenterView latLng={latLng}></ResetCenterView>
+                <ResetCenterView></ResetCenterView>
                 <MyComponent></MyComponent>
 
-                <Marker
-                  position={markerPos}
-                  icon={
-                    new Icon({ iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41] })
-                  }
-                ></Marker>
                 <TileLayer
                   attribution='Google Maps'
                   url='http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}' // regular
@@ -393,105 +465,20 @@ export default function OrderDetail() {
                     >
                       {displayNum(orderFood?.total_price) + 'đ'}
                     </div>
-                    {orderFood.status === 0 ? (
-                      <button
-                        type='submit'
-                        disabled={addressValue === '' ? true : false}
-                        className='sm:px-[2rem] sm:py-[1rem] sm:text-3xl 
+
+                    <button
+                      type='submit'
+                      disabled={addressValue === '' ? true : false}
+                      className='sm:px-[2rem] sm:py-[1rem] sm:text-3xl 
                         disabled:bg-gray-200 disabled:text-black 
                         disabled:text-opacity-50 bg-orange-600 
                         hover:enabled:bg-orange-900 text-[0.9rem] text-white rounded-xl
                         px-[0.5rem] py-[0.5rem]'
-                      >
-                        Đặt đơn
-                      </button>
-                    ) : (
-                      <button
-                        type='submit'
-                        disabled
-                        className=' px-[2rem] py-[1rem] text-3xl bg-gray-200 text-black text-opacity-50 rounded-xl'
-                      >
-                        Đã đặt
-                      </button>
-                    )}
+                    >
+                      Đặt đơn
+                    </button>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <div
-            className='sticky bottom-0 z-[2] w-full sm:h-[20vh] h-[10vh] left-0 bg-white
-                
-        '
-            ref={bottomBar}
-          >
-            <div
-              className='flex items-center 
-            justify-between h-full 2xl:mx-[8rem] 
-            sm:mx-[5rem] mx-[1rem] gap-x-4'
-            >
-              <div className='flex items-center gap-x-4 sm:gap-x-8 justify-between'>
-                <Checkbox
-                  icon={
-                    <FaCheckCircle
-                      color='#F97316'
-                      style={{
-                        width: screen.width < 640 ? 20 : 40,
-                        height: screen.width < 640 ? 20 : 40
-                      }}
-                    />
-                  }
-                  name='my-input'
-                  checked={true}
-                  onChange={(value, event) => {}}
-                  borderColor='#F97316'
-                  borderRadius={9999}
-                  size={screen.width < 640 ? 20 : 40}
-                />
-                <button
-                  className='sm:px-[2rem] sm:py-[0.5rem] 2xl:text-3xl sm:text-2xl
-                        disabled:bg-gray-200 disabled:text-black 
-                        disabled:text-opacity-50 bg-red-600 
-                        hover:enabled:bg-orange-900 text-[0.9rem] text-white rounded-xl
-                        px-[0.5rem] py-[0.5rem]'
-                >
-                  Xoá
-                </button>
-              </div>
-              <div className='flex items-center justify-end gap-x-4'>
-                {screen.width >= 640 && (
-                  <div className='text-orange-500 text-xl sm:text-3xl'>Tổng thanh toán</div>
-                )}
-                <div
-                  className={`text-emerald-700 text-xl sm:text-4xl 
-            ${orderFood?.total_price >= Math.pow(10, 9) ? ' text-lg ' : ' text-xl'} `}
-                >
-                  {displayNum(orderFood?.total_price) + 'đ'}
-                </div>
-                {screen.width >= 640 && (
-                  <Link to='/order_food'>
-                    <button
-                      className='sm:px-[2rem] sm:py-[0.5rem] 2xl:text-3xl sm:text-2xl
-                         bg-white 
-                        hover:bg-orange-300 text-[0.9rem] text-orange-500 rounded-xl
-                        px-[0.9rem] py-[0.8rem]'
-                    >
-                      Quay lại giỏ hàng
-                    </button>
-                  </Link>
-                )}
-
-                <button
-                  disabled={addressValue === '' ? true : false}
-                  className='sm:px-[2rem] sm:py-[0.5rem]  2xl:text-3xl sm:text-2xl
-                        disabled:bg-gray-200 disabled:text-black 
-                        disabled:text-opacity-50 bg-orange-600 
-                        hover:enabled:bg-orange-900 text-[0.9rem] text-white rounded-xl
-                        px-[0.9rem] py-[0.8rem]'
-                >
-                  Đặt đơn
-                </button>
               </div>
             </div>
           </div>

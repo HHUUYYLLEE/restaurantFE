@@ -14,6 +14,9 @@ import { simpleSearchRestaurantsAndFood } from '../../api/restaurants.api'
 import { useQuery } from '@tanstack/react-query'
 import { useDebounce } from '@uidotdev/usehooks'
 export default function Header() {
+  useEffect(() => {
+    Modal.setAppElement('body')
+  }, [])
   const { register } = useForm({ mode: 'all' })
   const navigate = useNavigate()
   const [modalLogin, setModalLogin] = useState(false)
@@ -182,16 +185,16 @@ export default function Header() {
           {screen.width >= 640 && (
             <Link
               onClick={() => this.forceUpdate}
-              to='/'
-              className='group text-lg sm:w-[5.7rem] 2xl:full transition duration-300 text-white'
+              to='/find_blogger_restaurants'
+              className='group sm:w-[6.9rem]  2xl:full transition duration-300 text-white'
             >
-              Trang chủ
+              Các đánh giá
             </Link>
           )}
           <div className={`flex items-center ${isAuthenticated && 'hidden'}`}>
             <div
               onClick={openModalLogin}
-              className='group cursor-pointer sm:text-lg ml-3 sm:w-[6.3rem] w-[6.5rem]
+              className='group cursor-pointer sm:text-base ml-3 sm:w-[6.3rem] w-[6.5rem]
               text-[1rem] sm:ml-0 transition duration-300 text-white'
             >
               Đăng nhập
@@ -199,7 +202,7 @@ export default function Header() {
             <div className={`flex items-center ${isAuthenticated && 'hidden'}`}>
               <div
                 onClick={openModalSignup}
-                className='group cursor-pointer sm:text-lg sm:w-[6.3rem] w-[4.2rem]
+                className='group cursor-pointer sm:text-base sm:w-[6.3rem] w-[4.2rem]
                 text-[1rem] sm:ml-7 transition duration-300 text-white'
               >
                 Đăng ký
@@ -232,20 +235,32 @@ export default function Header() {
             {isOpen && (
               <div
                 className='absolute z-10 mt-4 sm:left-[-3rem] sm:w-[10vw] left-[-1rem] 
-              w-[25vw] rounded-lg shadow-lg border-[1px] border-black focus:outline-none 
+              w-[35vw] rounded-lg shadow-lg border-[1px] border-black focus:outline-none 
               bg-white/80'
               >
                 <div className='py-1 divide-y-[1px] divide-gray-400'>
                   <NavLink to='/profile'>
                     <button
                       onClick={() => setIsOpen(false)}
-                      className='inline-flex w-full justify-center sm:px-4 sm:py-3 
+                      className='flex w-full justify-center sm:px-4 sm:py-3 
                       px-[0.2rem] py-[0.6rem]
                       sm:text-lg -mt-0.5'
                     >
-                      Tài khoản
+                      Quản lý
                     </button>
                   </NavLink>
+                  {screen.width < 640 && (
+                    <NavLink to='/find_blogger_restaurants'>
+                      <button
+                        onClick={() => setIsOpen(false)}
+                        className='inline-flex w-full justify-center 
+                        px-[0.2rem] 
+                     '
+                      >
+                        Các đánh giá
+                      </button>
+                    </NavLink>
+                  )}
                   <button
                     onClick={() => {
                       setIsOpen(false)
@@ -302,12 +317,11 @@ export default function Header() {
               setInfo(null)
               setLogoutModal(false)
               clearAccessTokenFromLS()
-              // toast.success('Đăng xuất thành công !')
               navigate('/')
             }}
             className='flex justify-center items-center 
             bg-orange-700 hover:bg-orange-700 text-white font-inter-700 rounded-lg
-            px-[1rem] py-[0.5rem] sm:py-[1.6rem] sm:text-lg text-sm
+            px-[1rem] py-[0.5rem] sm:py-[1.1rem] sm:text-lg text-sm
             '
           >
             Đăng xuất

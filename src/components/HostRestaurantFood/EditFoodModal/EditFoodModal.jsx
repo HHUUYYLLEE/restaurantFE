@@ -10,8 +10,9 @@ import { useEffect, useRef, useState } from 'react'
 import { updateFood } from '../../../api/food.api'
 import { isAxiosUnprocessableEntityError } from '../../../utils/utils'
 import { AiOutlineClose } from 'react-icons/ai'
-import { TailSpin } from 'react-loader-spinner'
 import { Oval } from 'react-loader-spinner'
+import { GrUpload } from 'react-icons/gr'
+
 export default function EditFoodModal({
   closeEditFoodModal,
   food_id,
@@ -106,14 +107,14 @@ export default function EditFoodModal({
               </div>
               <div>
                 <input
-                  type='text'
+                  type='number'
                   id='price'
                   name='price'
                   placeholder='Giá'
                   autoComplete='off'
                   defaultValue={price}
                   {...register('price')}
-                  className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] 
+                  className='focus:outline-[#8AC0FF] priceInput placeholder:text-[#4F4F4F] 
                   placeholder:font-inter-400 border font-inter-500 focus:placeholder:text-transparent
                   border-[#ff822e] text-sm rounded-xl sm:px-[1vw] px-[4vw] w-[30vw] sm:w-[18vw]'
                 />
@@ -143,7 +144,7 @@ export default function EditFoodModal({
               </div>
             </div>
 
-            <div className=' flex'>
+            <div className='flex gap-x-4'>
               <div>
                 <div>Ảnh minh hoạ (Hãy thêm ảnh khác)</div>
                 <input
@@ -152,8 +153,7 @@ export default function EditFoodModal({
                   name='image'
                   accept='image/*'
                   {...register('image')}
-                  className='focus:outline-[#8AC0FF] placeholder:text-[#4F4F4F] 
-                  placeholder:font-inter-400 font-inter-500 border-[#E6E6E6] w-full'
+                  className='absolute z-[-1000] text-transparent left-0'
                   onChange={(e) => {
                     const [file] = e.target.files
                     if (file) {
@@ -162,12 +162,27 @@ export default function EditFoodModal({
                     }
                   }}
                 />
+                <label htmlFor='image'>
+                  <div
+                    className=' hover:bg-green-800 cursor-pointer justify-center
+                 sm:py-[0.3rem] 
+                 py-[0.4rem] w-[10rem] flex items-center  rounded-lg bg-green-500'
+                  >
+                    <GrUpload
+                      style={{
+                        color: 'white',
+                        width: screen.width < 640 ? '5vw' : '2vw',
+                        height: screen.width < 640 ? '5vw' : '2vw'
+                      }}
+                    />
+                  </div>
+                </label>
                 <div className='mt-1 flex min-h-[1.75rem] text-xl text-red-600'>
                   {errors.avatar?.message}
                 </div>
               </div>
               <img
-                src='#'
+                src={image_url}
                 className='w-[10rem] h-[10rem]'
                 onError={(e) => {
                   e.target.style.visibility = 'hidden'

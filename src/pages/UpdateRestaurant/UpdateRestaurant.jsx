@@ -13,13 +13,15 @@ import { FiMinusCircle } from 'react-icons/fi'
 import { useEffect, useRef, useState } from 'react'
 import { TailSpin } from 'react-loader-spinner'
 import Modal from 'react-modal'
+import { GrUpload } from 'react-icons/gr'
+import { Oval } from 'react-loader-spinner'
 import 'leaflet/dist/leaflet.css'
-import markerIconPng from 'leaflet/dist/images/marker-icon.png'
+import diningIcon from '../../asset/img/dining.png'
 import { useDebounce } from '@uidotdev/usehooks'
 import { getRestaurant } from '../../api/restaurants.api'
 import { Icon } from 'leaflet'
 import { MapContainer, TileLayer, useMapEvents, Marker, useMap } from 'react-leaflet'
-import { createSearchParams, useAsyncError, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { envConfig } from '../../utils/env'
 import { convertTime } from '../../utils/utils'
 export default function UpdateRestaurant() {
@@ -616,9 +618,8 @@ export default function UpdateRestaurant() {
                       position={markerPos}
                       icon={
                         new Icon({
-                          iconUrl: markerIconPng,
-                          iconSize: [25, 41],
-                          iconAnchor: [12, 41]
+                          iconUrl: diningIcon,
+                          iconSize: [80, 80]
                         })
                       }
                     ></Marker>
@@ -844,7 +845,9 @@ export default function UpdateRestaurant() {
               </div>
             </div>
             <div className='sm:col-start-10 sm:col-span-6'>
-              <div className='text-lg sm:mt-0 mt-5'>Ảnh nhà hàng (5 ảnh, phải up ảnh mới)</div>
+              <div className='text-lg sm:mt-0 mt-5 text-orange-500'>
+                Ảnh nhà hàng (5 ảnh, phải up ảnh mới)
+              </div>
               <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
                 {errors.images?.message}
               </div>
@@ -871,7 +874,7 @@ export default function UpdateRestaurant() {
                 name='images'
                 accept='image/*'
                 {...register('images')}
-                className='bg-transparent'
+                className='absolute z-[-1000] left-0'
                 multiple
                 onChange={(e) => {
                   for (const element of previewImageElements) {
@@ -890,6 +893,21 @@ export default function UpdateRestaurant() {
                   }
                 }}
               />
+              <label htmlFor='images'>
+                <div
+                  className=' hover:bg-green-800 cursor-pointer justify-center
+                     sm:py-[0.3rem] 
+                     py-[0.4rem] w-[10rem] flex items-center  rounded-lg bg-green-500'
+                >
+                  <GrUpload
+                    style={{
+                      color: 'white',
+                      width: screen.width < 640 ? '5vw' : '2vw',
+                      height: screen.width < 640 ? '5vw' : '2vw'
+                    }}
+                  />
+                </div>
+              </label>
               <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
                 {errors.images?.message}
               </div>
@@ -899,6 +917,46 @@ export default function UpdateRestaurant() {
             </div>
           </div>
         </form>
+        <Modal
+          style={{
+            overlay: {
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              zIndex: 27
+            },
+            content: {
+              top: '50%',
+              left: '50%',
+              right: 'auto',
+              bottom: 'auto',
+              marginRight: '-50%',
+              backgroundColor: 'rgba(0, 0, 0, 0)',
+              transform: 'translate(-50%, -50%)',
+              paddingLeft: '3vw',
+              paddingRight: '3vw',
+              paddingTop: '2vw',
+              paddingBottom: '4vw',
+              borderWidth: '0px',
+              borderRadius: '1rem'
+            }
+          }}
+          isOpen={updateARestaurantMutation.isPending}
+        >
+          <Oval
+            height='150'
+            width='150'
+            color='rgb(249,115,22)'
+            secondaryColor='rgba(249,115,22,0.5)'
+            ariaLabel='tail-spin-loading'
+            radius='5'
+            visible={true}
+            wrapperStyle={{ display: 'flex', justifyContent: 'center' }}
+          />
+        </Modal>
       </>
     )
 }

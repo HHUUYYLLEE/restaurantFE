@@ -5,7 +5,7 @@ import pinlocation from '../../asset/img/pinlocation.png'
 import logobk from '../../asset/img/logo_bk.png'
 export default function Footer() {
   return (
-    <div className='bg-[#EEE] pt-[10rem]'>
+    <div className='bg-orange-600'>
       <div className='w-full bg-orange-600 text-white'>
         <div className='mx-[2rem] sm:flex sm:gap-x-[7rem] 2xl:gap-x-[15rem]'>
           <div className='py-[2rem]'>

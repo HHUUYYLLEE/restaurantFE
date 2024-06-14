@@ -1,0 +1,2 @@
+import BloggerRestaurantsResults from './BloggerRestaurantsResults'
+export default BloggerRestaurantsResults

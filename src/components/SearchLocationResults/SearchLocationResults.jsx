@@ -9,12 +9,10 @@ import { FaCheckCircle } from 'react-icons/fa'
 import Checkbox from 'react-custom-checkbox'
 import { FaSearch } from 'react-icons/fa'
 import { MapContainer, TileLayer, useMapEvents, Marker, useMap } from 'react-leaflet'
-import { Icon } from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-routing-machine'
 import 'lrm-graphhopper'
 import L from 'leaflet'
-import markerIconPng from '../../asset/img/red_map_pin.png'
 import { useDebounce } from '@uidotdev/usehooks'
 import { AppContext } from '../../contexts/app.context'
 import { envConfig } from '../../utils/env'
@@ -28,6 +26,9 @@ import ReactPaginate from 'react-paginate'
 import { VscTriangleLeft } from 'react-icons/vsc'
 import { VscTriangleRight } from 'react-icons/vsc'
 import { HN, TPHCM, categories } from '../../constants/optionsList'
+import diningIcon from '../../asset/img/dining.png'
+import humanIcon from '../../asset/img/human.png'
+
 export default function SearchLocationResults() {
   const [displayType, setDisplayType] = useState(0)
   const [addressValue, setAddressValue] = useState('Hà Nội')
@@ -96,7 +97,12 @@ export default function SearchLocationResults() {
       if (!redrawMarkers) {
         const layerGroup = new L.LayerGroup()
         for (const restaurant of data.data.restaurants) {
-          const marker = L.marker([restaurant.lat, restaurant.lng])
+          const marker = L.marker([restaurant.lat, restaurant.lng], {
+            icon: new L.Icon({
+              iconUrl: diningIcon,
+              iconSize: [80, 80]
+            })
+          })
           marker.addTo(layerGroup).bindPopup(
             `<a href="./restaurant/${restaurant._id}">
               <img src='${restaurant.main_avatar_url}'>
@@ -457,7 +463,12 @@ export default function SearchLocationResults() {
 
             <Marker
               position={markerPos}
-              icon={new Icon({ iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41] })}
+              icon={
+                new L.Icon({
+                  iconUrl: humanIcon,
+                  iconSize: [60, 80]
+                })
+              }
             ></Marker>
             <TileLayer
               attribution='Google Maps'

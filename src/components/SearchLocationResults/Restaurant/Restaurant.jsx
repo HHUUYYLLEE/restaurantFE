@@ -86,7 +86,7 @@ export default function Restaurant({ displayType, restaurant }) {
               className={`sm:ml-3 sm:mt-3
             mx-[0.2rem] mt-[0.2rem]  text-ellipsis overflow-hidden text-gray-600 text-[0.41rem]
              line-clamp-2 
-            ${displayType === 0 ? 's m:ml-3 sm:text-[1rem] ' : ' sm:mx-1 sm:text-[0.7rem] '}
+            ${displayType === 0 ? ' sm:text-[1rem] ' : ' sm:mx-1 sm:text-[0.7rem] '}
             `}
             >
               {restaurant.address}

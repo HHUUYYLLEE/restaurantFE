@@ -13,6 +13,11 @@ import PlaceOrder from './pages/PlaceOrder/PlaceOrder'
 import Search from './pages/Search/Search'
 import SearchByLocation from './components/SearchLocationResults/SearchLocationResults'
 import UpdateRestaurant from './pages/UpdateRestaurant'
+import BloggerRestaurantsResults from './pages/BloggerRestaurantsResults/BloggerRestaurantsResults'
+import HostOrderDetail from './pages/HostOrderDetail/HostOrderDetail'
+import CompletedOrder from './pages/CompletedOrder/CompletedOrder'
+import TableOrderForm from './pages/TableOrderForm'
+import CompletedTableOrder from './pages/CompletedTableOrder/CompletedTableOrder'
 // eslint-disable-next-line react-refresh/only-export-components
 function AdminProtectedRouter() {
   const { info } = useContext(AppContext)
@@ -56,9 +61,36 @@ export default function useRouteElement() {
       )
     },
     {
+      path: '/find_blogger_restaurants',
+      index: true,
+      element: (
+        <MainLayout>
+          <BloggerRestaurantsResults />
+        </MainLayout>
+      )
+    },
+    {
       path: '',
       element: <UserProtectedRouter />,
       children: [
+        {
+          path: '/table_order/:id',
+          index: true,
+          element: (
+            <MainLayout>
+              <TableOrderForm />
+            </MainLayout>
+          )
+        },
+        {
+          path: '/host_order_detail/:id',
+          index: true,
+          element: (
+            <MainLayout>
+              <HostOrderDetail />
+            </MainLayout>
+          )
+        },
         {
           path: '/place_order/:id',
           index: true,
@@ -69,11 +101,29 @@ export default function useRouteElement() {
           )
         },
         {
+          path: '/completed_order/:id',
+          index: true,
+          element: (
+            <MainLayout>
+              <CompletedOrder />
+            </MainLayout>
+          )
+        },
+        {
           path: '/order_food',
           index: true,
           element: (
             <MainLayout>
               <OrderList />
+            </MainLayout>
+          )
+        },
+        {
+          path: '/completed_table_order/:id',
+          index: true,
+          element: (
+            <MainLayout>
+              <CompletedTableOrder />
             </MainLayout>
           )
         },

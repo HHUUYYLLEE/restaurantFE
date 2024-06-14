@@ -15,7 +15,6 @@ import ReactPaginate from 'react-paginate'
 import { VscTriangleLeft } from 'react-icons/vsc'
 import { VscTriangleRight } from 'react-icons/vsc'
 import { HN, TPHCM, categories } from '../../constants/optionsList'
-
 import spinningload from '../../asset/img/spinning_load.gif'
 import { FaAngleDown } from 'react-icons/fa'
 import { FaAngleUp } from 'react-icons/fa'

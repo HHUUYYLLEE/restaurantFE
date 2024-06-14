@@ -1,0 +1,2 @@
+import CompletedOrderTableDetail from './CompletedOrderTableDetail'
+export default CompletedOrderTableDetail

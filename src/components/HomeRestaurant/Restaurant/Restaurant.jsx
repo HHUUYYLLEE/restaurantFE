@@ -31,7 +31,7 @@ export default function Restaurant({ displayType, restaurant }) {
           ${displayType === 0 ? ' sm:h-[26vh] w-full ' : ' sm:h-[18vh] sm:w-[17.4vw] '}`}
           >
             <div
-              className={`sm:mt-[0.2rem] sm:ml-3 mx-[0.2rem] 
+              className={` sm:ml-3 mx-[0.2rem] 
             line-clamp-2 text-ellipsis overflow-hidden  sm:h-[7vh] sm:leading-5
             ${
               displayType === 0
@@ -98,7 +98,7 @@ export default function Restaurant({ displayType, restaurant }) {
               className={`sm:ml-3 sm:mt-3
             mx-[0.2rem] mt-[0.2rem]  text-ellipsis overflow-hidden text-gray-600 text-[0.41rem]
              line-clamp-2 
-            ${displayType === 0 ? 's m:ml-3 sm:text-[1rem] ' : ' sm:mx-1 sm:text-[0.7rem] '}
+            ${displayType === 0 ? ' sm:text-[1rem] ' : ' sm:mx-1 sm:text-[0.7rem] '}
             `}
             >
               {restaurant.address}

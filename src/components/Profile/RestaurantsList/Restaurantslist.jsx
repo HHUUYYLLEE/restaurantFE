@@ -18,13 +18,14 @@ export default function RestaurantsList() {
   console.log(dataUserRestaurants)
   return (
     <>
-      <div className='mx-auto mt-[10vh] w-[80%] p-4'>
+      <div className='mx-auto mt-[10vh] sm:w-[80%] w-[90%] p-4'>
         <div className='flex items-center gap-x-4'>
           <div className='sm:text-3xl'>Danh sách nhà hàng của bạn</div>
           <NavLink to='/open_restaurant'>
             <button
-              className=' hover:bg-[#0366FF] bg-orange-500  text-white sm:py-[1.2rem] 
-            sm:px-[1rem] font-ibm-plex-serif-700 rounded-lg px-[0.2rem]'
+              className=' hover:bg-green-500 bg-orange-500  text-white py-[0.3rem] px-[0.5rem]
+               font-ibm-plex-serif-700 rounded-lg
+              sm:px-[0.8rem] sm:py-[0.4rem] italic '
             >
               Mở thêm nhà hàng
             </button>

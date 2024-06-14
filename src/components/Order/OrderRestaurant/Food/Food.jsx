@@ -21,7 +21,7 @@ import { BsFillPlusCircleFill } from 'react-icons/bs'
 import { FaMinusCircle } from 'react-icons/fa'
 import { Oval } from 'react-loader-spinner'
 
-export default function Food({ food_id, quantity, refetch, status }) {
+export default function Food({ food_id, quantity, refetch, refetch2, status }) {
   useEffect(() => {
     Modal.setAppElement('body')
   }, [])
@@ -29,6 +29,7 @@ export default function Food({ food_id, quantity, refetch, status }) {
   const {
     handleSubmit,
     reset,
+    register,
     formState: { errors }
   } = useForm({
     mode: 'all'
@@ -52,15 +53,12 @@ export default function Food({ food_id, quantity, refetch, status }) {
     },
     placeholderData: keepPreviousData
   })
-  const onSubmit = handleSubmit((data) => {
+  const onSubmit = handleSubmit(async (data) => {
     data.food_id = food_id
     data.quantity = inputValue - quantity
     console.log(data)
     updateOrderFood.mutate(data, {
       onSuccess: () => {
-        // toast.success('Đã cập nhật giỏ hàng!') //。(20)
-        // window.location.reload()
-        reset()
         refetch()
       },
       onError: (error) => {
@@ -68,12 +66,6 @@ export default function Food({ food_id, quantity, refetch, status }) {
         if (isAxiosUnprocessableEntityError(error)) {
           const formError = error.response?.data?.errors
           console.log(formError)
-          // if (formError) {
-          //   setError('username', {
-          //     message: formError.username?.msg,
-          //     type: 'Server'
-          //   })
-          // }
         }
       }
     })
@@ -82,25 +74,17 @@ export default function Food({ food_id, quantity, refetch, status }) {
     data.food_id = food_id
     data.quantity = 1
     console.log(data)
-
     updateOrderFood.mutate(data, {
       onSuccess: () => {
-        // toast.success('Đã cập nhật giỏ hàng!') //。(20)
-        // window.location.reload()
-        reset()
         refetch()
+        refetch2()
+        reset()
       },
       onError: (error) => {
         console.log(error)
         if (isAxiosUnprocessableEntityError(error)) {
           const formError = error.response?.data?.errors
           console.log(formError)
-          // if (formError) {
-          //   setError('username', {
-          //     message: formError.username?.msg,
-          //     type: 'Server'
-          //   })
-          // }
         }
       }
     })
@@ -109,25 +93,17 @@ export default function Food({ food_id, quantity, refetch, status }) {
     data.food_id = food_id
     data.quantity = -1
     console.log(data)
-
     updateOrderFood.mutate(data, {
       onSuccess: () => {
-        // toast.success('Đã cập nhật giỏ hàng!') //。(20)
-        // window.location.reload()
-        reset()
         refetch()
+        refetch2()
+        reset()
       },
       onError: (error) => {
         console.log(error)
         if (isAxiosUnprocessableEntityError(error)) {
           const formError = error.response?.data?.errors
           console.log(formError)
-          // if (formError) {
-          //   setError('username', {
-          //     message: formError.username?.msg,
-          //     type: 'Server'
-          //   })
-          // }
         }
       }
     })
@@ -168,10 +144,11 @@ export default function Food({ food_id, quantity, refetch, status }) {
                       type='number'
                       id={'quantity' + food_id}
                       name='quantity'
-                      defaultValue={inputValue}
+                      defaultValue={quantity}
                       onInput={(e) => {
                         setInputValue(e.target.value)
                       }}
+                      {...register('quantity')}
                       className={` priceInput focus:outline-[#f97416b4] sm:h-full
                    
                   placeholder:text-[#4F4F4F] sm:placeholder:text-sm placeholder:text-[0rem] 
