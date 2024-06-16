@@ -1,15 +1,20 @@
-import { editUserProfile, getUserProfile, editUserAvatar } from '../../../api/user.api'
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { getInfoFromLS } from '../../../utils/auth'
-import { isAxiosUnprocessableEntityError } from '../../../utils/utils'
-import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useMutation } from '@tanstack/react-query'
-import { schemaEditUserProfile } from '../../../utils/rules'
+import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query'
 import { useRef } from 'react'
-import Modal from 'react-modal'
-import { Oval } from 'react-loader-spinner'
+import { useForm } from 'react-hook-form'
+import { FaCheckCircle } from 'react-icons/fa'
 import { GrUpload } from 'react-icons/gr'
+import { Oval } from 'react-loader-spinner'
+import Modal from 'react-modal'
+import {
+  applyBlogger,
+  editUserAvatar,
+  editUserProfile,
+  getUserProfile
+} from '../../../api/user.api'
+import { getInfoFromLS } from '../../../utils/auth'
+import { schemaEditUserProfile } from '../../../utils/rules'
+import { isAxiosUnprocessableEntityError } from '../../../utils/utils'
 
 export default function UserProfile() {
   const user_id = getInfoFromLS()._id
@@ -25,8 +30,7 @@ export default function UserProfile() {
   const {
     register: registerAvatar,
     handleSubmit: handleSubmitAvatar,
-    setError: setErrorAvatar,
-    formState: { errors: errorsAvatar }
+    setError: setErrorAvatar
   } = useForm({
     mode: 'all'
   })
@@ -36,8 +40,8 @@ export default function UserProfile() {
   const editUserAvatarMutation = useMutation({
     mutationFn: (body) => editUserAvatar(body)
   })
-
-  const { status, data, isLoading } = useQuery({
+  const applyBloggerMuation = useMutation({ mutationFn: (body) => applyBlogger(body) })
+  const { data, refetch } = useQuery({
     queryKey: ['userProfile', user_id],
     queryFn: () => {
       return getUserProfile(user_id)
@@ -50,10 +54,8 @@ export default function UserProfile() {
   console.log(dataUser)
   const previewImageElement = useRef()
   const onSubmit = handleSubmit((data) => {
-    // console.log(data)
     editUserProfileMutation.mutate(data, {
       onSuccess: () => {
-        // toast.success('Cập nhật profile thành công !') //。(20)
         window.location.reload()
       },
       onError: (error) => {
@@ -72,11 +74,9 @@ export default function UserProfile() {
     })
   })
   const onSubmitAvatar = handleSubmitAvatar((data) => {
-    // console.log(data)
     data.avatar = data.avatar[0]
     editUserAvatarMutation.mutate(data, {
       onSuccess: () => {
-        // toast.success('Cập nhật avatar thành công !') //。(20)
         window.location.reload()
       },
       onError: (error) => {
@@ -94,11 +94,33 @@ export default function UserProfile() {
       }
     })
   })
-
+  const submitApplyBlogger = () => {
+    applyBloggerMuation.mutate(
+      {},
+      {
+        onSuccess: () => {
+          refetch()
+        },
+        onError: (error) => {
+          console.log(error)
+          if (isAxiosUnprocessableEntityError(error)) {
+            const formError = error.response?.data?.errorsAvatar
+            console.log(formError)
+            if (formError) {
+              setErrorAvatar('avatar', {
+                message: formError.avatar?.msg,
+                type: 'Server'
+              })
+            }
+          }
+        }
+      }
+    )
+  }
   return (
     <>
       {dataUser && (
-        <div className='sm:m-auto m-auto sm:grid sm:grid-cols-[15] sm:w-[72vw] w-[92vw] p-2 gap-12'>
+        <div className='sm:ml-[15vw] sm:grid sm:grid-cols-[15] sm:w-[72vw] w-[92vw] p-2 gap-12'>
           <div className='sm:col-span-5'>
             <div className=''>
               <div>
@@ -123,8 +145,6 @@ export default function UserProfile() {
                     onChange={(e) => {
                       const [file] = e.target.files
                       if (file) {
-                        // console.log(file)
-
                         previewImageElement.current.src = URL.createObjectURL(file)
                         previewImageElement.current.style.visibility = 'visible'
                       }
@@ -202,7 +222,7 @@ export default function UserProfile() {
               <div className='mt-1 flex min-h-[1.75rem] text-lg text-red-600'>
                 {errors.phone_number?.message}
               </div>
-              <div className='flex sm:gap-x-[5rem] gap-x-[1rem] sm:mt-[0.7rem]'>
+              <div className='sm:flex grid gap-y-3 sm:gap-x-[5rem] gap-x-[1rem] sm:mt-[0.7rem]'>
                 <button
                   type='submit'
                   className=' hover:bg-green-500 bg-orange-500  
@@ -212,14 +232,35 @@ export default function UserProfile() {
                 >
                   Cập nhật thông tin
                 </button>
-                <button
-                  type='button'
-                  className=' hover:bg-red-700 bg-red-500  
+                <div className='flex items-center gap-x-2'>
+                  <button
+                    type='button'
+                    disabled={dataUser.status === 3 || dataUser.status === 2 ? true : false}
+                    className=' hover:bg-green-700 bg-green-500  
+                  disabled:bg-gray-200 disabled:text-black 
+                  disabled:text-opacity-50
                   text-white py-[0.3rem] px-[0.5rem] sm:px-[0.8rem] sm:py-[0.4rem] 
                   font-ibm-plex-serif-700 rounded-lg italic'
-                >
-                  Đổi mật khẩu
-                </button>
+                    onClick={submitApplyBlogger}
+                  >
+                    Yêu cầu làm blogger
+                  </button>
+                  {dataUser.status === 2 && (
+                    <div className='text-orange-500 italic'>Đang chờ được chấp nhận</div>
+                  )}
+                  {dataUser.status === 3 && (
+                    <div className='flex items-center gap-x-2'>
+                      <FaCheckCircle
+                        style={{
+                          color: 'green'
+                        }}
+                      />
+                      <div className='sm:text-base italic text-green-500 text-xs'>
+                        Đã trở thành blogger
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </form>
           </div>

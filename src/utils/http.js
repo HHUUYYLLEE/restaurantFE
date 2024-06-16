@@ -54,32 +54,28 @@ applicationJSONInstance.interceptors.response.use(
     console.log(response)
     const { url } = response.config
 
-    if (url === 'user/login' || url === '/user/loginGoogle' || url === 'user/register') {
-      // console.log(url)
-
+    if (
+      url.includes('user/login') ||
+      url.includes('/user/loginGoogle') ||
+      url.includes('user/register')
+    ) {
       accessToken = response.data.data.accessToken
       console.log(accessToken)
       saveInfoToLS(response.data.data.user)
       saveAccessTokenToLS(accessToken)
-    } else if (url.includes('user')) {
-      saveInfoToLS(response.data.user)
     }
-
     return response
   },
-  function (error) {
+  (error) => {
     if (error.response?.status !== HttpStatusCode.UnprocessableEntity) {
       const data = error.response?.data
       const message = data.message || error.message
       console.log(message)
-      // toast.error(message)
     }
     if (error.response?.status === HttpStatusCode.Unauthorized) {
       const data = error.response?.data
       console.log(data)
-      const message = data.message || error.message
       clearAccessTokenFromLS()
-      // toast.error(message)
       window.location.reload()
     }
     return Promise.reject(error)
@@ -96,7 +92,7 @@ multipartFormInstance.interceptors.request.use(
     }
     return config
   },
-  function (error) {
+  (error) => {
     // Do something with request error
     return Promise.reject(error)
   }
@@ -107,30 +103,32 @@ multipartFormInstance.interceptors.response.use(
     console.log(response)
     const { url } = response.config
 
-    if (url === 'user/login' || url === '/user/loginGoogle' || url === 'user/register') {
+    if (
+      url.includes('user/login') ||
+      url.includes('/user/loginGoogle') ||
+      url.includes('user/register')
+    ) {
       // console.log(url)
 
       accessToken = response.data.data.accessToken
       //console.log(accessToken)
       saveInfoToLS(response.data.data.user)
       saveAccessTokenToLS(accessToken)
-    } else if (url.includes('user')) {
-      saveInfoToLS(response.data.user)
     }
 
     return response
   },
-  function (error) {
+  (error) => {
     if (error.response?.status !== HttpStatusCode.UnprocessableEntity) {
       const data = error.response?.data
-      const message = data.message || error.message
+      // const message = data.message || error.message
       // console.log(message)
       // toast.error(message)
     }
     if (error.response?.status === HttpStatusCode.Unauthorized) {
       const data = error.response?.data
       console.log(data)
-      const message = data.message || error.message
+      // const message = data.message || error.message
       clearAccessTokenFromLS()
       // toast.error(message)
       window.location.reload()

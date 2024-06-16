@@ -6,3 +6,4 @@ export const loginGoogleAccount = (body) => applicationJSONInstance.post('/user/
 export const getUserProfile = (id) => applicationJSONInstance.get(`/user/profile/${id}`)
 export const editUserProfile = (body) => applicationJSONInstance.put('/user/updateProfile', body)
 export const editUserAvatar = (body) => multipartFormInstance.put('/user/updateAvatar', body)
+export const applyBlogger = () => applicationJSONInstance.post('user/apply_blogger')

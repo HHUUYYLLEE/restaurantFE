@@ -11,7 +11,7 @@ import diningIcon from '../../asset/img/dining.png'
 import { Icon } from 'leaflet'
 export default function RestaurantDetail() {
   const { id } = useParams()
-  const { data, status, isLoading, isSuccess } = useQuery({
+  const { data, isSuccess } = useQuery({
     queryKey: ['restaurantDetailHost', id],
     queryFn: () => {
       return getRestaurant(id)

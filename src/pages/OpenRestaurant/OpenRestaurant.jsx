@@ -1,30 +1,27 @@
-import { createARestaurant } from '../../api/restaurants.api'
-import { getSearchLocation } from '../../api/openstreetmap.api'
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { getInfoFromLS } from '../../utils/auth'
-import { displayNum, isAxiosUnprocessableEntityError } from '../../utils/utils'
-import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useMutation } from '@tanstack/react-query'
-import { FaPlusCircle } from 'react-icons/fa'
-import { schemaRestaurantProfile } from '../../utils/rules'
-import { FiMinusCircle } from 'react-icons/fi'
-import { useEffect, useRef, useState } from 'react'
-import 'leaflet/dist/leaflet.css'
-import diningIcon from '../../asset/img/dining.png'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useDebounce } from '@uidotdev/usehooks'
-import Modal from 'react-modal'
-import { Oval } from 'react-loader-spinner'
 import { Icon } from 'leaflet'
-import { MapContainer, TileLayer, useMapEvents, Marker, useMap } from 'react-leaflet'
-import { envConfig } from '../../utils/env'
-import { convertTime } from '../../utils/utils'
+import 'leaflet/dist/leaflet.css'
+import { useEffect, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { FaPlusCircle } from 'react-icons/fa'
+import { FiMinusCircle } from 'react-icons/fi'
 import { GrUpload } from 'react-icons/gr'
+import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from 'react-leaflet'
+import { Oval } from 'react-loader-spinner'
+import Modal from 'react-modal'
+import { getSearchLocation } from '../../api/openstreetmap.api'
+import { createARestaurant } from '../../api/restaurants.api'
+import diningIcon from '../../asset/img/dining.png'
+import { envConfig } from '../../utils/env'
+import { schemaRestaurantProfile } from '../../utils/rules'
+import { convertTime, isAxiosUnprocessableEntityError } from '../../utils/utils'
 
 export default function OpenRestaurant() {
   const [enableSearchResults, setEnableSearchResults] = useState(false)
   const [latLng, setLatLng] = useState(null)
-  const [addressValue, setAddressValue] = useState(1)
+  const [addressValue, setAddressValue] = useState('')
   const [latLngValueInput, setLatLngValueInput] = useState(['', ''])
   const [tableChair, setTableChair] = useState([{ chair: 0, table: 0 }])
   const [enableSearchLatLng, setEnableSearchLatLng] = useState(false)
@@ -32,26 +29,21 @@ export default function OpenRestaurant() {
   const [searchQuery2, setSearchQuery2] = useState(null)
   const [searchParams] = useDebounce([searchQuery], 1000)
   const [searchParams2] = useDebounce([searchQuery2], 1000)
-  const { status, data, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ['search_location', searchParams],
     queryFn: () => {
       return getSearchLocation(searchParams)
     },
     enabled: enableSearchResults
   })
-  const {
-    status: status2,
-    data: data2,
-    isLoading: isLoading2,
-    isSuccess: isSuccess2
-  } = useQuery({
+  const { data: data2, isSuccess: isSuccess2 } = useQuery({
     queryKey: ['search_lat_lng', searchParams2],
     queryFn: () => {
       return getSearchLocation(searchParams2)
     },
     enabled: enableSearchLatLng
   })
-  function HandleSuccess({ isSuccess2, data }) {
+  function HandleSuccess({ isSuccess2, data2 }) {
     useEffect(() => {
       if (isSuccess2) {
         setAddressValue(data2.data.results[0].formatted)
@@ -62,12 +54,11 @@ export default function OpenRestaurant() {
       }
     }, [isSuccess2])
   }
-  HandleSuccess({ isSuccess2, data })
+  HandleSuccess({ isSuccess2, data2 })
 
   const {
     register,
     handleSubmit,
-    setError,
     setValue,
     reset,
     formState: { errors }
@@ -92,7 +83,6 @@ export default function OpenRestaurant() {
   const onSubmit = handleSubmit((data) => {
     console.log(data)
     if (data.address === '' || data.lat === '' || data.lng === '') {
-      // toast.error('Hãy nhập địa chỉ')
       return
     }
     data.morning_open_time =
@@ -141,11 +131,9 @@ export default function OpenRestaurant() {
     }
 
     data.table_chair = table_chair
-    console.log(data)
 
     createARestaurantMutation.mutate(data, {
       onSuccess: () => {
-        // toast.success('Mỏ nhà hàng thành công !') //。(20)
         window.location.reload()
       },
       onError: (error) => {
@@ -153,18 +141,12 @@ export default function OpenRestaurant() {
         if (isAxiosUnprocessableEntityError(error)) {
           const formError = error.response?.data?.errors
           console.log(formError)
-          // if (formError) {
-          //   setError('username', {
-          //     message: formError.username?.msg,
-          //     type: 'Server'
-          //   })
-          // }
         }
       }
     })
   })
   function MyComponent() {
-    const map = useMapEvents({
+    useMapEvents({
       click: (e) => {
         setMarkerPos([e.latlng.lat, e.latlng.lng])
         setLatLngValueInput([e.latlng.lat, e.latlng.lng])

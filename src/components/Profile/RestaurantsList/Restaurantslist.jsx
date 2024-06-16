@@ -6,7 +6,7 @@ import { NavLink } from 'react-router-dom'
 export default function RestaurantsList() {
   const user_id = getInfoFromLS()._id
 
-  const { status, data, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ['userRestaurants', user_id],
     queryFn: () => {
       return getAllUserRestaurants(user_id)
@@ -18,7 +18,7 @@ export default function RestaurantsList() {
   console.log(dataUserRestaurants)
   return (
     <>
-      <div className='mx-auto mt-[10vh] sm:w-[80%] w-[90%] p-4'>
+      <div className='sm:ml-[10vw] mt-[10vh] sm:w-[80%] w-[90%] p-4'>
         <div className='flex items-center gap-x-4'>
           <div className='sm:text-3xl'>Danh sách nhà hàng của bạn</div>
           <NavLink to='/open_restaurant'>

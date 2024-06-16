@@ -1,46 +1,37 @@
-import { Link, useParams } from 'react-router-dom'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { getRestaurant } from '../../api/restaurants.api'
+import L from 'leaflet'
+import 'leaflet-routing-machine'
+import 'leaflet/dist/leaflet.css'
+import 'lrm-graphhopper'
+import { useContext, useEffect } from 'react'
+import { FaArrowCircleDown, FaChair } from 'react-icons/fa'
+import {
+  MdDining,
+  MdOutlineComment,
+  MdOutlinePinDrop,
+  MdOutlineTableRestaurant
+} from 'react-icons/md'
+import { MapContainer, TileLayer, useMap } from 'react-leaflet'
 import { Carousel } from 'react-responsive-carousel'
 import 'react-responsive-carousel/lib/styles/carousel.css'
-import { MdOutlinePinDrop } from 'react-icons/md'
-import { MapContainer, TileLayer, useMap } from 'react-leaflet'
-import 'leaflet/dist/leaflet.css'
+import { Link, useParams } from 'react-router-dom'
+import { getRestaurant } from '../../api/restaurants.api'
 import diningIcon from '../../asset/img/dining.png'
 import humanIcon from '../../asset/img/human.png'
-import { getStatusRestaurantFromTime } from '../../utils/utils'
-import { MdDining } from 'react-icons/md'
-import { MdOutlineComment } from 'react-icons/md'
-import { FaArrowCircleDown } from 'react-icons/fa'
-import { useEffect, useContext } from 'react'
+import spinningload from '../../asset/img/spinning_load.gif'
 import { AppContext } from '../../contexts/app.context'
 import { envConfig } from '../../utils/env'
-import 'leaflet/dist/leaflet.css'
-import 'leaflet-routing-machine'
-import 'lrm-graphhopper'
-import L from 'leaflet'
-import spinningload from '../../asset/img/spinning_load.gif'
-import { MdOutlineTableRestaurant } from 'react-icons/md'
-import { FaChair } from 'react-icons/fa'
-export default function RestaurantDetail({
-  setOption,
-  reviews,
-  setReviews,
-  setGetReviewSuccess,
-  setRestaurantId
-}) {
+import { getStatusRestaurantFromTime } from '../../utils/utils'
+export default function RestaurantDetail({ setOption, reviews, setReviews, setGetReviewSuccess }) {
   const { leafletMap } = useContext(AppContext)
-
   const scores = ['Vị trí', 'Giá cả', 'Chất lượng', 'Phục vụ', 'Không gian']
   const { id } = useParams()
-  const { data, status, isLoading, isSuccess } = useQuery({
+  const { data, isLoading, isSuccess } = useQuery({
     queryKey: ['restaurantDetail', id, reviews],
     queryFn: async () => {
       const data = await getRestaurant(id)
       setReviews(data?.data.reviews)
-      setRestaurantId(id)
       setGetReviewSuccess(true)
-      window.scrollTo(0, 0)
       return data
     },
     placeholderData: keepPreviousData
@@ -81,10 +72,9 @@ export default function RestaurantDetail({
           newRoutingMap.on('routeselected', (e) => {
             console.log(e)
           })
-          newRoutingMap.on('routingerror', (e) => {})
           newRoutingMap.addTo(leafletMap)
         },
-        (err) => {
+        () => {
           L.marker([restaurantData.lat, restaurantData.lng], {
             icon: new L.Icon({
               iconUrl: diningIcon,

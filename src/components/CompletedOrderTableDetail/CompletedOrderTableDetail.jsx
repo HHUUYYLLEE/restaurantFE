@@ -1,116 +1,101 @@
-import { useParams, useNavigate, Link } from 'react-router-dom'
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { getOrder, cancelOrder } from '../../api/order_food.api'
-import 'react-responsive-carousel/lib/styles/carousel.css'
-import 'leaflet/dist/leaflet.css'
-import { getSearchLocation } from '../../api/openstreetmap.api'
-import { useState, useEffect, useContext } from 'react'
-import { useForm } from 'react-hook-form'
-import { useMutation } from '@tanstack/react-query'
-import { displayNum, isAxiosUnprocessableEntityError } from '../../utils/utils'
-import { MdOutlinePinDrop } from 'react-icons/md'
-import { getInfoFromLS } from '../../utils/auth'
-import { MapContainer, TileLayer, useMapEvents, useMap } from 'react-leaflet'
-import { envConfig } from '../../utils/env'
-import { CiShop } from 'react-icons/ci'
-import { getRestaurant } from '../../api/restaurants.api'
-import 'leaflet/dist/leaflet.css'
-import 'leaflet-routing-machine'
-import 'lrm-graphhopper'
+import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query'
 import L from 'leaflet'
-import { useDebounce } from '@uidotdev/usehooks'
-import { AppContext } from '../../contexts/app.context'
-import { FaPhoneAlt } from 'react-icons/fa'
+import 'leaflet-routing-machine'
+import 'leaflet/dist/leaflet.css'
+import 'lrm-graphhopper'
+import { useContext, useEffect, useState } from 'react'
+import { FaCalendarAlt, FaChair, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa'
+import { MdOutlineTableRestaurant } from 'react-icons/md'
+import { MapContainer, TileLayer, useMap } from 'react-leaflet'
+import { Oval } from 'react-loader-spinner'
 import Modal from 'react-modal'
+import { useParams } from 'react-router-dom'
+import { cancelOrderTable, getOrderTable } from '../../api/order_table.api'
 import diningIcon from '../../asset/img/dining.png'
 import humanIcon from '../../asset/img/human.png'
-import { Oval } from 'react-loader-spinner'
+import tableChairIcon from '../../asset/img/table_chair.png'
+import { AppContext } from '../../contexts/app.context'
+import { getInfoFromLS } from '../../utils/auth'
+import { envConfig } from '../../utils/env'
+import { VNDate, isAxiosUnprocessableEntityError } from '../../utils/utils'
 
 export default function CompletedOrderTableDetail() {
+  const { id } = useParams()
+  const { leafletMap } = useContext(AppContext)
+  const { username, phone_number } = getInfoFromLS()
+  const [cancelOrderTableModal, setCancelOrderTableModal] = useState(false)
   useEffect(() => {
     Modal.setAppElement('body')
   }, [])
-  const { leafletMap } = useContext(AppContext)
-  const phone_number = getInfoFromLS().phone_number
-  const username = getInfoFromLS().username
-  const { id } = useParams()
-  const navigate = useNavigate()
-  const [cancelOrderModal, setCancelOrderModal] = useState(false)
-  const { data: order_detail, isSuccess } = useQuery({
-    queryKey: ['order_list', id],
+  const { data, isSuccess } = useQuery({
+    queryKey: ['order_table_detail', id],
     queryFn: () => {
-      return getOrder(id)
+      return getOrderTable(id)
     },
     placeholderData: keepPreviousData
   })
-  const orderFood = order_detail?.data.orderFood
-  const restaurant_id = orderFood?.restaurant_id
-  const orderFoodList = order_detail?.data.orderFoodList
-  const { data: restaurant_data, isSuccess: restaurantSuccess } = useQuery({
-    queryKey: ['restaurantOrderDetail', restaurant_id],
-    queryFn: () => {
-      return getRestaurant(restaurant_id)
-    },
-    placeholderData: keepPreviousData,
-    enabled: !!restaurant_id
-  })
-  const restaurantData = restaurant_data?.data.restaurant
-
-  const cancelAnOrder = useMutation({
-    mutationFn: (body) => cancelOrder(body)
-  })
-
-  function drawRoute() {
-    const newRoutingMap = L.Routing.control({
-      waypoints: [
-        L.latLng(orderFood.lat, orderFood.lng),
-        L.latLng(restaurantData?.lat, restaurantData?.lng)
-      ],
-      router: L.Routing.graphHopper(envConfig.graphhopperKey),
-      createMarker: (i, wp) => {
-        if (i === 0)
-          return L.marker(wp.latLng, {
-            icon: new L.Icon({
-              iconUrl: humanIcon,
-              iconSize: [60, 80]
-            })
+  const orderTableData = data?.data.orderTable
+  const restaurantData = data?.data.restaurant
+  function Routing() {
+    const map = useMap()
+    const { setLeafletMap } = useContext(AppContext)
+    useEffect(() => {
+      setLeafletMap(map)
+      navigator.geolocation.getCurrentPosition(
+        (e) => {
+          const newRoutingMap = L.Routing.control({
+            waypoints: [
+              L.latLng(e.coords.latitude, e.coords.longitude),
+              L.latLng(restaurantData.lat, restaurantData.lng)
+            ],
+            router: L.Routing.graphHopper(envConfig.graphhopperKey),
+            createMarker: (i, wp) => {
+              if (i !== 0)
+                return L.marker(wp.latLng, {
+                  icon: new L.Icon({
+                    iconUrl: diningIcon,
+                    iconSize: [41, 41]
+                  })
+                })
+              else
+                return L.marker(wp.latLng, {
+                  icon: new L.Icon({
+                    iconUrl: humanIcon,
+                    iconSize: [60, 80]
+                  })
+                })
+            },
+            language: 'en',
+            fitSelectedRoutes: true
           })
-        else
-          return L.marker(wp.latLng, {
+          newRoutingMap.on('routeselected', (e) => {
+            console.log(e)
+          })
+          newRoutingMap.addTo(leafletMap)
+        },
+        () => {
+          L.marker([restaurantData.lat, restaurantData.lng], {
             icon: new L.Icon({
               iconUrl: diningIcon,
               iconSize: [41, 41]
             })
-          })
-      },
-      language: 'en',
-      fitSelectedRoutes: true
-    })
-    newRoutingMap.on('routeselected', (e) => {
-      console.log(e)
-    })
-    newRoutingMap.on('routingerror', (e) => {})
-    newRoutingMap.addTo(leafletMap)
-  }
-
-  function ResetCenterView() {
-    const map = useMap()
-    const { setLeafletMap } = useContext(AppContext)
-
-    useEffect(() => {
-      setLeafletMap(map)
-      navigator.geolocation.getCurrentPosition(drawRoute, drawRoute)
+          }).addTo(leafletMap)
+        }
+      )
     }, [map, setLeafletMap])
 
     return null
   }
 
-  const submitCancelAnOrder = () => {
-    var data = {}
-    data.order_food_id = id
-    cancelAnOrder.mutate(data, {
+  const cancelOrderTableMutation = useMutation({
+    mutationFn: (body) => cancelOrderTable(body)
+  })
+
+  const submitCancelOrderTable = () => {
+    data.order_table_id = id
+    cancelOrderTableMutation.mutate(data, {
       onSuccess: () => {
-        navigate('/order_food')
+        window.location.reload()
       },
       onError: (error) => {
         console.log(error)
@@ -121,63 +106,83 @@ export default function CompletedOrderTableDetail() {
       }
     })
   }
-
-  if (isSuccess && restaurantSuccess) {
-    return (
-      <>
-        <div className='w-full bg-white sm:p-[2.5rem] p-[0.5rem]'>
-          <div className='flex sm:justify-between items-center sm:gap-x-0 gap-x-[1rem]'>
-            <div className='flex gap-x-1 items-center mt-[1rem] font-inter-400'>
-              <MdOutlinePinDrop
-                style={{
-                  width: screen.width >= 640 ? '1.6vw' : '3.5vw',
-                  height: screen.width >= 640 ? '1.6vw' : '3.5vw',
-                  color: 'red'
-                }}
-              />
-              <div
-                className='sm:text-2xl w-[27vw] 
-              sm:w-[11vw] 2xl:w-[9.5vw] text-red-700'
-              >
-                Địa chỉ nhận
-              </div>
-            </div>
-
-            <div
-              className='flex font-bold sm:text-2xl sm:gap-x-[1rem] 
-           sm:w-full w-[45vw] justify-end'
-            >
-              <div className='sm:flex sm:items-center sm:gap-x-3 sm:justify-end'>
-                <div className='text-orange-500 sm:block flex sm:justify-start justify-end'>
-                  {username}
-                </div>
-                <div className='flex gap-x-2 sm:ml-0'>
-                  <FaPhoneAlt
+  const firstDate = new Date(orderTableData?.updatedAt).getTime()
+  const secondDate = Date.now()
+  const diffTime = Math.abs(secondDate - firstDate)
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+  let diffHours, diffMinutes
+  if (diffDays === 0) {
+    diffHours = Math.floor(diffTime / (1000 * 60 * 60))
+    if (diffHours === 0) {
+      diffMinutes = Math.floor(diffTime / (1000 * 60))
+    }
+  }
+  return (
+    <>
+      {isSuccess && (
+        <div className=''>
+          <div className='flex bg-white gap-x-[2vw] sm:gap-x-0'>
+            {screen.width > 640 && (
+              <div className='flex w-[15vw] bg-orange-500 sm:w-[10vw] justify-center items-center gap-x-3'>
+                <div>
+                  <MdOutlineTableRestaurant
                     style={{
-                      color: 'green',
-                      width: screen.width >= 640 ? '2vw' : '5vw',
-                      height: screen.width >= 640 ? '2vw' : '5vw'
+                      color: 'white',
+                      width: '2vw',
+                      height: '2vw'
                     }}
                   />
-                  <div className='text-green-500'>{phone_number}</div>
+                </div>
+                <div className='text-white 2xl:text-[1.2rem]'>Đặt chỗ</div>
+                <div>
+                  <FaChair
+                    style={{
+                      color: 'white',
+                      width: '1.5vw',
+                      height: '1.5vw'
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+            <div className='flex gap-x-3'>
+              <div className='sm:max-w-[30vw] max-w-[30vw] max-h-[15vh] sm:max-h-[20vh]'>
+                <img
+                  referrerPolicy='no-referrer'
+                  className='sm:w-[20vw] w-[30vw] h-[15vh] sm:h-[20vh]'
+                  src={restaurantData.main_avatar_url}
+                />
+              </div>
+              <div
+                className='text-[0.6rem] sm:text-base max-w-[58vw] sm:max-w-[55vw] 
+               my-[1vh] sm:my-[3vh] grid gap-y-2 mr-[0.4rem]'
+              >
+                <div className='text-green-500 line-clamp-3 sm:line-clamp-2 text-ellipsis'>
+                  {restaurantData.name}
+                </div>
+                <div className='flex'>
+                  <div>
+                    <FaMapMarkerAlt style={{ color: 'red' }} />
+                  </div>
+                  <div className='line-clamp-3 sm:line-clamp-2 text-ellipsis'>
+                    {restaurantData.address}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className='sm:text-2xl text-[0.6rem] sm:line-clamp-1 text-ellipsis line-clamp-2 w-[37vw] sm:w-full overflow-hidden  italic h-[2rem]'>
-            {orderFood.address}
-          </div>
-          <div className='relative w-full'>
+
+          <div className='sm:mt-[3rem] mt-[1rem] flex justify-center'>
             <MapContainer
-              center={[restaurantData.lat, restaurantData.lng]}
-              zoom={13}
-              style={{
-                height: screen.width <= 640 ? '30vh' : 'full',
-                width: screen.width >= 1536 ? '80vw' : screen.width >= 640 ? '80vw' : '78vw'
-              }}
               zoomSnap='0.1'
+              center={[restaurantData.lat, restaurantData.lng]}
+              zoom={17}
+              style={{
+                height: screen.width < 640 ? '30vh' : '80vh',
+                width: '90vw'
+              }}
             >
-              <ResetCenterView></ResetCenterView>
+              <Routing></Routing>
 
               <TileLayer
                 attribution='Google Maps'
@@ -189,168 +194,225 @@ export default function CompletedOrderTableDetail() {
               />
             </MapContainer>
           </div>
-        </div>
-        <div className='w-full sm:mt-[3rem] mt-[1rem]'>
-          <div className='bg-white mb-[2rem]'>
-            <div className='py-[1.2rem] sm:px-[1.2rem] px-[0.3rem]'>
-              <div className='flex justify-between'>
-                <Link to={`/restaurant/${restaurantData?._id}`}>
-                  <div className='flex items-center sm:gap-x-[1.2rem]'>
-                    <CiShop
-                      style={{
-                        width: screen.width >= 640 ? '2vw' : '11vw',
-                        height: screen.width >= 640 ? '2vw' : '11vw'
-                      }}
-                    />
-                    <div className='sm:text-2xl'>{restaurantData?.name}</div>
-                  </div>
-                </Link>
+          <div className='rounded-md mt-[2rem] bg-white px-[1rem] py-[0.5rem]'>
+            <div className=' flex justify-between'>
+              <div>{username}</div>
+              <div className='flex gap-x-2 items-center'>
+                <FaPhoneAlt
+                  style={{
+                    color: 'green',
+                    width: screen.width >= 640 ? '1.5vw' : '5vw',
+                    height: screen.width >= 640 ? '1.5vw' : '5vw'
+                  }}
+                />
+                <div className='text-green-500'>{phone_number}</div>
               </div>
-              <hr className='h-[0.2rem] mt-[0.4rem] z-10 border-none bg-gray-400' />
-              {order_detail &&
-                orderFoodList.map((data) => {
-                  return <Food key={data._id} food_id={data.food_id} quantity={data.quantity} />
-                })}
-              <hr className='h-[0.2rem] mt-[0.4rem] z-10 border-none bg-gray-400' />
-              <div>
-                <div className='text-right mt-[1rem] sm:text-3xl flex items-center mx-[0.5rem] sm:gap-x-[3rem] gap-x-[1rem]'>
-                  <div className='text-orange-500'>
-                    {screen.width < 640 ? 'Tổng' : 'Tổng thanh toán'}
-                  </div>
+            </div>
+          </div>
+          <div className='mt-[1.2rem] sm:mt-[1.5rem] bg-white'>
+            <div className='flex mx-[1rem] sm:mx-[1.3rem] items-center gap-x-2'>
+              <div className='max-w-[10vw] max-h-[10vw] sm:max-w-[3vw] sm:max-h-[3vw]'>
+                <img className='w-[10vw] h-[10vw] sm:w-[3vw] sm:h-[3vw]' src={tableChairIcon} />
+              </div>
+              <div className='text-orange-500 sm:text-[1.2rem]'>Loại bàn đặt</div>
+            </div>
+            <hr className='h-[0.1rem] border-none bg-gray-400' />
+
+            <div className='mx-[0.4rem] sm:mx-[1.3rem] grid grid-cols-3 sm:gap-x-4 sm:grid-cols-5'>
+              {orderTableData.table_chair.map((data, id) => {
+                return (
                   <div
-                    className={`mr-0 ml-auto sm:text-4xl w-[37vw]
-                  ${orderFood?.total_price >= Math.pow(10, 9) ? ' text-lg ' : ' text-xl '} 
-                  text-emerald-600`}
+                    key={id}
+                    className={`sm:flex sm:items-center sm:gap-x-10 rounded-md border-[0.1rem] 
+                sm:border-[0.1rem]  border-slate-200`}
                   >
-                    {displayNum(orderFood?.total_price) + 'đ'}
+                    <div className='mx-[0.2rem]'>
+                      <div className='flex items-center gap-x-2'>
+                        <MdOutlineTableRestaurant
+                          style={{
+                            color: 'orange',
+                            width: screen.width < 640 ? '8vw' : '4vw',
+                            height: screen.width < 640 ? '8vw' : '4vw'
+                          }}
+                        />
+                        <div className={``}>{data.chair + ' chỗ'}</div>
+                        {screen.width > 640 && (
+                          <div className='flex gap-x-2'>
+                            <div className='text-green-500'>{'x' + data.table}</div>
+                            <div>bàn</div>
+                          </div>
+                        )}
+                      </div>
+                      {screen.width <= 640 && (
+                        <div className='flex gap-x-2 justify-center'>
+                          <div className='text-green-500'>{'x' + data.table}</div>
+                          <div>bàn</div>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  {orderFood.status === 1 ? (
-                    <button
-                      className='sm:px-[2rem] sm:py-[1rem] sm:text-3xl 
-                       bg-red-600 hover:bg-red-800
-                        hover:enabled:bg-orange-900 text-[0.9rem] text-white rounded-xl
-                        px-[0.5rem] py-[0.5rem]'
-                      onClick={() => setCancelOrderModal(true)}
-                    >
-                      Huỷ
-                    </button>
-                  ) : orderFood.status === 2 ? (
-                    <button
-                      disabled
-                      className=' px-[2rem] py-[1rem] text-3xl 
-                        bg-gray-200 text-black text-opacity-50 rounded-xl'
-                    >
-                      Đã huỷ
-                    </button>
-                  ) : (
-                    <button
-                      disabled
-                      className=' px-[2rem] py-[1rem] text-3xl 
-                    bg-gray-200 text-black text-opacity-50 rounded-xl'
-                    >
-                      Đã hoàn thành
-                    </button>
-                  )}
+                )
+              })}
+            </div>
+          </div>
+          <div className='mt-[1.2rem] sm:mt-[1.5rem] bg-white'>
+            <div className='flex mx-[1rem] py-[0.4rem] sm:mx-[1.3rem] items-center gap-x-2'>
+              <FaCalendarAlt
+                style={{
+                  color: 'orange',
+                  width: screen.width < 640 ? '6vw' : '2vw',
+                  height: screen.width < 640 ? '6vw' : '2vw'
+                }}
+              />
+              <div className='text-orange-500 sm:text-[1.2rem]'>Thời điểm</div>
+            </div>
+            <hr className='h-[0.1rem] border-none bg-gray-400' />
+            <div className='px-[1rem] py-[1rem]'>
+              <div className='sm:flex sm:justify-between'>
+                <div className='flex gap-x-1'>
+                  <div>Hẹn đặt:</div>
+                  <div className='text-orange-500 italic'>{VNDate(orderTableData.date)}</div>
+                </div>
+                <div className='flex gap-x-1'>
+                  <div className='italic text-slate-500'>
+                    {diffDays == 0
+                      ? diffHours == 0
+                        ? diffMinutes + ' phút trước'
+                        : diffHours + ' giờ trước'
+                      : diffDays + ' ngày trước'}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+          <div className=''>
+            {orderTableData.status === 1 ? (
+              <button
+                className='my-[3rem] hover:bg-red-700 
+            bg-red-500  text-white py-[1.2rem] px-[1rem] font-ibm-plex-serif-700 rounded-lg'
+                onClick={() => setCancelOrderTableModal(true)}
+              >
+                Huỷ
+              </button>
+            ) : orderTableData.status === 2 ? (
+              <button
+                disabled
+                className='sm:px-[2rem] sm:py-[1rem] mt-[1rem] sm:text-xl 
+            bg-gray-200 text-black 
+            text-opacity-50 text-[0.9rem] rounded-xl
+            px-[0.5rem] py-[0.5rem]'
+                onClick={() => setCancelOrderTableModal(true)}
+              >
+                Đã huỷ
+              </button>
+            ) : (
+              <button
+                disabled
+                className='sm:px-[2rem] sm:py-[1rem] mt-[1rem] sm:text-xl 
+            bg-gray-200 text-black 
+            text-opacity-50 text-[0.9rem] rounded-xl
+            px-[0.5rem] py-[0.5rem]'
+                onClick={() => setCancelOrderTableModal(true)}
+              >
+                Đã chấp nhận
+              </button>
+            )}
+          </div>
         </div>
-
-        <Modal
-          style={{
-            overlay: {
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: 'rgba(0, 0, 0, 0.9)',
-              zIndex: 20
-            },
-            content: {
-              top: '50%',
-              left: '50%',
-              right: 'auto',
-              bottom: 'auto',
-              marginRight: '-50%',
-              transform: 'translate(-50%, -50%)',
-              paddingLeft: '3vw',
-              paddingRight: '3vw',
-              paddingTop: '2vw',
-              paddingBottom: '4vw',
-              borderWidth: '0px',
-              borderRadius: '1rem'
-            }
-          }}
-          isOpen={cancelOrderModal}
-          onRequestClose={() => setCancelOrderModal(false)}
-        >
-          <div className='font-inter-700 sm:text-2xl'>Huỷ đơn hàng?</div>
-          <div className='sm:mt-[8vh] mt-[2vh] flex gap-x-4 sm:gap-x-12'>
-            <button
-              onClick={() => {
-                submitCancelAnOrder()
-                setCancelOrderModal(false)
-              }}
-              className='flex justify-center items-center 
-            bg-orange-700 hover:bg-orange-700 text-white font-inter-700 rounded-lg
+      )}
+      <Modal
+        style={{
+          overlay: {
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+            zIndex: 20
+          },
+          content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+            paddingLeft: '3vw',
+            paddingRight: '3vw',
+            paddingTop: '2vw',
+            paddingBottom: '4vw',
+            borderWidth: '0px',
+            borderRadius: '1rem'
+          }
+        }}
+        isOpen={cancelOrderTableModal}
+        onRequestClose={() => setCancelOrderTableModal(false)}
+      >
+        <div className='font-inter-700 sm:text-2xl'>Xác nhận huỷ đặt chỗ?</div>
+        <div className='sm:mt-[8vh] mt-[2vh] flex gap-x-4 sm:gap-x-12 justify-center'>
+          <button
+            onClick={() => {
+              submitCancelOrderTable()
+              setCancelOrderTableModal(false)
+            }}
+            className='flex justify-center items-center 
+            bg-green-500 hover:bg-green-700 text-white font-inter-700 rounded-lg
             px-[1rem] py-[0.5rem] sm:py-[1.1rem] sm:text-lg text-sm
             '
-            >
-              Xác nhận
-            </button>
-            <button
-              onClick={() => setCancelOrderModal(false)}
-              className='flex justify-center items-center bg-[#DD1A1A] hover:bg-red-900 
+          >
+            Xác nhận
+          </button>
+          <button
+            onClick={() => setCancelOrderTableModal(false)}
+            className='flex justify-center items-center bg-[#DD1A1A] hover:bg-red-900 
             text-white font-inter-700 rounded-lg
             px-[1rem] py-[0.1rem] text-sm sm:text-lg sm:px-[2rem]'
-            >
-              Không
-            </button>
-          </div>
-        </Modal>
-        <Modal
-          style={{
-            overlay: {
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              zIndex: 27
-            },
-            content: {
-              top: '50%',
-              left: '50%',
-              right: 'auto',
-              bottom: 'auto',
-              marginRight: '-50%',
-              backgroundColor: 'rgba(0, 0, 0, 0)',
-              transform: 'translate(-50%, -50%)',
-              paddingLeft: '3vw',
-              paddingRight: '3vw',
-              paddingTop: '2vw',
-              paddingBottom: '4vw',
-              borderWidth: '0px',
-              borderRadius: '1rem'
-            }
-          }}
-          isOpen={cancelAnOrder.isPending}
-        >
-          <Oval
-            height='150'
-            width='150'
-            color='rgb(249,115,22)'
-            secondaryColor='rgba(249,115,22,0.5)'
-            ariaLabel='tail-spin-loading'
-            radius='5'
-            visible={true}
-            wrapperStyle={{ display: 'flex', justifyContent: 'center' }}
-          />
-        </Modal>
-      </>
-    )
-  }
+          >
+            Không
+          </button>
+        </div>
+      </Modal>
+      <Modal
+        style={{
+          overlay: {
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 27
+          },
+          content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            backgroundColor: 'rgba(0, 0, 0, 0)',
+            transform: 'translate(-50%, -50%)',
+            paddingLeft: '3vw',
+            paddingRight: '3vw',
+            paddingTop: '2vw',
+            paddingBottom: '4vw',
+            borderWidth: '0px',
+            borderRadius: '1rem'
+          }
+        }}
+        isOpen={cancelOrderTableMutation.isPending}
+      >
+        <Oval
+          height='150'
+          width='150'
+          color='rgb(249,115,22)'
+          secondaryColor='rgba(249,115,22,0.5)'
+          ariaLabel='tail-spin-loading'
+          radius='5'
+          visible={true}
+          wrapperStyle={{ display: 'flex', justifyContent: 'center' }}
+        />
+      </Modal>
+    </>
+  )
 }

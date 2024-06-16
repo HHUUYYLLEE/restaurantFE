@@ -8,6 +8,8 @@ import { AppProvider } from './contexts/app.context.jsx'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { envConfig } from './utils/env.js'
+import { useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -15,13 +17,25 @@ export const queryClient = new QueryClient({
     }
   }
 })
+export function ScrollToTop() {
+  const { pathname } = useLocation()
 
+  useEffect(() => {
+    const canControlScrollRestoration = 'scrollRestoration' in window.history
+    if (canControlScrollRestoration) {
+      window.history.scrollRestoration = 'manual'
+    }
+
+    window.scrollTo(0, 0)
+  }, [pathname])
+}
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
       <GoogleOAuthProvider clientId={envConfig.googleClientID}>
         <QueryClientProvider client={queryClient}>
           <AppProvider>
+            <ScrollToTop />
             <App />
           </AppProvider>
           <ReactQueryDevtools initialIsOpen={false} />

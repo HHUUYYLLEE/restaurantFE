@@ -1,36 +1,32 @@
-import { useRef, useState, useEffect } from 'react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useForm } from 'react-hook-form'
-import { reviewSchema } from '../../../utils/rules'
 import { useMutation } from '@tanstack/react-query'
-import {
-  updateReview,
-  deleteReview,
-  likeDislikeReview,
-  reportReview
-} from '../../../api/review.api'
-import { FaRegStar } from 'react-icons/fa'
-import { FaStar } from 'react-icons/fa'
-import { getInfoFromLS } from '../../../utils/auth'
+import { useEffect, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { IconContext } from 'react-icons'
+import { BiCommentEdit, BiSolidDislike, BiSolidLike } from 'react-icons/bi'
+import { FaAngleDown, FaAngleUp, FaImages, FaRegStar, FaStar } from 'react-icons/fa'
+import { FaTrashCan } from 'react-icons/fa6'
 import { GrUpload } from 'react-icons/gr'
-import { FaImages } from 'react-icons/fa'
-import { FaAngleDown } from 'react-icons/fa'
-import { FaAngleUp } from 'react-icons/fa'
-import { isAxiosUnprocessableEntityError } from '../../../utils/utils'
+import { IoIosWarning } from 'react-icons/io'
 import { Oval } from 'react-loader-spinner'
 import Modal from 'react-modal'
-import { BiSolidLike } from 'react-icons/bi'
-import { BiSolidDislike } from 'react-icons/bi'
-import { BiCommentEdit } from 'react-icons/bi'
-import { FaTrashCan } from 'react-icons/fa6'
-import { IoIosWarning } from 'react-icons/io'
-import { IconContext } from 'react-icons'
+import {
+  deleteReview,
+  likeDislikeReview,
+  reportReview,
+  updateReview
+} from '../../../api/review.api'
+import { getAccessTokenFromLS, getInfoFromLS } from '../../../utils/auth'
+import { reviewSchema } from '../../../utils/rules'
+import { isAxiosUnprocessableEntityError } from '../../../utils/utils'
 
 export default function Review({ review }) {
   useEffect(() => {
     Modal.setAppElement('body')
   }, [])
-  const { avatar_url, _id } = getInfoFromLS()
+  const info = getInfoFromLS(),
+    token = getAccessTokenFromLS()
+
   const [verifyReport, setVerifyReport] = useState(false)
   const [verifyDelete, setVerifyDelete] = useState(false)
   const [reportSuccess, setReportSuccess] = useState(false)
@@ -146,12 +142,6 @@ export default function Review({ review }) {
         if (isAxiosUnprocessableEntityError(error)) {
           const formError = error.response?.data?.errors
           console.log(formError)
-          // if (formError) {
-          //   setError('username', {
-          //     message: formError.username?.msg,
-          //     type: 'Server'
-          //   })
-          // }
         }
       }
     })
@@ -451,7 +441,7 @@ export default function Review({ review }) {
               <img
                 referrerPolicy='no-referrer'
                 className='sm:w-[8vw] sm:h-[8vw] flex w-[17vw] h-[17vw]'
-                src={avatar_url}
+                src={info?.avatar_url}
               />
             </div>
             <form id='updatereview' onSubmit={onSubmit}>
@@ -546,9 +536,18 @@ export default function Review({ review }) {
       )}
 
       {!edit && (
-        <div className='mt-[1rem] mb-[1rem] sm:mx-[1rem] mx-[0.2rem] grid gap-y-2'>
+        <div
+          className={`pt-[1rem] pb-[1rem] sm:px-[1rem] px-[0.2rem] grid gap-y-2
+        ${review.status === 3 ? ' bg-green-100 ' : ''}`}
+        >
           <div className='flex sm:gap-x-7 justify-center mt-[1rem]'>
-            <div className='sm:w-[8vw] w-[17vw]'></div>
+            <div className='sm:w-[8vw] w-[17vw]'>
+              {review.status === 3 && (
+                <div className='flex items-center gap-x-[0.1rem] sm:gap-x-1'>
+                  <div className='italic text-green-700 sm:text-base text-xs'>Blogger đánh giá</div>
+                </div>
+              )}
+            </div>
             <div className='flex w-[65vw] sm:gap-x-[2rem] justify-between'>
               <div>
                 <div
@@ -689,7 +688,7 @@ export default function Review({ review }) {
                 </div>
               </div>
               <div className='flex items-center'>
-                {_id === review.user_id ? (
+                {info?._id === review.user_id ? (
                   <div className='flex items-center gap-x-3 sm:gap-x-[2rem]'>
                     <div
                       className='hover:bg-slate-200 cursor-pointer'
@@ -717,22 +716,25 @@ export default function Review({ review }) {
                     </div>
                   </div>
                 ) : (
-                  <div
-                    className='flex 
+                  info &&
+                  token && (
+                    <div
+                      className='flex 
                   hover:bg-slate-100 cursor-pointer items-center justify-center'
-                    onClick={() => setVerifyReport(true)}
-                  >
-                    <div className=''>
-                      <IoIosWarning
-                        style={{
-                          color: '#ff5b05',
-                          width: screen.width < 640 ? '4vw' : '2vw',
-                          height: screen.width < 640 ? '4vw' : '2vw'
-                        }}
-                      />
+                      onClick={() => setVerifyReport(true)}
+                    >
+                      <div className=''>
+                        <IoIosWarning
+                          style={{
+                            color: '#ff5b05',
+                            width: screen.width < 640 ? '4vw' : '2vw',
+                            height: screen.width < 640 ? '4vw' : '2vw'
+                          }}
+                        />
+                      </div>
+                      <div className='text-[0.5rem] sm:text-base text-[#ff5b05]'>Báo cáo</div>
                     </div>
-                    <div className='text-[0.5rem] sm:text-base text-[#ff5b05]'>Báo cáo</div>
-                  </div>
+                  )
                 )}
               </div>
             </div>
@@ -750,8 +752,8 @@ export default function Review({ review }) {
                 />
               </div>
               <div
-                className='flex justify-center sm:text-[1.2rem] w-[17vw] sm:w-[9vw] 
-              overflow-hidden text-ellipsis line-clamp-1'
+                className='flex justify-center sm:text-[1.2rem] max-w-[17vw] sm:max-w-[9vw] 
+               text-ellipsis line-clamp-1 text-[0.5rem]'
               >
                 {review.username}
               </div>

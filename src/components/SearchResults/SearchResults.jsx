@@ -1,37 +1,32 @@
-import { useEffect, useState, useRef } from 'react'
-import useQueryConfig from '../../hooks/useQueryConfig'
 import { useQuery } from '@tanstack/react-query'
+import { useEffect, useRef, useState } from 'react'
+import Checkbox from 'react-custom-checkbox'
+import { FaAngleDown, FaAngleUp, FaChair, FaCheckCircle } from 'react-icons/fa'
+import { IoIosPin } from 'react-icons/io'
+import { IoPeopleSharp } from 'react-icons/io5'
+import { PiGridFourFill, PiListLight } from 'react-icons/pi'
+import { VscTriangleLeft, VscTriangleRight } from 'react-icons/vsc'
+import ReactPaginate from 'react-paginate'
+import { Link } from 'react-router-dom'
 import { searchRestaurantsAndFood } from '../../api/restaurants.api'
 import mapround from '../../asset/img/mapround.png'
-import Restaurant from './Restaurant/Restaurant'
-import Food from './Food/Food'
-import { displayNum } from '../../utils/utils'
-import { PiListLight } from 'react-icons/pi'
-import { PiGridFourFill } from 'react-icons/pi'
-import { FaCheckCircle } from 'react-icons/fa'
-import Checkbox from 'react-custom-checkbox'
-import { Link, createSearchParams, useNavigate } from 'react-router-dom'
+import nothingIcon from '../../asset/img/nothing.png'
 import spinningload from '../../asset/img/spinning_load.gif'
-import { FaAngleDown } from 'react-icons/fa'
-import { FaAngleUp } from 'react-icons/fa'
-import { IoPeopleSharp } from 'react-icons/io5'
-import { FaChair } from 'react-icons/fa'
-import { IoIosPin } from 'react-icons/io'
-import ReactPaginate from 'react-paginate'
-import { VscTriangleLeft } from 'react-icons/vsc'
-import { VscTriangleRight } from 'react-icons/vsc'
 import { HN, TPHCM, categories } from '../../constants/optionsList'
+import useQueryConfig from '../../hooks/useQueryConfig'
+import Food from './Food/Food'
+import Restaurant from './Restaurant/Restaurant'
+
 export default function SearchResults() {
   const [mode, setMode] = useState(1)
   const params = useQueryConfig()
   const [option, setOption] = useState(0)
   const [displayType, setDisplayType] = useState(0)
-  const [cityOption, setCityOption] = useState(params.address || '')
   const options = ['Nhà hàng', 'Món ăn']
   const [HNfilter, setHNfilter] = useState(HN)
   const [TPHCMfilter, setTPHCMfilter] = useState(TPHCM)
   const [page, setPage] = useState(1)
-  const [limit, setLimit] = useState(12)
+  const [limit] = useState(12)
   const [chair, setChair] = useState('')
   const [table, setTable] = useState('')
   const options3 = ['Hà Nội', 'TP.HCM']
@@ -47,7 +42,6 @@ export default function SearchResults() {
   const refDropDown2 = useRef(null)
   const options2 = ['Tất cả', '1-2', '2-3', '3-4', '4-5', '5-6', '6-7', '7-8', '8-9', '9-10']
   const options4 = ['Không sắp xếp', 'Thấp đến cao', 'Cao đến thấp']
-  const [displayOption4, setDisplayOption4] = useState('Không sắp xếp')
 
   const [displayOption2, setDisplayOption2] = useState('Tất cả')
   const handleClickOutside = (event) => {
@@ -65,7 +59,7 @@ export default function SearchResults() {
     }
   }, [])
   // console.log(params)
-  const { status, data, isSuccess } = useQuery({
+  const { data, isSuccess, isLoading, isError } = useQuery({
     queryKey: [
       'searchRestaurantsAndFood',
       params,
@@ -97,8 +91,6 @@ export default function SearchResults() {
     staleTime: 1000
   })
   const searchData = data?.data
-
-  console.log(searchData)
 
   return (
     <>
@@ -214,11 +206,11 @@ export default function SearchResults() {
         <div className='w-full'>
           <div className='flex justify-between'>
             <div className='text-[0.6rem] sm:text-lg '>
-              {mode === 1 && isSuccess && (
+              {mode === 1 && (
                 <>
                   <span>Tìm thấy&nbsp;</span>
                   <span className='italic font-bold text-orange-500'>
-                    {searchData?.restaurants?.length}&nbsp;
+                    {isSuccess && !isError ? searchData?.restaurants?.length : '0'}&nbsp;
                   </span>
                   <span>nhà hàng&nbsp;</span>
                   <span className='italic font-bold text-orange-500'>
@@ -226,11 +218,11 @@ export default function SearchResults() {
                   </span>
                 </>
               )}
-              {mode === 2 && isSuccess && (
+              {mode === 2 && (
                 <>
                   <span>Tìm thấy&nbsp;</span>
                   <span className='italic font-bold text-orange-500'>
-                    {searchData?.allFood?.length}&nbsp;
+                    {isSuccess && !isError ? searchData?.allFood?.length : '0'}&nbsp;
                   </span>
                   <span>món ăn&nbsp;</span>
                   <span className='italic font-bold text-orange-500'>
@@ -637,7 +629,6 @@ export default function SearchResults() {
                               onClick={() => {
                                 setPage(1)
                                 setSortByPrice(id === 0 ? '' : id === 1 ? 1 : -1)
-                                setDisplayOption4(option)
                                 setDropDown2State(false)
                               }}
                             >
@@ -656,6 +647,16 @@ export default function SearchResults() {
                   )}
                 </div>
               </div>
+            </div>
+          )}
+          {isLoading && (
+            <div className='flex items-center justify-center'>
+              <img className='w-[20vw] sm:w-[11vw]' src={spinningload}></img>
+            </div>
+          )}
+          {isError && (
+            <div className='flex items-center justify-center'>
+              <img className='w-[20vw] sm:w-[11vw]' src={nothingIcon}></img>
             </div>
           )}
           <div
@@ -683,6 +684,33 @@ export default function SearchResults() {
                 return <Food key={id} displayType={displayType} food={food} />
               })}
           </div>
+          {isSuccess && (
+            <div className='w-full'>
+              <ReactPaginate
+                className='flex justify-center gap-x-2 mt-[1rem] sm:gap-x-[1rem] sm:mt-[3rem]'
+                activeClassName='text-white bg-orange-500 rounded-md'
+                breakClassName=''
+                pageClassName='px-[2vw] sm:px-[1vw] py-[1vw] sm:py-[0.5vw] hover:bg-green-500 
+                hover:text-white cursor-pointer'
+                previousClassName='mt-[1vh] sm:mt-[1.5vh] cursor-pointer'
+                nextClassName='mt-[1vh] sm:mt-[1.5vh] cursor-pointer'
+                breakLabel='...'
+                nextLabel={<VscTriangleRight style={{ color: 'orange' }} />}
+                previousLabel={<VscTriangleLeft style={{ color: 'orange' }} />}
+                onPageChange={(e) => {
+                  setPage(e.selected + 1)
+                }}
+                onClick={(e) => {
+                  console.log(e)
+                }}
+                forcePage={page - 1}
+                pageRangeDisplayed={3}
+                marginPagesDisplayed={2}
+                pageCount={searchData?.totalPages}
+                renderOnZeroPageCount={null}
+              />
+            </div>
+          )}
         </div>
       </div>
     </>

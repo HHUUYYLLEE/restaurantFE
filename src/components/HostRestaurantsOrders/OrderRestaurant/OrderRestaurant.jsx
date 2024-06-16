@@ -1,16 +1,12 @@
-import { Link } from 'react-router-dom'
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { getOrder } from '../../../api/order_food.api'
-import 'react-responsive-carousel/lib/styles/carousel.css'
-import spinningload from '../../../asset/img/spinning_load.gif'
-import Order from './Order/Order'
 import 'leaflet/dist/leaflet.css'
+import 'react-responsive-carousel/lib/styles/carousel.css'
+import { Link } from 'react-router-dom'
+import Order from './Order/Order'
 
-import { displayNum } from '../../../utils/utils'
-import { CiShop } from 'react-icons/ci'
 import { useEffect, useState } from 'react'
+import { CiShop } from 'react-icons/ci'
 
-export default function OrderRestaurant({ option, restaurant }) {
+export default function OrderRestaurant({ option, restaurant, refetch }) {
   const [show, setShow] = useState(false)
   useEffect(() => {
     for (const order of restaurant.orders) {
@@ -49,7 +45,7 @@ export default function OrderRestaurant({ option, restaurant }) {
               if (option === 0 || option === data.status)
                 return (
                   <div key={id}>
-                    <Order order={data} />
+                    <Order order={data} refetch={refetch} />
                   </div>
                 )
             })}

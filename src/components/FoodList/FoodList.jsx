@@ -1,12 +1,11 @@
-import Food from './Food'
-import useQueryConfig from '../../hooks/useQueryConfig'
-import { useContext, useEffect, useRef, useState } from 'react'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { getAllFood } from '../../api/food.api'
+import useQueryConfig from '../../hooks/useQueryConfig'
+import Food from './Food'
 
 export default function FoodList() {
   const queryConfig = useQueryConfig()
-  const { status, data, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ['food', queryConfig],
     queryFn: () => {
       return getAllFood(queryConfig)

@@ -1,32 +1,34 @@
-import { Link, createSearchParams, useNavigate, NavLink } from 'react-router-dom'
-import LoginModal from '../LoginModal'
-import useQueryConfig from '../../hooks/useQueryConfig'
-import { AppContext } from '../../contexts/app.context'
-import { useEffect, useRef, useState, useContext } from 'react'
-import Modal from 'react-modal'
-import { useForm } from 'react-hook-form'
-import { omit } from 'lodash'
-import { clearAccessTokenFromLS } from '../../utils/auth'
-import { toast } from 'react-toastify'
-import { BsCart4 } from 'react-icons/bs'
-import SignupModal from '../SignupModal/SignupModal'
-import { simpleSearchRestaurantsAndFood } from '../../api/restaurants.api'
 import { useQuery } from '@tanstack/react-query'
 import { useDebounce } from '@uidotdev/usehooks'
+import { useContext, useEffect, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { BsCart4 } from 'react-icons/bs'
+import { MdOutlineTableRestaurant } from 'react-icons/md'
+import Modal from 'react-modal'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { simpleSearchRestaurantsAndFood } from '../../api/restaurants.api'
+import { AppContext } from '../../contexts/app.context'
+import { clearAccessTokenFromLS, getAccessTokenFromLS, getInfoFromLS } from '../../utils/auth'
+import LoginModal from '../LoginModal'
+import SignupModal from '../SignupModal/SignupModal'
+
 export default function Header() {
   useEffect(() => {
     Modal.setAppElement('body')
   }, [])
   const { register } = useForm({ mode: 'all' })
   const navigate = useNavigate()
-  const [modalLogin, setModalLogin] = useState(false)
   const [logoutModal, setLogoutModal] = useState(false)
   const [signupModal, setSignupModal] = useState(false)
-  const { isAuthenticated, setIsAuthenticated, info, setInfo } = useContext(AppContext)
+  const { isAuthenticated, setIsAuthenticated, info, setInfo, modalLogin, setModalLogin } =
+    useContext(AppContext)
   const [search, setSearch] = useState('')
-  const [searchParams, setSearchParams] = useDebounce([search], 1000)
+  const [searchParams] = useDebounce([search], 1000)
   const [showSearchResults, setShowSearchResults] = useState(false)
   const [allResultsToggle, setAllResultsToggle] = useState(false)
+  useEffect(() => {
+    if (getInfoFromLS() && getAccessTokenFromLS()) setIsAuthenticated(true)
+  }, [setIsAuthenticated])
   const { data } = useQuery({
     queryKey: ['search', searchParams],
     queryFn: () => {
@@ -181,12 +183,12 @@ export default function Header() {
             </div>
           </div>
         </form>
-        <div className='flex items-center sm:ml-10 gap-x-8 font-poppins-500'>
+        <div className='flex items-center sm:ml-10 font-poppins-500 gap-x-9'>
           {screen.width >= 640 && (
             <Link
               onClick={() => this.forceUpdate}
               to='/find_blogger_restaurants'
-              className='group sm:w-[6.9rem]  2xl:full transition duration-300 text-white'
+              className='text-white'
             >
               Các đánh giá
             </Link>
@@ -210,13 +212,22 @@ export default function Header() {
             </div>
           </div>
         </div>
-        <div className='flex items-center sm:ml-[8vw] ml-[3vw] gap-x-[1rem]'>
-          <div className={`${!isAuthenticated && 'hidden'}`}>
+        <div className='flex items-center sm:ml-[3vw] ml-[3vw] gap-x-[1rem]'>
+          <div className={`${!isAuthenticated && 'hidden'} flex gap-x-2`}>
             <Link to='/order_food'>
               <BsCart4
                 style={{
-                  width: screen.width >= 640 ? '2.6vw' : '8vw',
-                  height: screen.width >= 640 ? '2.6vw' : '8vw',
+                  width: screen.width >= 640 ? '2vw' : '8vw',
+                  height: screen.width >= 640 ? '2vw' : '8vw',
+                  color: 'white'
+                }}
+              />
+            </Link>
+            <Link to='/table_order'>
+              <MdOutlineTableRestaurant
+                style={{
+                  width: screen.width >= 640 ? '2.4vw' : '9vw',
+                  height: screen.width >= 640 ? '2.4vw' : '9vw',
                   color: 'white'
                 }}
               />
@@ -230,11 +241,13 @@ export default function Header() {
               <div className='bg-gray-300 rounded-full w-[3rem] h-[3rem] flex items-center overflow-hidden justify-center'>
                 <img referrerPolicy='no-referrer' src={info?.avatar_url} className='' />
               </div>
-              <div className='font-semibold ml-2 text-white'>{info?.username}</div>
+              {screen.width > 640 && (
+                <div className='font-semibold ml-2 text-white'>{info?.username}</div>
+              )}
             </div>
             {isOpen && (
               <div
-                className='absolute z-10 mt-4 sm:left-[-3rem] sm:w-[10vw] left-[-1rem] 
+                className='absolute z-10 mt-4 sm:ml-0 ml-[-1rem] sm:w-[10vw] left-[-1rem] 
               w-[35vw] rounded-lg shadow-lg border-[1px] border-black focus:outline-none 
               bg-white/80'
               >
@@ -320,7 +333,7 @@ export default function Header() {
               navigate('/')
             }}
             className='flex justify-center items-center 
-            bg-orange-700 hover:bg-orange-700 text-white font-inter-700 rounded-lg
+            bg-green-500 hover:bg-green-700 text-white font-inter-700 rounded-lg
             px-[1rem] py-[0.5rem] sm:py-[1.1rem] sm:text-lg text-sm
             '
           >

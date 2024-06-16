@@ -1,33 +1,27 @@
-import { useState, useEffect, useContext, useRef } from 'react'
-import useQueryConfig from '../../hooks/useQueryConfig'
 import { useQuery } from '@tanstack/react-query'
-import { findNearbyRestaurants } from '../../api/restaurants.api'
-import Restaurant from './Restaurant/Restaurant'
-import { PiListLight } from 'react-icons/pi'
-import { PiGridFourFill } from 'react-icons/pi'
-import { FaCheckCircle } from 'react-icons/fa'
-import Checkbox from 'react-custom-checkbox'
-import { FaSearch } from 'react-icons/fa'
-import { MapContainer, TileLayer, useMapEvents, Marker, useMap } from 'react-leaflet'
-import 'leaflet/dist/leaflet.css'
-import 'leaflet-routing-machine'
-import 'lrm-graphhopper'
-import L from 'leaflet'
 import { useDebounce } from '@uidotdev/usehooks'
-import { AppContext } from '../../contexts/app.context'
-import { envConfig } from '../../utils/env'
-import { getSearchLocation } from '../../api/openstreetmap.api'
-import spinningload from '../../asset/img/spinning_load.gif'
-import { FaAngleDown } from 'react-icons/fa'
-import { FaAngleUp } from 'react-icons/fa'
+import L from 'leaflet'
+import 'leaflet-routing-machine'
+import 'leaflet/dist/leaflet.css'
+import 'lrm-graphhopper'
+import { useContext, useEffect, useRef, useState } from 'react'
+import Checkbox from 'react-custom-checkbox'
+import { FaAngleDown, FaAngleUp, FaChair, FaCheckCircle, FaSearch } from 'react-icons/fa'
 import { IoPeopleSharp } from 'react-icons/io5'
-import { FaChair } from 'react-icons/fa'
+import { PiGridFourFill, PiListLight } from 'react-icons/pi'
+import { VscTriangleLeft, VscTriangleRight } from 'react-icons/vsc'
+import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from 'react-leaflet'
 import ReactPaginate from 'react-paginate'
-import { VscTriangleLeft } from 'react-icons/vsc'
-import { VscTriangleRight } from 'react-icons/vsc'
-import { HN, TPHCM, categories } from '../../constants/optionsList'
+import { getSearchLocation } from '../../api/openstreetmap.api'
+import { findNearbyRestaurants } from '../../api/restaurants.api'
 import diningIcon from '../../asset/img/dining.png'
 import humanIcon from '../../asset/img/human.png'
+import nothingIcon from '../../asset/img/nothing.png'
+import spinningload from '../../asset/img/spinning_load.gif'
+import { HN, TPHCM, categories } from '../../constants/optionsList'
+import { AppContext } from '../../contexts/app.context'
+import { envConfig } from '../../utils/env'
+import Restaurant from './Restaurant/Restaurant'
 
 export default function SearchLocationResults() {
   const [displayType, setDisplayType] = useState(0)
@@ -36,8 +30,8 @@ export default function SearchLocationResults() {
   const [latLng, setLatLng] = useState(undefined)
   const [searchQuery, setSearchQuery] = useState(null)
   const [searchQuery2, setSearchQuery2] = useState(null)
-  const [searchParams, setSearchParams] = useDebounce([searchQuery], 1000)
-  const [searchParams2, setSearchParams2] = useDebounce([searchQuery2], 1000)
+  const [searchParams] = useDebounce([searchQuery], 1000)
+  const [searchParams2] = useDebounce([searchQuery2], 1000)
   const [redrawMarkers, setRedrawMarkers] = useState(false)
   const [redrawCircles, setRedrawCircles] = useState(false)
   const { mapDraw, setMapDraw, markersGroup, setMarkersGroup } = useContext(AppContext)
@@ -54,11 +48,9 @@ export default function SearchLocationResults() {
   const [dropDownState, setDropDownState] = useState(false)
   const [HNfilter, setHNfilter] = useState(HN)
   const [TPHCMfilter, setTPHCMfilter] = useState(TPHCM)
-  const params = useQueryConfig()
   const [page, setPage] = useState(1)
-  const [limit, setLimit] = useState(12)
+  const [limit] = useState(12)
   const [option, setOption] = useState(0)
-  const [cityOption, setCityOption] = useState(params.address || '')
   const [chair, setChair] = useState('')
   const [table, setTable] = useState('')
   const options = ['Hà Nội', 'TP.HCM']
@@ -67,13 +59,14 @@ export default function SearchLocationResults() {
   const [sortByScore, setSortByScore] = useState(0)
   const [borough, setBorough] = useState('Quận/Huyện/Thị xã')
   const [dropDown2State, setDropDown2State] = useState(false)
+  const [dropDown3State, setDropDown3State] = useState(false)
+  const refDropDown = useRef(null)
   const refDropDown2 = useRef(null)
+  const refDropDown3 = useRef(null)
   const options2 = ['Tất cả', '1-2', '2-3', '3-4', '4-5', '5-6', '6-7', '7-8', '8-9', '9-10']
   const [displayOption2, setDisplayOption2] = useState('Tất cả')
   const [displayAddressValue, setDisplayAddressValue] = useState('')
-  const [instructions, setInstructions] = useState({})
-  // console.log(params)
-  const { status, data, isLoading, isFetching, isSuccess, isError, refetch } = useQuery({
+  const { data, isLoading, isFetching, isError, refetch } = useQuery({
     queryKey: ['searchRestaurantsOnMap'],
     queryFn: async () => {
       window.scrollTo({
@@ -147,11 +140,7 @@ export default function SearchLocationResults() {
     retry: false
   })
 
-  const {
-    status: status2,
-    data: data2,
-    isLoading: isLoading2
-  } = useQuery({
+  const { data: data2 } = useQuery({
     queryKey: ['search_location', searchParams],
     queryFn: () => {
       return getSearchLocation(searchParams)
@@ -160,12 +149,7 @@ export default function SearchLocationResults() {
     staleTime: 1000,
     enabled: enableSearchResults
   })
-  const {
-    status: status3,
-    data: data3,
-    isLoading: isLoading3,
-    isSuccess: isSuccess3
-  } = useQuery({
+  const { data: data3, isSuccess: isSuccess3 } = useQuery({
     queryKey: ['search_lat_lng', searchParams2],
     queryFn: () => {
       return getSearchLocation(searchParams2)
@@ -201,7 +185,7 @@ export default function SearchLocationResults() {
     })
   }, [])
   function MyComponent() {
-    const map = useMapEvents({
+    useMapEvents({
       click: (e) => {
         setLatLng({ lat: e.latlng.lat, lng: e.latlng.lng })
         setMarkerPos([e.latlng.lat, e.latlng.lng])
@@ -230,13 +214,15 @@ export default function SearchLocationResults() {
 
     return null
   }
-  const refDropDown = useRef(null)
   const handleClickOutside = (event) => {
     if (refDropDown.current && !refDropDown.current.contains(event.target)) {
       setDropDownState(false)
     }
     if (refDropDown2.current && !refDropDown2.current.contains(event.target)) {
       setDropDown2State(false)
+    }
+    if (refDropDown3.current && !refDropDown3.current.contains(event.target)) {
+      setDropDown3State(false)
     }
   }
   useEffect(() => {
@@ -260,7 +246,6 @@ export default function SearchLocationResults() {
             autoComplete='off'
             readOnly
             value={displayAddressValue}
-            // {...register('address')}
             className='w-full mt-[1rem] sm:text-base text-xs
                 focus:outline-none caret-transparent cursor-default bg-[#c7bbbb]
                 placeholder:text-[#777070] placeholder:font-inter-400 border 
@@ -273,7 +258,6 @@ export default function SearchLocationResults() {
               name='lat'
               autoComplete='off'
               readOnly
-              // {...register('lat', { readOnly: true })}
               value={latLngValueInput[0]}
               className='sm:w-[25vw] w-[39vw] sm:text-base text-xs focus:outline-none 
                   caret-transparent cursor-default border font-inter-500 bg-[#c7bbbb]
@@ -285,7 +269,6 @@ export default function SearchLocationResults() {
               name='lng'
               autoComplete='off'
               readOnly
-              // {...register('lng', { readOnly: true })}
               value={latLngValueInput[1]}
               className='sm:w-[25vw] w-[39vw] sm:text-base text-xs focus:outline-none 
                   caret-transparent cursor-default border font-inter-500 bg-[#c7bbbb]
@@ -299,25 +282,23 @@ export default function SearchLocationResults() {
               name='radius'
               placeholder='Nhập bán kính'
               autoComplete='off'
-              // readOnly
               value={radius}
               onInput={(e) => {
                 setRadius(e.target.value)
               }}
-              // {...register('address')}
               className='w-[32%] sm:w-[11%] mt-[1rem] sm:text-base text-xs
                 focus:outline-none priceInput
                 border-[#ff822e] focus:placeholder:text-transparent
                 placeholder:text-[#777070] placeholder:font-inter-400 border 
                 font-inter-500 rounded-xl px-[0.5rem] py-[0.2rem]'
             />
-            <div className='relative' ref={refDropDown}>
+            <div className='relative' ref={refDropDown3}>
               <div
                 className=' w-[13.5vw] bg-orange-500 h-[3vh] mt-[1.1rem] 
             rounded-lg cursor-pointer sm:w-[5vw] sm:h-[4.8vh] flex items-center
             hover:bg-green-600'
                 onClick={() => {
-                  setDropDownState(!dropDownState)
+                  setDropDown3State(!dropDown3State)
                 }}
               >
                 <div
@@ -325,14 +306,14 @@ export default function SearchLocationResults() {
                 flex items-center justify-between'
                 >
                   <div className='text-white'>{unit}</div>
-                  {dropDownState ? (
+                  {dropDown3State ? (
                     <FaAngleUp style={{ color: 'white' }} />
                   ) : (
                     <FaAngleDown style={{ color: 'white' }} />
                   )}
                 </div>
               </div>
-              {dropDownState && (
+              {dropDown3State && (
                 <div className='absolute'>
                   <div className='border-[0.09rem] border-slate-400 rounded'>
                     {unitOptions.map((option, id) => {
@@ -342,7 +323,7 @@ export default function SearchLocationResults() {
                           className='cursor-pointer'
                           onClick={() => {
                             setUnit(option)
-                            setDropDownState(false)
+                            setDropDown3State(false)
                           }}
                         >
                           <div className='w-[12.4vw] sm:w-[5vw] border-b-[0.11rem] hover:bg-slate-400'>
@@ -889,9 +870,12 @@ export default function SearchLocationResults() {
               <div className='text-white text-[0.8rem] sm:text-[1.5rem]'>Tìm lại</div>
             </button>
 
-            {isError && (
-              <div className='flex justify-between mt-[0.5rem]'>
-                <div>
+            {(isError || searchData?.restaurants.length === 0) && (
+              <div className='flex justify-center items-center mt-[0.5rem]'>
+                <div className=''>
+                  <div className='flex justify-center'>
+                    <img className='w-[20vw] sm:w-[11vw]' src={nothingIcon}></img>
+                  </div>
                   <div>
                     <span>Không tìm thấy nhà hàng nào trong phạm vi&nbsp;</span>
 
@@ -909,11 +893,6 @@ export default function SearchLocationResults() {
                   : ' grid-cols-3 sm:grid-cols-4 gap-x-2 gap-y-3  '
               } mt-[1rem]`}
             >
-              {isError && (
-                <div className='flex items-center justify-center'>
-                  <img className='w-[20vw] sm:w-[11vw]' src={spinningload}></img>
-                </div>
-              )}
               {(isLoading || isFetching) && (
                 <div className='flex items-center justify-center'>
                   <img className='w-[20vw] sm:w-[11vw]' src={spinningload}></img>

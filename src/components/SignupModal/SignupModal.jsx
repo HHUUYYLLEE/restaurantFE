@@ -1,23 +1,21 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
-import { AiOutlineClose } from 'react-icons/ai'
-import { AppContext } from '../../contexts/app.context'
-import { useNavigate } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { schemaSignup } from '../../utils/rules'
-import { signUpAccount, loginGoogleAccount } from '../../api/user.api'
-import { useMutation } from '@tanstack/react-query'
-import { toast } from 'react-toastify'
-import Modal from 'react-modal'
-import { Oval } from 'react-loader-spinner'
-import { getInfoFromLS } from '../../utils/auth'
-import { isAxiosUnprocessableEntityError } from '../../utils/utils'
 import { GoogleLogin } from '@react-oauth/google'
+import { useMutation } from '@tanstack/react-query'
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { AiOutlineClose } from 'react-icons/ai'
 import { GrUpload } from 'react-icons/gr'
+import { Oval } from 'react-loader-spinner'
+import Modal from 'react-modal'
+import { useNavigate } from 'react-router-dom'
+import { loginGoogleAccount, signUpAccount } from '../../api/user.api'
+import { AppContext } from '../../contexts/app.context'
+import { getInfoFromLS } from '../../utils/auth'
+import { schemaSignup } from '../../utils/rules'
+import { isAxiosUnprocessableEntityError } from '../../utils/utils'
 export default function SignupModal({ closeModalSignup }) {
-  const { setIsAuthenticated, setInfo, isAuthenticated } = useContext(AppContext)
+  const { setIsAuthenticated, setInfo } = useContext(AppContext)
   const navigate = useNavigate()
-  console.log(isAuthenticated)
   const [previewImage, setPreviewImage] = useState('#')
   const previewImageElement = useRef()
   const {
@@ -42,10 +40,8 @@ export default function SignupModal({ closeModalSignup }) {
 
   const onSubmit = handleSubmit((data) => {
     data.avatar = data.avatar[0]
-    console.log(data)
     signUpAccontMutation.mutate(data, {
       onSuccess: () => {
-        // toast.success('Đăng ký thành công !') //。(20)
         setInfo(getInfoFromLS())
         setIsAuthenticated(true)
         closeModalSignup()
@@ -67,10 +63,8 @@ export default function SignupModal({ closeModalSignup }) {
     })
   })
   function onSubmitGoogle(credential) {
-    // console.log(credential)
     loginGoogleAccontMutation.mutate(credential, {
       onSuccess: () => {
-        // toast.success('Đăng nhập Google thành công !') //。(20)
         setInfo(getInfoFromLS())
         setIsAuthenticated(true)
         closeModalSignup()

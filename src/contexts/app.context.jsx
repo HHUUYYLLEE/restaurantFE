@@ -1,6 +1,5 @@
 import { createContext, useState } from 'react'
 import { getAccessTokenFromLS, getInfoFromLS } from '../utils/auth'
-// import { getAccessTokenFromLS, getInfoFromLS } from '../utils/auth'
 
 const initialAppContext = {
   valueQuery: {},
@@ -14,7 +13,13 @@ const initialAppContext = {
   mapDraw: null,
   setMapDraw: () => null,
   markersGroup: [],
-  setMarkersGroup: () => null
+  setMarkersGroup: () => null,
+  loggedIn: false,
+  setLoggedIn: () => null,
+  modalLogin: false,
+  setModalLogin: () => null,
+  adminSidebarOption: 0,
+  setAdminSidebarOption: () => null
 }
 
 export const AppContext = createContext(initialAppContext)
@@ -26,6 +31,8 @@ export const AppProvider = ({ children }) => {
   const [leafletMap, setLeafletMap] = useState(initialAppContext.leafletMap)
   const [mapDraw, setMapDraw] = useState(initialAppContext.mapDraw)
   const [markersGroup, setMarkersGroup] = useState(initialAppContext.markersGroup)
+  const [modalLogin, setModalLogin] = useState(initialAppContext.modalLogin)
+  const [adminSidebarOption, setAdminSidebarOption] = useState(initialAppContext.adminSidebarOption)
 
   return (
     <AppContext.Provider
@@ -41,7 +48,11 @@ export const AppProvider = ({ children }) => {
         mapDraw,
         setMapDraw,
         markersGroup,
-        setMarkersGroup
+        setMarkersGroup,
+        modalLogin,
+        setModalLogin,
+        adminSidebarOption,
+        setAdminSidebarOption
       }}
     >
       {children}

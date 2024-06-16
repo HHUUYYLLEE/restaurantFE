@@ -67,3 +67,37 @@ export function getStatusRestaurantFromTime(
     return 'Đang hoạt động'
   else return 'Đã đóng cửa'
 }
+
+export function VNDate(dateData) {
+  const date = new Date(new Date(dateData) - new Date().getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 16)
+  const temp = new Date(date)
+  var weekDay = {
+    0: 'Chủ nhật',
+    1: 'Thứ 2',
+    2: 'Thứ 3',
+    3: 'Thứ 4',
+    4: 'Thứ 5',
+    5: 'Thứ 6',
+    6: 'Thứ 7'
+  }[temp.getDay()]
+  const hour = temp.getHours()
+  const when = hour < 11 ? 'sáng' : hour < 13 ? 'trưa' : hour < 18 ? 'chiều' : 'tối'
+  const newHour = hour < 13 ? hour : hour - 12
+  return (
+    newHour +
+    ':' +
+    temp.getMinutes() +
+    ' ' +
+    when +
+    ', ' +
+    weekDay +
+    ', ' +
+    temp.getDate() +
+    '/' +
+    temp.getMonth() +
+    '/' +
+    temp.getFullYear()
+  )
+}

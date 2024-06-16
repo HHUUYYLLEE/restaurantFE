@@ -1,14 +1,11 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { getAllRestaurantsPlacedOrderFood } from '../../api/order_food.api'
-
 import 'react-responsive-carousel/lib/styles/carousel.css'
-
 import 'leaflet/dist/leaflet.css'
-import { useState, useRef } from 'react'
-
-import OrderRestaurant from './OrderRestaurant/OrderRestaurant'
+import { useState } from 'react'
 import ShoppingCartError from '../../../src/asset/img/broken_shopping_cart.png'
 import spinningload from '../../asset/img/spinning_load.gif'
+import OrderRestaurant from './OrderRestaurant/OrderRestaurant'
 export default function HostRestaurantsOrders() {
   const [option, setOption] = useState(0)
   const options = ['Tất cả', 'Chờ giao', 'Đã huỷ', 'Đã hoàn thành']
@@ -20,7 +17,6 @@ export default function HostRestaurantsOrders() {
     placeholderData: keepPreviousData,
     retry: false
   })
-  // console.log(data)
   const restaurants = data?.data.restaurants
 
   return (
@@ -43,16 +39,17 @@ export default function HostRestaurantsOrders() {
             )
           })}
         </div>
-        {isError && (
-          <div className='mt-[5rem]'>
-            <div className='flex justify-center'>
-              <img src={ShoppingCartError} />
+        {isError ||
+          (restaurants?.length === 0 && (
+            <div className='mt-[5rem]'>
+              <div className='flex justify-center'>
+                <img src={ShoppingCartError} />
+              </div>
+              <div className='flex justify-center text-sm sm:text-xl text-orange-500'>
+                Chưa có đơn hàng
+              </div>
             </div>
-            <div className='flex justify-center text-sm sm:text-xl text-orange-500'>
-              Chưa có đơn hàng
-            </div>
-          </div>
-        )}
+          ))}
         {isLoading && (
           <div className='flex items-center justify-center'>
             <img className='w-[20vw] sm:w-[11vw]' src={spinningload}></img>
@@ -61,7 +58,7 @@ export default function HostRestaurantsOrders() {
         {isSuccess &&
           data &&
           restaurants.map((data, id) => {
-            return <OrderRestaurant key={id} option={option} restaurant={data} />
+            return <OrderRestaurant key={id} option={option} restaurant={data} refetch={refetch} />
           })}
       </div>
     </>

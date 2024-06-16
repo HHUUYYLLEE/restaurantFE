@@ -16,10 +16,7 @@ export default {
         xl: '1280px',
         '2xl': '1536px'
       },
-      fontFamily: {
-        blooddrip: ['BloodDrip'],
-        godofwar: ['GodOfWar']
-      },
+
       keyframes: {
         blinkingText: {
           '50%': {

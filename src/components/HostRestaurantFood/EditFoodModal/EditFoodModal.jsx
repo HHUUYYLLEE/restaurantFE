@@ -1,17 +1,14 @@
-import { useParams } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { schemaFood } from '../../../utils/rules'
 import { useMutation } from '@tanstack/react-query'
-import { toast } from 'react-toastify'
-import Modal from 'react-modal'
-import { displayNum } from '../../../utils/utils'
+import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
-import { useEffect, useRef, useState } from 'react'
-import { updateFood } from '../../../api/food.api'
-import { isAxiosUnprocessableEntityError } from '../../../utils/utils'
 import { AiOutlineClose } from 'react-icons/ai'
-import { Oval } from 'react-loader-spinner'
 import { GrUpload } from 'react-icons/gr'
+import { Oval } from 'react-loader-spinner'
+import Modal from 'react-modal'
+import { updateFood } from '../../../api/food.api'
+import { schemaFood } from '../../../utils/rules'
+import { isAxiosUnprocessableEntityError } from '../../../utils/utils'
 
 export default function EditFoodModal({
   closeEditFoodModal,
@@ -24,7 +21,6 @@ export default function EditFoodModal({
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors }
   } = useForm({
     mode: 'all',

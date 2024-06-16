@@ -1,18 +1,13 @@
-import { useParams } from 'react-router-dom'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { getAllFoodInRestaurant } from '../../api/food.api'
-import { Carousel } from 'react-responsive-carousel'
-import 'react-responsive-carousel/lib/styles/carousel.css'
-import { MdOutlinePinDrop } from 'react-icons/md'
-import { TiPencil } from 'react-icons/ti'
-import { FaRegTrashAlt } from 'react-icons/fa'
 import 'leaflet/dist/leaflet.css'
-import { displayNum } from '../../utils/utils'
 import { useState } from 'react'
+import { TiPencil } from 'react-icons/ti'
+import 'react-responsive-carousel/lib/styles/carousel.css'
+import { useParams } from 'react-router-dom'
+import { getAllFoodInRestaurant } from '../../api/food.api'
+import { displayNum } from '../../utils/utils'
 import AddFoodModal from './AddFoodModal/AddFoodModal'
 import EditFoodModal from './EditFoodModal/EditFoodModal'
-import { Oval } from 'react-loader-spinner'
-import Modal from 'react-modal'
 
 export default function HostRestaurantFood() {
   const [addFoodModal, setAddFoodModal] = useState(false)
@@ -31,7 +26,7 @@ export default function HostRestaurantFood() {
     setEditFoodModal(false)
   }
   const { id } = useParams()
-  const { data, status, isLoading, isSuccess } = useQuery({
+  const { data, isSuccess } = useQuery({
     queryKey: ['all_food_in_restaurant', id],
     queryFn: () => {
       return getAllFoodInRestaurant(id)

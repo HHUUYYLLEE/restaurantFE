@@ -1,43 +1,36 @@
-import { displayNum, isAxiosUnprocessableEntityError } from '../../../utils/utils'
-import { Link } from 'react-router-dom'
-import { BsFillPlusCircleFill } from 'react-icons/bs'
-import { FaMinusCircle } from 'react-icons/fa'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
-import { useState, useEffect } from 'react'
-import { orderFood } from '../../../api/order_food.api'
+import { useContext, useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { BsFillPlusCircleFill } from 'react-icons/bs'
 import { Oval } from 'react-loader-spinner'
 import Modal from 'react-modal'
-
+import { Link } from 'react-router-dom'
+import { orderFood } from '../../../api/order_food.api'
+import { AppContext } from '../../../contexts/app.context'
+import { displayNum, isAxiosUnprocessableEntityError } from '../../../utils/utils'
 export default function Food({ displayType, food }) {
+  const { isAuthenticated, setModalLogin } = useContext(AppContext)
   useEffect(() => {
     Modal.setAppElement('body')
   }, [])
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors }
-  } = useForm()
-  const {
-    handleSubmit: handleSubmit2,
-    formState: { errors2 }
-  } = useForm()
+  const { register, handleSubmit, reset } = useForm()
+  const { handleSubmit: handleSubmit2 } = useForm()
 
   const orderFoodMutation = useMutation({ mutationFn: (body) => orderFood(body) })
 
   const [inputState, setInputState] = useState(0)
 
   const onSubmit = handleSubmit((data) => {
+    if (!isAuthenticated) {
+      setModalLogin(true)
+      return
+    }
     data.food_id = food._id
     data.quantity = inputState
     console.log(data)
 
     orderFoodMutation.mutate(data, {
       onSuccess: () => {
-        // toast.success('Đã cập nhật giỏ hàng!') //。(20)
-        // window.location.reload()
         reset()
       },
       onError: (error) => {
@@ -45,25 +38,21 @@ export default function Food({ displayType, food }) {
         if (isAxiosUnprocessableEntityError(error)) {
           const formError = error.response?.data?.errors
           console.log(formError)
-          // if (formError) {
-          //   setError('username', {
-          //     message: formError.username?.msg,
-          //     type: 'Server'
-          //   })
-          // }
         }
       }
     })
   })
   const onSubmit2 = handleSubmit2((data) => {
+    if (!isAuthenticated) {
+      setModalLogin(true)
+      return
+    }
     data.food_id = food._id
     data.quantity = 1
     console.log(data)
 
     orderFoodMutation.mutate(data, {
       onSuccess: () => {
-        // toast.success('Đã cập nhật giỏ hàng!') //。(20)
-        // window.location.reload()
         reset()
       },
       onError: (error) => {
@@ -71,12 +60,6 @@ export default function Food({ displayType, food }) {
         if (isAxiosUnprocessableEntityError(error)) {
           const formError = error.response?.data?.errors
           console.log(formError)
-          // if (formError) {
-          //   setError('username', {
-          //     message: formError.username?.msg,
-          //     type: 'Server'
-          //   })
-          // }
         }
       }
     })

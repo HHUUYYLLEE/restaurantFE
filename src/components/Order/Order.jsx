@@ -1,25 +1,19 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { getAllUserOrders } from '../../api/order_food.api'
-
 import 'react-responsive-carousel/lib/styles/carousel.css'
-
 import 'leaflet/dist/leaflet.css'
-import { useState, useRef } from 'react'
-
-import OrderRestaurant from './OrderRestaurant/OrderRestaurant'
+import { useState } from 'react'
 import ShoppingCartError from '../../../src/asset/img/broken_shopping_cart.png'
 import spinningload from '../../asset/img/spinning_load.gif'
+import OrderRestaurant from './OrderRestaurant/OrderRestaurant'
 export default function Order() {
-  const bottomBar = useRef()
   const [option, setOption] = useState(0)
   const options = ['Tất cả', 'Chưa đặt', 'Đã đặt', 'Đã huỷ', 'Đã hoàn thành']
   const { data, isSuccess, isError, isLoading, refetch } = useQuery({
     queryKey: ['all_order_food'],
     queryFn: () => {
       return getAllUserOrders()
-    },
-    placeholderData: keepPreviousData,
-    retry: false
+    }
   })
   console.log(data)
   const orderData = data?.data.orderFood

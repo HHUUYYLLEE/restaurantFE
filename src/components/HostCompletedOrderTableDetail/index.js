@@ -1,0 +1,2 @@
+import HostCompletedOrderTableDetail from './HostCompletedOrderTableDetail'
+export default HostCompletedOrderTableDetail

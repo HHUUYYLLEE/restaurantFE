@@ -1,47 +1,26 @@
-import { useParams } from 'react-router-dom'
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { getFood } from '../../../../api/food.api'
-import { orderFood } from '../../../../api/order_food.api'
-import 'react-responsive-carousel/lib/styles/carousel.css'
-import { BsCart4 } from 'react-icons/bs'
-import { FaRegTimesCircle } from 'react-icons/fa'
+import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query'
 import 'leaflet/dist/leaflet.css'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { useMutation } from '@tanstack/react-query'
-import { orderInputSchema } from '../../../../utils/rules'
-import { IoCheckmarkCircleSharp } from 'react-icons/io5'
-import { displayNum, isAxiosUnprocessableEntityError } from '../../../../utils/utils'
-import { toast } from 'react-toastify'
-import Modal from 'react-modal'
-import { CiShop } from 'react-icons/ci'
-import { HiOutlinePencilSquare } from 'react-icons/hi2'
 import { BsFillPlusCircleFill } from 'react-icons/bs'
 import { FaMinusCircle } from 'react-icons/fa'
 import { Oval } from 'react-loader-spinner'
+import Modal from 'react-modal'
+import 'react-responsive-carousel/lib/styles/carousel.css'
+import { getFood } from '../../../../api/food.api'
+import { orderFood } from '../../../../api/order_food.api'
+import { displayNum, isAxiosUnprocessableEntityError } from '../../../../utils/utils'
 
 export default function Food({ food_id, quantity, refetch, refetch2, status }) {
   useEffect(() => {
     Modal.setAppElement('body')
   }, [])
   const [inputValue, setInputValue] = useState(quantity)
-  const {
-    handleSubmit,
-    reset,
-    register,
-    formState: { errors }
-  } = useForm({
+  const { handleSubmit, reset, register } = useForm({
     mode: 'all'
   })
-  const {
-    handleSubmit: handleSubmit2,
-    formState: { errors2 }
-  } = useForm()
-  const {
-    handleSubmit: handleSubmit3,
-    formState: { errors3 }
-  } = useForm()
+  const { handleSubmit: handleSubmit2 } = useForm()
+  const { handleSubmit: handleSubmit3 } = useForm()
   const updateOrderFood = useMutation({
     mutationFn: (body) => orderFood(body)
   })
@@ -60,6 +39,7 @@ export default function Food({ food_id, quantity, refetch, refetch2, status }) {
     updateOrderFood.mutate(data, {
       onSuccess: () => {
         refetch()
+        refetch2()
       },
       onError: (error) => {
         console.log(error)
@@ -108,7 +88,6 @@ export default function Food({ food_id, quantity, refetch, refetch2, status }) {
       }
     })
   })
-  // console.log(data)
   const foodData = data?.data.food
   if (isSuccess) {
     return (

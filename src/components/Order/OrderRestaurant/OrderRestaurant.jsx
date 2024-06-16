@@ -45,7 +45,18 @@ export default function OrderRestaurant({
     placeholderData: keepPreviousData
   })
   const orderListData = order_list_data?.data.orderFoodList
-
+  const orderFoodData = order_list_data?.data.orderFood
+  const firstDate = new Date(orderFoodData?.updatedAt).getTime()
+  const secondDate = Date.now()
+  const diffTime = Math.abs(secondDate - firstDate)
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+  let diffHours, diffMinutes
+  if (diffDays === 0) {
+    diffHours = Math.floor(diffTime / (1000 * 60 * 60))
+    if (diffHours === 0) {
+      diffMinutes = Math.floor(diffTime / (1000 * 60))
+    }
+  }
   return (
     <>
       <div className='bg-white mb-[2rem]'>
@@ -75,19 +86,28 @@ export default function OrderRestaurant({
             <hr className='h-[0.1rem] mt-[0.4rem] border-none bg-gray-400' />
             {status > 0 && (
               <div>
-                <div className='flex items-center mt-[0.2rem]'>
-                  <FaMapMarkerAlt
-                    style={{
-                      color: 'red',
-                      width: screen.width >= 640 ? '2vw' : '5vw',
-                      height: screen.width >= 640 ? '2vw' : '5vw'
-                    }}
-                  />
-                  <div
-                    className='text-xs line-clamp-2 text-ellipsis overflow-hidden sm:overflow-visible 
+                <div className='flex justify-between items-center'>
+                  <div className='flex items-center mt-[0.2rem]'>
+                    <FaMapMarkerAlt
+                      style={{
+                        color: 'red',
+                        width: screen.width >= 640 ? '2vw' : '5vw',
+                        height: screen.width >= 640 ? '2vw' : '5vw'
+                      }}
+                    />
+                    <div
+                      className='text-xs line-clamp-2 text-ellipsis overflow-hidden sm:overflow-visible 
                      sm:text-[1.1rem] text-slate-500'
-                  >
-                    {address}
+                    >
+                      {address}
+                    </div>
+                  </div>
+                  <div className='italic text-slate-500'>
+                    {diffDays == 0
+                      ? diffHours == 0
+                        ? diffMinutes + ' phút trước'
+                        : diffHours + ' giờ trước'
+                      : diffDays + ' ngày trước'}
                   </div>
                 </div>
                 <hr className='h-[0.1rem] mt-[0.4rem] border-none bg-gray-400' />
@@ -114,7 +134,7 @@ export default function OrderRestaurant({
                   <Link to={`/completed_order/${id}`}>
                     <button
                       className=' sm:px-[2rem] sm:py-[1rem] rounded-lg px-[0.6rem] py-[0.4rem]
-                    bg-green-500 hover:bg-orange-900rounded-xl'
+                    bg-green-500 hover:bg-green-700'
                     >
                       {screen.width < 640 ? (
                         <FaWpforms style={{ color: 'white' }} />

@@ -1,0 +1,2 @@
+import HostRestaurantsOrdersTable from './HostRestaurantsOrdersTable'
+export default HostRestaurantsOrdersTable

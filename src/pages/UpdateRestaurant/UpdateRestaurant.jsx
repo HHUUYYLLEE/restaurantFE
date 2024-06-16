@@ -1,34 +1,28 @@
-import { updateARestaurant } from '../../api/restaurants.api'
-import { getSearchLocation } from '../../api/openstreetmap.api'
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { getInfoFromLS } from '../../utils/auth'
-import { displayNum, isAxiosUnprocessableEntityError } from '../../utils/utils'
-import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useMutation } from '@tanstack/react-query'
-import { toast } from 'react-toastify'
-import { FaPlusCircle } from 'react-icons/fa'
-import { schemaRestaurantProfile } from '../../utils/rules'
-import { FiMinusCircle } from 'react-icons/fi'
-import { useEffect, useRef, useState } from 'react'
-import { TailSpin } from 'react-loader-spinner'
-import Modal from 'react-modal'
-import { GrUpload } from 'react-icons/gr'
-import { Oval } from 'react-loader-spinner'
-import 'leaflet/dist/leaflet.css'
-import diningIcon from '../../asset/img/dining.png'
+import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query'
 import { useDebounce } from '@uidotdev/usehooks'
-import { getRestaurant } from '../../api/restaurants.api'
 import { Icon } from 'leaflet'
-import { MapContainer, TileLayer, useMapEvents, Marker, useMap } from 'react-leaflet'
+import 'leaflet/dist/leaflet.css'
+import { useEffect, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { FaPlusCircle } from 'react-icons/fa'
+import { FiMinusCircle } from 'react-icons/fi'
+import { GrUpload } from 'react-icons/gr'
+import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from 'react-leaflet'
+import { Oval, TailSpin } from 'react-loader-spinner'
+import Modal from 'react-modal'
 import { useParams } from 'react-router-dom'
+import { getSearchLocation } from '../../api/openstreetmap.api'
+import { getRestaurant, updateARestaurant } from '../../api/restaurants.api'
+import diningIcon from '../../asset/img/dining.png'
 import { envConfig } from '../../utils/env'
-import { convertTime } from '../../utils/utils'
+import { schemaRestaurantProfile } from '../../utils/rules'
+import { convertTime, isAxiosUnprocessableEntityError } from '../../utils/utils'
 export default function UpdateRestaurant() {
   const [enableSearchResults, setEnableSearchResults] = useState(false)
   const [latLng, setLatLng] = useState(null)
 
-  const [addressValue, setAddressValue] = useState(1)
+  const [addressValue, setAddressValue] = useState('')
   const [latLngValueInput, setLatLngValueInput] = useState(['', ''])
   const [tableChair, setTableChair] = useState([])
   const [enableSearchLatLng, setEnableSearchLatLng] = useState(false)
@@ -37,11 +31,7 @@ export default function UpdateRestaurant() {
   const [searchParams] = useDebounce([searchQuery], 1000)
   const [searchParams2] = useDebounce([searchQuery2], 1000)
   const { id } = useParams()
-  const {
-    data: data3,
-    isLoading: isLoading3,
-    isSuccess: isSuccess3
-  } = useQuery({
+  const { data: data3, isSuccess: isSuccess3 } = useQuery({
     queryKey: ['restaurantDetailUpdate', id],
     queryFn: async () => {
       const restaurantData = await getRestaurant(id)
@@ -55,11 +45,7 @@ export default function UpdateRestaurant() {
     },
     placeholderData: keepPreviousData
   })
-  const {
-    status,
-    data: data2,
-    isLoading
-  } = useQuery({
+  const { data } = useQuery({
     queryKey: ['search_location', searchParams],
     queryFn: () => {
       return getSearchLocation(searchParams)
@@ -68,12 +54,7 @@ export default function UpdateRestaurant() {
     staleTime: 1000,
     enabled: enableSearchResults
   })
-  const {
-    status: status2,
-    data: data,
-    isLoading: isLoading2,
-    isSuccess: isSuccess2
-  } = useQuery({
+  const { data: data2, isSuccess: isSuccess2 } = useQuery({
     queryKey: ['search_lat_lng', searchParams2],
     queryFn: () => {
       return getSearchLocation(searchParams2)
@@ -96,7 +77,6 @@ export default function UpdateRestaurant() {
   const {
     register,
     handleSubmit,
-    setError,
     setValue,
     reset,
     formState: { errors }
@@ -119,9 +99,7 @@ export default function UpdateRestaurant() {
     setValue('lng', latLngValueInput[1])
   }, [addressValue, setValue, latLngValueInput])
   const onSubmit = handleSubmit((data) => {
-    console.log(data)
     if (data.address === '' || data.lat === '' || data.lng === '') {
-      // toast.error('Hãy nhập địa chỉ')
       return
     }
     data.restaurant_id = id
@@ -171,11 +149,9 @@ export default function UpdateRestaurant() {
     }
 
     data.table_chair = table_chair
-    console.log(data)
 
     updateARestaurantMutation.mutate(data, {
       onSuccess: () => {
-        // toast.success('Mỏ nhà hàng thành công !') //。(20)
         window.location.reload()
       },
       onError: (error) => {
@@ -183,18 +159,12 @@ export default function UpdateRestaurant() {
         if (isAxiosUnprocessableEntityError(error)) {
           const formError = error.response?.data?.errors
           console.log(formError)
-          // if (formError) {
-          //   setError('username', {
-          //     message: formError.username?.msg,
-          //     type: 'Server'
-          //   })
-          // }
         }
       }
     })
   })
   function MyComponent() {
-    const map = useMapEvents({
+    useMapEvents({
       click: (e) => {
         setMarkerPos([e.latlng.lat, e.latlng.lng])
         setLatLngValueInput([e.latlng.lat, e.latlng.lng])
@@ -580,9 +550,9 @@ export default function UpdateRestaurant() {
                     border font-inter-500 border-[#ff822e] text-lg rounded-xl 
                     px-[0.5rem] py-[0.2rem]'
                       />
-                      {data2 &&
+                      {data &&
                         enableSearchResults &&
-                        data2.data?.results.map((data, key) => {
+                        data?.data.results.map((data, key) => {
                           return (
                             <div key={key}>
                               <div

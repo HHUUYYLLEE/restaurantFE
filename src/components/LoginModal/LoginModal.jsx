@@ -1,23 +1,20 @@
-import React, { useContext, useEffect } from 'react'
-import { AiOutlineClose } from 'react-icons/ai'
-import { AppContext } from '../../contexts/app.context'
-import { useNavigate } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { schemaLogin } from '../../utils/rules'
-import { loginAccount, loginGoogleAccount } from '../../api/user.api'
-import { useMutation } from '@tanstack/react-query'
-import { toast } from 'react-toastify'
-import Modal from 'react-modal'
-import { Oval } from 'react-loader-spinner'
-import { getInfoFromLS } from '../../utils/auth'
 import { GoogleLogin } from '@react-oauth/google'
+import { useMutation } from '@tanstack/react-query'
+import { useContext, useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import { Oval } from 'react-loader-spinner'
+import Modal from 'react-modal'
+import { useNavigate } from 'react-router-dom'
+import { loginAccount, loginGoogleAccount } from '../../api/user.api'
+import { AppContext } from '../../contexts/app.context'
+import { getInfoFromLS } from '../../utils/auth'
+import { schemaLogin } from '../../utils/rules'
 
 import { isAxiosUnprocessableEntityError } from '../../utils/utils'
 export default function LoginModal({ closeModalLogin }) {
-  const { setIsAuthenticated, setInfo, isAuthenticated } = useContext(AppContext)
+  const { setIsAuthenticated, setInfo } = useContext(AppContext)
   const navigate = useNavigate()
-  console.log(isAuthenticated)
   const {
     register,
     handleSubmit,
@@ -37,10 +34,8 @@ export default function LoginModal({ closeModalLogin }) {
     mutationFn: (body) => loginGoogleAccount(body)
   })
   function onSubmitGoogle(credential) {
-    // console.log(credential)
     loginGoogleAccontMutation.mutate(credential, {
       onSuccess: () => {
-        // toast.success('Đăng nhập Google thành công !') //。(20)
         setInfo(getInfoFromLS())
         setIsAuthenticated(true)
         closeModalLogin()
@@ -57,7 +52,6 @@ export default function LoginModal({ closeModalLogin }) {
   }
 
   const onSubmit = handleSubmit((data) => {
-    //  console.log(data)
     loginAccontMutation.mutate(data, {
       onSuccess: (data) => {
         console.log(data?.data.data.user.role)
@@ -68,9 +62,9 @@ export default function LoginModal({ closeModalLogin }) {
           case 0:
             navigate('/')
             break
-          // case 1:
-          //   navigate('/admin/dashboard')
-          //   break
+          case 1:
+            navigate('/admin')
+            break
           default:
             break
         }
@@ -95,12 +89,6 @@ export default function LoginModal({ closeModalLogin }) {
       <div className='overlay' onClick={() => closeModalLogin()}></div>
       <div className='modal-content bg-white'>
         <div className='relative sm:w-[26rem] w-[70vw] max-h-full'>
-          {/* <div
-            onClick={() => closeModalLogin()}
-            className='absolute right-0 top-[-0.5rem] rounded-full transition-all duration-300  cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-500 flex justify-center items-center h-8 w-8  dark:text-yellow-400 font-extrabold'
-          >
-            <AiOutlineClose />
-          </div> */}
           <div>
             <div className='w-full justify-between items-center'>
               <div className='font-inter-700 sm:text-3xl text-2xl text-green-500'>Đăng nhập</div>

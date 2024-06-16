@@ -1,23 +1,19 @@
-import { useParams } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { schemaFood } from '../../../utils/rules'
 import { useMutation } from '@tanstack/react-query'
-import { toast } from 'react-toastify'
-import Modal from 'react-modal'
-import { displayNum } from '../../../utils/utils'
-import { useForm } from 'react-hook-form'
 import { useEffect, useRef, useState } from 'react'
-import { addFood } from '../../../api/food.api'
-import { isAxiosUnprocessableEntityError } from '../../../utils/utils'
+import { useForm } from 'react-hook-form'
 import { AiOutlineClose } from 'react-icons/ai'
 import { GrUpload } from 'react-icons/gr'
 import { Oval } from 'react-loader-spinner'
+import Modal from 'react-modal'
+import { addFood } from '../../../api/food.api'
+import { schemaFood } from '../../../utils/rules'
+import { isAxiosUnprocessableEntityError } from '../../../utils/utils'
 
 export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors }
   } = useForm({
     mode: 'all',
@@ -40,7 +36,6 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
     console.log(data)
     addFoodMutation.mutate(data, {
       onSuccess: () => {
-        // toast.success('Tạo món ăn thành công!') //。(20)
         window.location.reload()
       },
       onError: (error) => {

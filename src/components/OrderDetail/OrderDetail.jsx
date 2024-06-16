@@ -1,30 +1,27 @@
-import { useParams, useNavigate, Link } from 'react-router-dom'
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { placeAnOrder } from '../../api/order_food.api'
-import { getOrder } from '../../api/order_food.api'
-import 'react-responsive-carousel/lib/styles/carousel.css'
-import 'leaflet/dist/leaflet.css'
-import { getSearchLocation } from '../../api/openstreetmap.api'
-import { useState, useEffect, useContext } from 'react'
-import { useForm } from 'react-hook-form'
-import { useMutation } from '@tanstack/react-query'
-import { displayNum, isAxiosUnprocessableEntityError } from '../../utils/utils'
-import { MdOutlinePinDrop } from 'react-icons/md'
-import { getInfoFromLS } from '../../utils/auth'
-import { MapContainer, TileLayer, useMapEvents, useMap } from 'react-leaflet'
-import { envConfig } from '../../utils/env'
-import { CiShop } from 'react-icons/ci'
-import { getRestaurant } from '../../api/restaurants.api'
-import Food from './Food/Food'
-import 'leaflet/dist/leaflet.css'
-import 'leaflet-routing-machine'
-import 'lrm-graphhopper'
-import L from 'leaflet'
+import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query'
 import { useDebounce } from '@uidotdev/usehooks'
-import { AppContext } from '../../contexts/app.context'
+import L from 'leaflet'
+import 'leaflet-routing-machine'
+import 'leaflet/dist/leaflet.css'
+import 'lrm-graphhopper'
+import { useContext, useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { CiShop } from 'react-icons/ci'
 import { FaPhoneAlt } from 'react-icons/fa'
+import { MdOutlinePinDrop } from 'react-icons/md'
+import { MapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet'
+import 'react-responsive-carousel/lib/styles/carousel.css'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { getSearchLocation } from '../../api/openstreetmap.api'
+import { getOrder, placeAnOrder } from '../../api/order_food.api'
+import { getRestaurant } from '../../api/restaurants.api'
 import diningIcon from '../../asset/img/dining.png'
 import humanIcon from '../../asset/img/human.png'
+import { AppContext } from '../../contexts/app.context'
+import { getInfoFromLS } from '../../utils/auth'
+import { envConfig } from '../../utils/env'
+import { displayNum, isAxiosUnprocessableEntityError } from '../../utils/utils'
+import Food from './Food/Food'
 export default function OrderDetail() {
   const { leafletMap } = useContext(AppContext)
   const phone_number = getInfoFromLS().phone_number
@@ -38,8 +35,8 @@ export default function OrderDetail() {
   const [addressValue, setAddressValue] = useState('')
   const [searchQuery, setSearchQuery] = useState(null)
   const [searchQuery2, setSearchQuery2] = useState(null)
-  const [searchParams, setSearchParams] = useDebounce([searchQuery], 1000)
-  const [searchParams2, setSearchParams2] = useDebounce([searchQuery2], 1000)
+  const [searchParams] = useDebounce([searchQuery], 1000)
+  const [searchParams2] = useDebounce([searchQuery2], 1000)
   const [enableSearchLatLng, setEnableSearchLatLng] = useState(false)
   const [routingRedraw, setRoutingRedraw] = useState(false)
   const { mapDraw, setMapDraw } = useContext(AppContext)
@@ -69,7 +66,7 @@ export default function OrderDetail() {
   const placeAnOrderMutation = useMutation({
     mutationFn: (body) => placeAnOrder(body)
   })
-  const { status, data, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ['search_location', searchParams],
     queryFn: () => {
       return getSearchLocation(searchParams)
@@ -78,12 +75,7 @@ export default function OrderDetail() {
     staleTime: 1000,
     enabled: enableSearchResults
   })
-  const {
-    status: status2,
-    data: data2,
-    isLoading: isLoading2,
-    isSuccess: isSuccess2
-  } = useQuery({
+  const { data: data2, isSuccess: isSuccess2 } = useQuery({
     queryKey: ['search_lat_lng', searchParams2],
     queryFn: () => {
       return getSearchLocation(searchParams2)
@@ -92,7 +84,7 @@ export default function OrderDetail() {
     staleTime: 1000,
     enabled: enableSearchLatLng
   })
-  function HandleSuccess({ isSuccess2, data }) {
+  function HandleSuccess({ isSuccess2, data2 }) {
     useEffect(() => {
       if (isSuccess2) {
         setAddressValue(data2.data.results[0].formatted)
@@ -103,7 +95,7 @@ export default function OrderDetail() {
       }
     }, [isSuccess2])
   }
-  HandleSuccess({ isSuccess2, data })
+  HandleSuccess({ isSuccess2, data2 })
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((e) => {
@@ -135,7 +127,6 @@ export default function OrderDetail() {
       newRoutingMap.on('routeselected', (e) => {
         console.log(e)
       })
-      newRoutingMap.on('routingerror', (e) => {})
       newRoutingMap.addTo(leafletMap)
       setRoutingRedraw(true)
       setMapDraw(newRoutingMap)
@@ -149,7 +140,7 @@ export default function OrderDetail() {
   }, [leafletMap, restaurantData?.lat, restaurantData?.lng, setMapDraw])
 
   function MyComponent() {
-    const map = useMapEvents({
+    useMapEvents({
       click: (e) => {
         setEnableSearchLatLng(true)
         setLatLngValueInput([e.latlng.lat, e.latlng.lng])
@@ -182,7 +173,6 @@ export default function OrderDetail() {
           newRoutingMap.on('routeselected', (e) => {
             console.log(e)
           })
-          newRoutingMap.on('routingerror', (e) => {})
           newRoutingMap.addTo(leafletMap)
           setMapDraw(newRoutingMap)
           setRoutingRedraw(true)
@@ -212,8 +202,6 @@ export default function OrderDetail() {
             router: L.Routing.graphHopper(envConfig.graphhopperKey),
             fitSelectedRoutes: true
           })
-          newRoutingMap.on('routeselected', (e) => {})
-          newRoutingMap.on('routingerror', (e) => {})
           newRoutingMap.addTo(leafletMap)
           setMapDraw(newRoutingMap)
         }
@@ -242,7 +230,6 @@ export default function OrderDetail() {
     console.log(data)
     placeAnOrderMutation.mutate(data, {
       onSuccess: () => {
-        // toast.success('Đã đặt hàng thành công!') //。(20)
         navigate('/order_food')
       },
       onError: (error) => {
@@ -285,7 +272,7 @@ export default function OrderDetail() {
                   <div className='text-orange-500 sm:block flex sm:justify-start justify-end'>
                     {username}
                   </div>
-                  <div className='flex gap-x-2 sm:ml-0'>
+                  <div className='flex gap-x-2'>
                     <FaPhoneAlt
                       style={{
                         color: 'green',
@@ -362,8 +349,7 @@ export default function OrderDetail() {
                                   router: L.Routing.graphHopper(envConfig.graphhopperKey),
                                   fitSelectedRoutes: true
                                 })
-                                newRoutingMap.on('routesfound', (e) => {})
-                                newRoutingMap.on('routingerror', (e) => {})
+
                                 newRoutingMap.addTo(leafletMap)
                                 setMapDraw(newRoutingMap)
                                 setRoutingRedraw(true)
@@ -393,8 +379,6 @@ export default function OrderDetail() {
                                   router: L.Routing.graphHopper(envConfig.graphhopperKey),
                                   fitSelectedRoutes: true
                                 })
-                                newRoutingMap.on('routeselected', (e) => {})
-                                newRoutingMap.on('routingerror', (e) => {})
                                 newRoutingMap.addTo(leafletMap)
                                 setMapDraw(newRoutingMap)
                               }

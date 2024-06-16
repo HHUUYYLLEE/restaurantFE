@@ -1,12 +1,12 @@
+import { useState } from 'react'
 import RestaurantDetail from '../../components/RestaurantDetail/RestaurantDetail'
 import RestaurantFood from '../../components/RestaurantFood/RestaurantFood'
-import { useState } from 'react'
 import ReviewsList from '../../components/ReviewsList/ReviewsList'
 export default function RestaurantDetails() {
   const [option, setOption] = useState(0)
   const [reviews, setReviews] = useState()
-  const [restaurantId, setRestaurantId] = useState()
   const [getReviewSuccess, setGetReviewSuccess] = useState(false)
+
   return (
     <>
       <div className='w-full mt-[10rem]'>
@@ -16,7 +16,6 @@ export default function RestaurantDetails() {
             reviews={reviews}
             setReviews={setReviews}
             setGetReviewSuccess={setGetReviewSuccess}
-            setRestaurantId={setRestaurantId}
           />
           {getReviewSuccess && (
             <div className='mt-[2rem]'>
@@ -41,12 +40,7 @@ export default function RestaurantDetails() {
                 {option === 0 && <RestaurantFood />}
               </div>
               {option === 1 && (
-                <ReviewsList
-                  reviews={reviews}
-                  setReviews={setReviews}
-                  getReviewSuccess={getReviewSuccess}
-                  restaurantId={restaurantId}
-                />
+                <ReviewsList reviews={reviews} getReviewSuccess={getReviewSuccess} />
               )}
             </div>
           )}

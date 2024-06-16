@@ -3,8 +3,7 @@ import RestaurantsList from '../../components/Profile/RestaurantsList/Restaurant
 import UserProfile from '../../components/Profile/UserProfile/UserProfile'
 import HostRestaurantsOrders from '../../components/HostRestaurantsOrders/HostRestaurantsOrders'
 import { FaAngleRight } from 'react-icons/fa6'
-import { NavLink } from 'react-router-dom'
-
+import HostRestaurantsOrdersTable from '../../components/HostRestaurantsOrdersTable/HostRestaurantsOrdersTable'
 export default function Profile() {
   const [option, setOption] = useState(0)
   const options = ['Cá nhân', 'Nhà hàng', 'Đơn hàng', 'Đơn đặt chỗ']
@@ -98,7 +97,7 @@ export default function Profile() {
             </button>
           </div>
         )}
-        <div className='sm:mt-24 mt-[1rem] w-full pb-10 sm:flex'>
+        <div className='sm:mt-24 mt-[1rem]  pb-10 sm:flex'>
           {(option === 0 || option === 1) && (
             <div>
               <UserProfile />
@@ -109,6 +108,11 @@ export default function Profile() {
           {option === 2 && (
             <div className='sm:ml-[15vw] sm:my-0 sm:mr-0 mx-auto sm:w-[80%] w-[90%]'>
               <HostRestaurantsOrders />
+            </div>
+          )}
+          {option === 3 && (
+            <div className='sm:ml-[15vw] sm:my-0 sm:mr-0 mx-auto sm:w-[80%] w-[90%]'>
+              <HostRestaurantsOrdersTable />
             </div>
           )}
         </div>

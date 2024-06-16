@@ -1,35 +1,25 @@
-import { useEffect, useState, useRef } from 'react'
-import useQueryConfig from '../../hooks/useQueryConfig'
 import { useQuery } from '@tanstack/react-query'
-import { getAllRestaurants } from '../../api/restaurants.api'
-import mapround from '../../asset/img/mapround.png'
-import Restaurant from './Restaurant/Restaurant'
-import { displayNum } from '../../utils/utils'
-import { PiListLight } from 'react-icons/pi'
-import { PiGridFourFill } from 'react-icons/pi'
-import { FaCheckCircle } from 'react-icons/fa'
+import { useEffect, useRef, useState } from 'react'
 import Checkbox from 'react-custom-checkbox'
-import { Link, createSearchParams, useNavigate } from 'react-router-dom'
+import { FaAngleDown, FaAngleUp, FaChair, FaCheckCircle } from 'react-icons/fa'
 import { IoIosPin } from 'react-icons/io'
-import ReactPaginate from 'react-paginate'
-import { VscTriangleLeft } from 'react-icons/vsc'
-import { VscTriangleRight } from 'react-icons/vsc'
-import { HN, TPHCM, categories } from '../../constants/optionsList'
-import spinningload from '../../asset/img/spinning_load.gif'
-import { FaAngleDown } from 'react-icons/fa'
-import { FaAngleUp } from 'react-icons/fa'
 import { IoPeopleSharp } from 'react-icons/io5'
-import { FaChair } from 'react-icons/fa'
-
+import { PiGridFourFill, PiListLight } from 'react-icons/pi'
+import { VscTriangleLeft, VscTriangleRight } from 'react-icons/vsc'
+import ReactPaginate from 'react-paginate'
+import { Link } from 'react-router-dom'
+import { getAllRestaurants } from '../../api/restaurants.api'
+import nothingIcon from '../../asset/img/nothing.png'
+import spinningload from '../../asset/img/spinning_load.gif'
+import { HN, TPHCM, categories } from '../../constants/optionsList'
+import Restaurant from './Restaurant/Restaurant'
 export default function HomeRestaurant() {
   const [HNfilter, setHNfilter] = useState(HN)
   const [TPHCMfilter, setTPHCMfilter] = useState(TPHCM)
-  const params = useQueryConfig()
   const [page, setPage] = useState(1)
-  const [limit, setLimit] = useState(12)
+  const [limit] = useState(12)
   const [option, setOption] = useState(0)
   const [displayType, setDisplayType] = useState(0)
-  const [cityOption, setCityOption] = useState(params.address || '')
   const [chair, setChair] = useState('')
   const [table, setTable] = useState('')
   const options = ['Hà Nội', 'TP.HCM']
@@ -59,7 +49,7 @@ export default function HomeRestaurant() {
     }
   }, [])
 
-  const { data, isSuccess, isLoading, isError } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: [
       'searchAllRestaurants',
       addressValue,
@@ -513,7 +503,7 @@ export default function HomeRestaurant() {
           >
             {isError && (
               <div className='flex items-center justify-center'>
-                <img className='w-[20vw] sm:w-[11vw]' src={spinningload}></img>
+                <img className='w-[20vw] sm:w-[11vw]' src={nothingIcon}></img>
               </div>
             )}
             {isLoading && (

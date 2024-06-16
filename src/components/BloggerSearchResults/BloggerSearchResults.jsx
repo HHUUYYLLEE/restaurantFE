@@ -1,33 +1,20 @@
-import { useEffect, useState, useRef } from 'react'
-import useQueryConfig from '../../hooks/useQueryConfig'
 import { useQuery } from '@tanstack/react-query'
-import { findBloggerRestaurants } from '../../api/restaurants.api'
-import mapround from '../../asset/img/mapround.png'
-import Restaurant from './Restaurant/Restaurant'
-import { displayNum } from '../../utils/utils'
-import spinningload from '../../asset/img/spinning_load.gif'
-import { PiListLight } from 'react-icons/pi'
-import { PiGridFourFill } from 'react-icons/pi'
-import { FaCheckCircle } from 'react-icons/fa'
+import { useEffect, useRef, useState } from 'react'
 import Checkbox from 'react-custom-checkbox'
-import { Link, createSearchParams, useNavigate } from 'react-router-dom'
-import { FaAngleDown } from 'react-icons/fa'
-import { FaAngleUp } from 'react-icons/fa'
-import { IoPeopleSharp } from 'react-icons/io5'
-import { FaChair } from 'react-icons/fa'
+import { FaAngleDown, FaAngleUp, FaChair, FaCheckCircle } from 'react-icons/fa'
 import { IoIosPin } from 'react-icons/io'
-import ReactPaginate from 'react-paginate'
-import { VscTriangleLeft } from 'react-icons/vsc'
-import { VscTriangleRight } from 'react-icons/vsc'
+import { IoPeopleSharp } from 'react-icons/io5'
+import { Link } from 'react-router-dom'
+import { findBloggerRestaurants } from '../../api/restaurants.api'
+import spinningload from '../../asset/img/spinning_load.gif'
 import { HN, TPHCM, categories } from '../../constants/optionsList'
+import Restaurant from './Restaurant/Restaurant'
 export default function BloggerSearchResults() {
-  const [mode, setMode] = useState(1)
-  const params = useQueryConfig()
   const [option, setOption] = useState(0)
   const [HNfilter, setHNfilter] = useState(HN)
   const [TPHCMfilter, setTPHCMfilter] = useState(TPHCM)
   const [page, setPage] = useState(1)
-  const [limit, setLimit] = useState(12)
+  const [limit] = useState(12)
   const [chair, setChair] = useState('')
   const [table, setTable] = useState('')
   const options3 = ['Hà Nội', 'TP.HCM']
@@ -58,7 +45,7 @@ export default function BloggerSearchResults() {
     }
   }, [])
   // console.log(params)
-  const { status, data, isSuccess, isLoading } = useQuery({
+  const { data, isSuccess, isLoading } = useQuery({
     queryKey: [
       'findBloggerRestaurants',
       addressValue,
@@ -481,7 +468,7 @@ export default function BloggerSearchResults() {
                gap-y-[0.6rem] mt-[1rem]`}
           >
             {isSuccess &&
-              searchData.restaurants.map((restaurant, id) => {
+              searchData.restaurants.map((restaurant) => {
                 return (
                   <Restaurant
                     key={restaurant._id}

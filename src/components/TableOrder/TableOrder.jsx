@@ -1,40 +1,24 @@
-import { getRestaurant } from '../../api/restaurants.api'
-import { placeAnOrderTable, cancelOrderTable } from '../../api/order_table.api'
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { getInfoFromLS } from '../../utils/auth'
-import { displayNum, isAxiosUnprocessableEntityError } from '../../utils/utils'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { useMutation } from '@tanstack/react-query'
-import { FaPlusCircle } from 'react-icons/fa'
-import { schemaRestaurantProfile } from '../../utils/rules'
-import { FiMinusCircle } from 'react-icons/fi'
-import { useEffect, useRef, useState, useContext } from 'react'
+import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query'
+import L from 'leaflet'
+import 'leaflet-routing-machine'
 import 'leaflet/dist/leaflet.css'
-import { useDebounce } from '@uidotdev/usehooks'
-import Modal from 'react-modal'
-import { Oval } from 'react-loader-spinner'
-import { Icon } from 'leaflet'
+import 'lrm-graphhopper'
+import { useContext, useEffect, useState } from 'react'
+import Checkbox from 'react-custom-checkbox'
+import { FaCalendarAlt, FaChair, FaCheckCircle, FaMapMarkerAlt } from 'react-icons/fa'
+import { MdOutlineTableRestaurant } from 'react-icons/md'
 import { MapContainer, TileLayer, useMap } from 'react-leaflet'
-import { envConfig } from '../../utils/env'
-import { convertTime } from '../../utils/utils'
-import { GrUpload } from 'react-icons/gr'
+import { Oval } from 'react-loader-spinner'
+import Modal from 'react-modal'
 import { useParams } from 'react-router-dom'
+import { placeAnOrderTable } from '../../api/order_table.api'
+import { getRestaurant } from '../../api/restaurants.api'
 import diningIcon from '../../asset/img/dining.png'
 import humanIcon from '../../asset/img/human.png'
 import tableChairIcon from '../../asset/img/table_chair.png'
 import { AppContext } from '../../contexts/app.context'
-import 'leaflet/dist/leaflet.css'
-import 'leaflet-routing-machine'
-import 'lrm-graphhopper'
-import L from 'leaflet'
-import spinningload from '../../asset/img/spinning_load.gif'
-import { MdOutlineTableRestaurant } from 'react-icons/md'
-import { FaChair } from 'react-icons/fa'
-import { FaMapMarkerAlt } from 'react-icons/fa'
-import { FaCheckCircle } from 'react-icons/fa'
-import Checkbox from 'react-custom-checkbox'
-import { FaCalendarAlt } from 'react-icons/fa'
+import { envConfig } from '../../utils/env'
+import { isAxiosUnprocessableEntityError } from '../../utils/utils'
 export default function TableOrder() {
   const { id } = useParams()
   const { leafletMap } = useContext(AppContext)
@@ -48,7 +32,7 @@ export default function TableOrder() {
   }, [])
   const [orderTableModal, setOrderTableModal] = useState(false)
   const [selectTable, setSelectTable] = useState([])
-  const { data, status, isLoading, isSuccess } = useQuery({
+  const { data, isSuccess } = useQuery({
     queryKey: ['restaurantDetail', id],
     queryFn: async () => {
       const data = await getRestaurant(id)
@@ -99,10 +83,9 @@ export default function TableOrder() {
           newRoutingMap.on('routeselected', (e) => {
             console.log(e)
           })
-          newRoutingMap.on('routingerror', (e) => {})
           newRoutingMap.addTo(leafletMap)
         },
-        (err) => {
+        () => {
           L.marker([restaurantData.lat, restaurantData.lng], {
             icon: new L.Icon({
               iconUrl: diningIcon,
@@ -266,7 +249,7 @@ export default function TableOrder() {
                             )
                           }}
                         />
-                        <div className={``}>bàn</div>
+                        <div>bàn</div>
                         {screen.width < 640 && (
                           <Checkbox
                             icon={
@@ -398,7 +381,7 @@ export default function TableOrder() {
               setOrderTableModal(false)
             }}
             className='flex justify-center items-center 
-            bg-orange-700 hover:bg-orange-700 text-white font-inter-700 rounded-lg
+            bg-green-500 hover:bg-green-700 text-white font-inter-700 rounded-lg
             px-[1rem] py-[0.5rem] sm:py-[1.1rem] sm:text-lg text-sm
             '
           >
@@ -414,7 +397,6 @@ export default function TableOrder() {
           </button>
         </div>
       </Modal>
-
       <Modal
         style={{
           overlay: {

@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useRoutes } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
-
+import Adminlayout from './layouts/AdminLayout/AdminLayout'
 import Home from './pages/Home'
 import Profile from './pages/Profile'
 import RestaurantDetails from './pages/RestaurantDetails'
@@ -15,9 +15,12 @@ import SearchByLocation from './components/SearchLocationResults/SearchLocationR
 import UpdateRestaurant from './pages/UpdateRestaurant'
 import BloggerRestaurantsResults from './pages/BloggerRestaurantsResults/BloggerRestaurantsResults'
 import HostOrderDetail from './pages/HostOrderDetail/HostOrderDetail'
+import HostOrderTableDetail from './pages/HostOrderDetail/HostOrderDetail'
 import CompletedOrder from './pages/CompletedOrder/CompletedOrder'
 import TableOrderForm from './pages/TableOrderForm'
+import TableOrder from './pages/TableOrder'
 import CompletedTableOrder from './pages/CompletedTableOrder/CompletedTableOrder'
+import Admin from './pages/Admin/Admin'
 // eslint-disable-next-line react-refresh/only-export-components
 function AdminProtectedRouter() {
   const { info } = useContext(AppContext)
@@ -83,11 +86,29 @@ export default function useRouteElement() {
           )
         },
         {
+          path: '/table_order',
+          index: true,
+          element: (
+            <MainLayout>
+              <TableOrder />
+            </MainLayout>
+          )
+        },
+        {
           path: '/host_order_detail/:id',
           index: true,
           element: (
             <MainLayout>
               <HostOrderDetail />
+            </MainLayout>
+          )
+        },
+        {
+          path: '/host_order_table_detail/:id',
+          index: true,
+          element: (
+            <MainLayout>
+              <HostOrderTableDetail />
             </MainLayout>
           )
         },
@@ -161,6 +182,21 @@ export default function useRouteElement() {
             <MainLayout>
               <UpdateRestaurant />
             </MainLayout>
+          )
+        }
+      ]
+    },
+    {
+      path: '',
+      element: <AdminProtectedRouter />,
+      children: [
+        {
+          path: '/admin',
+          index: true,
+          element: (
+            <Adminlayout>
+              <Admin />
+            </Adminlayout>
           )
         }
       ]

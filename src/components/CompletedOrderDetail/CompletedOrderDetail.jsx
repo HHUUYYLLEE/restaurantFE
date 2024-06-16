@@ -1,31 +1,26 @@
-import { useParams, useNavigate, Link } from 'react-router-dom'
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { getOrder, cancelOrder } from '../../api/order_food.api'
-import 'react-responsive-carousel/lib/styles/carousel.css'
-import 'leaflet/dist/leaflet.css'
-import { getSearchLocation } from '../../api/openstreetmap.api'
-import { useState, useEffect, useContext } from 'react'
-import { useForm } from 'react-hook-form'
-import { useMutation } from '@tanstack/react-query'
-import { displayNum, isAxiosUnprocessableEntityError } from '../../utils/utils'
-import { MdOutlinePinDrop } from 'react-icons/md'
-import { getInfoFromLS } from '../../utils/auth'
-import { MapContainer, TileLayer, useMapEvents, useMap } from 'react-leaflet'
-import { envConfig } from '../../utils/env'
-import { CiShop } from 'react-icons/ci'
-import { getRestaurant } from '../../api/restaurants.api'
-import Food from './Food/Food'
-import 'leaflet/dist/leaflet.css'
-import 'leaflet-routing-machine'
-import 'lrm-graphhopper'
+import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query'
 import L from 'leaflet'
-import { useDebounce } from '@uidotdev/usehooks'
-import { AppContext } from '../../contexts/app.context'
+import 'leaflet-routing-machine'
+import 'leaflet/dist/leaflet.css'
+import 'lrm-graphhopper'
+import { useContext, useEffect, useState } from 'react'
+import { CiShop } from 'react-icons/ci'
 import { FaPhoneAlt } from 'react-icons/fa'
+import { MdOutlinePinDrop } from 'react-icons/md'
+import { MapContainer, TileLayer, useMap } from 'react-leaflet'
+import { Oval } from 'react-loader-spinner'
 import Modal from 'react-modal'
+import 'react-responsive-carousel/lib/styles/carousel.css'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { cancelOrder, getOrder } from '../../api/order_food.api'
+import { getRestaurant } from '../../api/restaurants.api'
 import diningIcon from '../../asset/img/dining.png'
 import humanIcon from '../../asset/img/human.png'
-import { Oval } from 'react-loader-spinner'
+import { AppContext } from '../../contexts/app.context'
+import { getInfoFromLS } from '../../utils/auth'
+import { envConfig } from '../../utils/env'
+import { displayNum, isAxiosUnprocessableEntityError } from '../../utils/utils'
+import Food from './Food/Food'
 
 export default function CompletedOrderDetail() {
   useEffect(() => {
@@ -47,6 +42,17 @@ export default function CompletedOrderDetail() {
   const orderFood = order_detail?.data.orderFood
   const restaurant_id = orderFood?.restaurant_id
   const orderFoodList = order_detail?.data.orderFoodList
+  const firstDate = new Date(orderFood?.updatedAt).getTime()
+  const secondDate = Date.now()
+  const diffTime = Math.abs(secondDate - firstDate)
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+  let diffHours, diffMinutes
+  if (diffDays === 0) {
+    diffHours = Math.floor(diffTime / (1000 * 60 * 60))
+    if (diffHours === 0) {
+      diffMinutes = Math.floor(diffTime / (1000 * 60))
+    }
+  }
   const { data: restaurant_data, isSuccess: restaurantSuccess } = useQuery({
     queryKey: ['restaurantOrderDetail', restaurant_id],
     queryFn: () => {
@@ -90,7 +96,6 @@ export default function CompletedOrderDetail() {
     newRoutingMap.on('routeselected', (e) => {
       console.log(e)
     })
-    newRoutingMap.on('routingerror', (e) => {})
     newRoutingMap.addTo(leafletMap)
   }
 
@@ -206,6 +211,13 @@ export default function CompletedOrderDetail() {
                     <div className='sm:text-2xl'>{restaurantData?.name}</div>
                   </div>
                 </Link>
+                <div className='italic text-slate-500'>
+                  {diffDays == 0
+                    ? diffHours == 0
+                      ? diffMinutes + ' phút trước'
+                      : diffHours + ' giờ trước'
+                    : diffDays + ' ngày trước'}
+                </div>
               </div>
               <hr className='h-[0.2rem] mt-[0.4rem] z-10 border-none bg-gray-400' />
               {order_detail &&
@@ -295,7 +307,7 @@ export default function CompletedOrderDetail() {
                 setCancelOrderModal(false)
               }}
               className='flex justify-center items-center 
-            bg-orange-700 hover:bg-orange-700 text-white font-inter-700 rounded-lg
+            bg-green-500 hover:bg-green-700 text-white font-inter-700 rounded-lg
             px-[1rem] py-[0.5rem] sm:py-[1.1rem] sm:text-lg text-sm
             '
             >
