@@ -8,7 +8,7 @@ import ShoppingCartError from '../../../src/asset/img/broken_shopping_cart.png'
 import spinningload from '../../asset/img/spinning_load.gif'
 export default function HostRestaurantsOrdersTable() {
   const [option, setOption] = useState(0)
-  const options = ['Tất cả', 'Chờ chấp nhận', 'Đã huỷ', 'Đã hoàn thành']
+  const options = ['Tất cả', 'Chờ chấp nhận', 'Đã huỷ', 'Đã chấp nhận']
   const { data, isSuccess, isError, isLoading, refetch } = useQuery({
     queryKey: ['all_restaurants_placed_order_table'],
     queryFn: () => {

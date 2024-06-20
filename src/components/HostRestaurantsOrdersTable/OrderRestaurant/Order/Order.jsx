@@ -162,7 +162,7 @@ export default function Order({ order, refetch }) {
           bg-orange-500 hover:bg-green-500 sm:rounded-xl'
                       onClick={() => setCompleteOrderTableModal(true)}
                     >
-                      Hoàn thành
+                      Chấp nhận
                     </button>
                     <button
                       className=' sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg text-white 
@@ -186,7 +186,7 @@ export default function Order({ order, refetch }) {
                     className='sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg
   bg-gray-200 text-black text-opacity-50 text-sm sm:rounded-xl'
                   >
-                    Đã hoàn thành
+                    Đã được chấp nhận
                   </button>
                 )}
               </div>
