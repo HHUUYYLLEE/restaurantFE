@@ -98,14 +98,15 @@ export default function CompletedOrderDetail() {
     })
     newRoutingMap.addTo(leafletMap)
   }
-
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(drawRoute, drawRoute)
+  }, [drawRoute])
   function ResetCenterView() {
     const map = useMap()
     const { setLeafletMap } = useContext(AppContext)
 
     useEffect(() => {
       setLeafletMap(map)
-      navigator.geolocation.getCurrentPosition(drawRoute, drawRoute)
     }, [map, setLeafletMap])
 
     return null

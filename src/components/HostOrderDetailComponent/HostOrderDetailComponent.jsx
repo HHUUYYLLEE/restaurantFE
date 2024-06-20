@@ -55,10 +55,11 @@ export default function HostOrderDetailComponent() {
     placeholderData: keepPreviousData,
     enabled: !!restaurant_id
   })
+  const restaurantData = restaurant_data?.data.restaurant
   function drawingRoute() {
     const newRoutingMap = L.Routing.control({
       waypoints: [
-        L.latLng(restaurantData.lat, restaurantData.lng),
+        L.latLng(restaurantData?.lat, restaurantData?.lng),
         L.latLng(orderFood.lat, orderFood.lng)
       ],
       router: L.Routing.graphHopper(envConfig.graphhopperKey),
@@ -86,13 +87,14 @@ export default function HostOrderDetailComponent() {
     })
     newRoutingMap.addTo(leafletMap)
   }
-  const restaurantData = restaurant_data?.data.restaurant
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(drawingRoute, drawingRoute)
+  }, [drawingRoute])
   function Routing() {
     const map = useMap()
     const { setLeafletMap } = useContext(AppContext)
     useEffect(() => {
       setLeafletMap(map)
-      navigator.geolocation.getCurrentPosition(drawingRoute, drawingRoute)
     }, [map, setLeafletMap])
 
     return null

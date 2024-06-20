@@ -10,6 +10,8 @@ import { useState, useEffect } from 'react'
 import { Oval } from 'react-loader-spinner'
 import Modal from 'react-modal'
 import { useMutation } from '@tanstack/react-query'
+import { IoIosArrowDropdownCircle, IoIosArrowDropupCircle } from 'react-icons/io'
+
 export default function Order({ order, refetch }) {
   const {
     data,
@@ -27,6 +29,7 @@ export default function Order({ order, refetch }) {
   }, [])
   const [completeOrderModal, setCompleteOrderModal] = useState(false)
   const [cancelOrderModal, setCancelOrderModal] = useState(false)
+  const [dropDownDetails, setDropDownDetails] = useState(false)
   const updateOrderHostMutation = useMutation({
     mutationFn: (body) => updateOrderHost(body)
   })
@@ -63,6 +66,27 @@ export default function Order({ order, refetch }) {
   return (
     <>
       <div className='flex justify-between items-center'>
+        {dropDownDetails ? (
+          <div onClick={() => setDropDownDetails(false)} className='cursor-pointer'>
+            <IoIosArrowDropupCircle
+              style={{
+                color: 'orange',
+                width: screen.width < 640 ? '' : '2vw',
+                height: screen.width < 640 ? '' : '2vw'
+              }}
+            />
+          </div>
+        ) : (
+          <div onClick={() => setDropDownDetails(true)} className='cursor-pointer'>
+            <IoIosArrowDropdownCircle
+              style={{
+                color: 'orange',
+                width: screen.width < 640 ? '' : '2vw',
+                height: screen.width < 640 ? '' : '2vw'
+              }}
+            />
+          </div>
+        )}
         <div>
           <div className='flex justify-center w-[30vw] sm:w-[15vw] sm:text-[1.3rem]'>
             {order.username}
@@ -108,71 +132,76 @@ export default function Order({ order, refetch }) {
           </Link>
         </div>
       </div>
-      <hr className='h-[0.2rem] mt-[0.4rem] z-10 border-none bg-gray-400' />
-      {isSuccess &&
-        data &&
-        data?.data.orderFoodList.map((data, id) => {
-          return (
-            <div key={id}>
-              <Food food_id={data.food_id} quantity={data.quantity} />
-            </div>
-          )
-        })}
-      <hr className='h-[0.2rem] mt-[0.4rem] z-10 border-none bg-gray-400' />
-      <div>
-        <div className='mt-[1rem] flex items-center justify-between sm:gap-x-[3rem] gap-x-[1rem]'>
-          <div className='italic text-slate-500'>
-            {diffDays == 0
-              ? diffHours == 0
-                ? diffMinutes + ' phút trước'
-                : diffHours + ' giờ trước'
-              : diffDays + ' ngày trước'}
-          </div>
-          <div className='text-right flex items-center justify-between sm:gap-x-[3rem] gap-x-[1rem]'>
-            <div className='mr-0 sm:text-3xl text-xl text-emerald-600'>
-              <div className='flex sm:gap-x-3 items-center gap-x-6'>
-                <div>{displayNum(order.total_price) + 'đ'}</div>
+      {dropDownDetails && (
+        <>
+          <hr className='h-[0.2rem] mt-[0.4rem] z-10 border-none bg-gray-400' />
+          {isSuccess &&
+            data &&
+            data?.data.orderFoodList.map((data, id) => {
+              return (
+                <div key={id}>
+                  <Food food_id={data.food_id} quantity={data.quantity} />
+                </div>
+              )
+            })}
+          <hr className='h-[0.2rem] mt-[0.4rem] z-10 border-none bg-gray-400' />
+          <div>
+            <div className='mt-[1rem] flex items-center justify-between sm:gap-x-[3rem] gap-x-[1rem]'>
+              <div className='italic text-slate-500'>
+                {diffDays == 0
+                  ? diffHours == 0
+                    ? diffMinutes + ' phút trước'
+                    : diffHours + ' giờ trước'
+                  : diffDays + ' ngày trước'}
+              </div>
+              <div className='text-right flex items-center justify-between sm:gap-x-[3rem] gap-x-[1rem]'>
+                <div className='mr-0 sm:text-3xl text-xl text-emerald-600'>
+                  <div className='flex sm:gap-x-3 items-center gap-x-6'>
+                    <div>{displayNum(order.total_price) + 'đ'}</div>
+                  </div>
+                </div>
+
+                {order.status === 1 ? (
+                  <>
+                    <button
+                      className=' sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg text-white 
+          bg-orange-500 hover:bg-green-500 sm:rounded-xl'
+                      onClick={() => setCompleteOrderModal(true)}
+                    >
+                      Hoàn thành
+                    </button>
+                    <button
+                      className=' sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg text-white 
+        bg-red-500 hover:bg-red-700 sm:rounded-xl'
+                      onClick={() => setCancelOrderModal(true)}
+                    >
+                      Huỷ
+                    </button>
+                  </>
+                ) : order.status === 2 ? (
+                  <button
+                    disabled
+                    className=' sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg 
+      bg-gray-200 text-black text-opacity-50 sm:rounded-xl'
+                  >
+                    Đã bị huỷ
+                  </button>
+                ) : (
+                  <button
+                    disabled
+                    className='sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg
+  bg-gray-200 text-black text-opacity-50 text-sm sm:rounded-xl'
+                  >
+                    Đã hoàn thành
+                  </button>
+                )}
               </div>
             </div>
-
-            {order.status === 1 ? (
-              <>
-                <button
-                  className=' sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg text-white 
-          bg-orange-500 hover:bg-green-500 sm:rounded-xl'
-                  onClick={() => setCompleteOrderModal(true)}
-                >
-                  Hoàn thành
-                </button>
-                <button
-                  className=' sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg text-white 
-        bg-red-500 hover:bg-red-700 sm:rounded-xl'
-                  onClick={() => setCancelOrderModal(true)}
-                >
-                  Huỷ
-                </button>
-              </>
-            ) : order.status === 2 ? (
-              <button
-                disabled
-                className=' sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg 
-      bg-gray-200 text-black text-opacity-50 sm:rounded-xl'
-              >
-                Đã bị huỷ
-              </button>
-            ) : (
-              <button
-                disabled
-                className='sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg
-  bg-gray-200 text-black text-opacity-50 text-sm sm:rounded-xl'
-              >
-                Đã hoàn thành
-              </button>
-            )}
           </div>
-        </div>
-      </div>
+        </>
+      )}
       <hr className='h-[0.2rem] mt-[0.4rem] z-10 border-none bg-gray-400' />
+
       <Modal
         style={{
           overlay: {

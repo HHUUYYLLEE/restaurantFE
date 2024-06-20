@@ -85,10 +85,11 @@ export function VNDate(dateData) {
   const hour = temp.getHours()
   const when = hour < 11 ? 'sáng' : hour < 13 ? 'trưa' : hour < 18 ? 'chiều' : 'tối'
   const newHour = hour < 13 ? hour : hour - 12
+  const minute = temp.getMinutes()
   return (
     newHour +
     ':' +
-    temp.getMinutes() +
+    (minute <= 9 ? '0' + minute : minute) +
     ' ' +
     when +
     ', ' +

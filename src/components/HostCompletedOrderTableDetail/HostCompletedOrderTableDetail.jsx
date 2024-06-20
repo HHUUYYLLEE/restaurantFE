@@ -36,52 +36,54 @@ export default function HostCompletedOrderTableDetail() {
   })
   const orderTableData = data?.data.orderTable
   const restaurantData = data?.data.restaurant
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (e) => {
+        const newRoutingMap = L.Routing.control({
+          waypoints: [
+            L.latLng(e.coords.latitude, e.coords.longitude),
+            L.latLng(restaurantData?.lat, restaurantData?.lng)
+          ],
+          router: L.Routing.graphHopper(envConfig.graphhopperKey),
+          createMarker: (i, wp) => {
+            if (i !== 0)
+              return L.marker(wp.latLng, {
+                icon: new L.Icon({
+                  iconUrl: diningIcon,
+                  iconSize: [41, 41]
+                })
+              })
+            else
+              return L.marker(wp.latLng, {
+                icon: new L.Icon({
+                  iconUrl: humanIcon,
+                  iconSize: [60, 80]
+                })
+              })
+          },
+          language: 'en',
+          fitSelectedRoutes: true
+        })
+        newRoutingMap.on('routeselected', (e) => {
+          console.log(e)
+        })
+        newRoutingMap.addTo(leafletMap)
+      },
+      () => {
+        L.marker([restaurantData?.lat, restaurantData?.lng], {
+          icon: new L.Icon({
+            iconUrl: diningIcon,
+            iconSize: [41, 41]
+          })
+        }).addTo(leafletMap)
+      }
+    )
+  }, [leafletMap, restaurantData?.lat, restaurantData?.lng])
   function Routing() {
     const map = useMap()
     const { setLeafletMap } = useContext(AppContext)
     useEffect(() => {
       setLeafletMap(map)
-      navigator.geolocation.getCurrentPosition(
-        (e) => {
-          const newRoutingMap = L.Routing.control({
-            waypoints: [
-              L.latLng(e.coords.latitude, e.coords.longitude),
-              L.latLng(restaurantData.lat, restaurantData.lng)
-            ],
-            router: L.Routing.graphHopper(envConfig.graphhopperKey),
-            createMarker: (i, wp) => {
-              if (i !== 0)
-                return L.marker(wp.latLng, {
-                  icon: new L.Icon({
-                    iconUrl: diningIcon,
-                    iconSize: [41, 41]
-                  })
-                })
-              else
-                return L.marker(wp.latLng, {
-                  icon: new L.Icon({
-                    iconUrl: humanIcon,
-                    iconSize: [60, 80]
-                  })
-                })
-            },
-            language: 'en',
-            fitSelectedRoutes: true
-          })
-          newRoutingMap.on('routeselected', (e) => {
-            console.log(e)
-          })
-          newRoutingMap.addTo(leafletMap)
-        },
-        () => {
-          L.marker([restaurantData.lat, restaurantData.lng], {
-            icon: new L.Icon({
-              iconUrl: diningIcon,
-              iconSize: [41, 41]
-            })
-          }).addTo(leafletMap)
-        }
-      )
     }, [map, setLeafletMap])
 
     return null

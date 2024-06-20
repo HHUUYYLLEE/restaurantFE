@@ -8,9 +8,12 @@ import Modal from 'react-modal'
 import { Link } from 'react-router-dom'
 import { updateOrderTableHost } from '../../../../api/order_table.api'
 import { VNDate, isAxiosUnprocessableEntityError } from '../../../../utils/utils'
+import { IoIosArrowDropdownCircle, IoIosArrowDropupCircle } from 'react-icons/io'
+
 export default function Order({ order, refetch }) {
   const [cancelOrderTableModal, setCancelOrderTableModal] = useState(false)
   const [completeOrderTableModal, setCompleteOrderTableModal] = useState(false)
+  const [dropDownDetails, setDropDownDetails] = useState(false)
   useEffect(() => {
     Modal.setAppElement('body')
   }, [])
@@ -49,6 +52,27 @@ export default function Order({ order, refetch }) {
   return (
     <>
       <div className='flex justify-between items-center'>
+        {dropDownDetails ? (
+          <div onClick={() => setDropDownDetails(false)} className='cursor-pointer'>
+            <IoIosArrowDropupCircle
+              style={{
+                color: 'orange',
+                width: screen.width < 640 ? '' : '2vw',
+                height: screen.width < 640 ? '' : '2vw'
+              }}
+            />
+          </div>
+        ) : (
+          <div onClick={() => setDropDownDetails(true)} className='cursor-pointer'>
+            <IoIosArrowDropdownCircle
+              style={{
+                color: 'orange',
+                width: screen.width < 640 ? '' : '2vw',
+                height: screen.width < 640 ? '' : '2vw'
+              }}
+            />
+          </div>
+        )}
         <div className='italic text-slate-500'>
           {diffDays == 0
             ? diffHours == 0
@@ -86,88 +110,90 @@ export default function Order({ order, refetch }) {
           </button>
         </Link>
       </div>
-      <hr className='h-[0.2rem] mt-[0.4rem] z-10 border-none bg-gray-400' />
-      <div className='grid sm:grid-cols-5 grid-cols-3'>
-        {order.table_chair.map((data, id) => {
-          return (
-            <div
-              key={id}
-              className={`sm:flex sm:items-center sm:gap-x-10 rounded-md border-[0.1rem] 
+      {dropDownDetails && (
+        <>
+          <div className='grid sm:grid-cols-5 grid-cols-3'>
+            {order.table_chair.map((data, id) => {
+              return (
+                <div
+                  key={id}
+                  className={`sm:flex sm:items-center sm:gap-x-10 rounded-md border-[0.1rem] 
           sm:border-[0.1rem]  border-slate-200`}
-            >
-              <div className='mx-[0.2rem]'>
-                <div className='flex items-center gap-x-2'>
-                  <MdOutlineTableRestaurant
-                    style={{
-                      color: 'orange',
-                      width: screen.width < 640 ? '8vw' : '4vw',
-                      height: screen.width < 640 ? '8vw' : '4vw'
-                    }}
-                  />
-                  <div className={``}>{data.chair + ' chỗ'}</div>
-                  {screen.width > 640 && (
-                    <div className='flex gap-x-2'>
-                      <div className='text-green-500'>{'x' + data.table}</div>
-                      <div>bàn</div>
+                >
+                  <div className='mx-[0.2rem]'>
+                    <div className='flex items-center gap-x-2'>
+                      <MdOutlineTableRestaurant
+                        style={{
+                          color: 'orange',
+                          width: screen.width < 640 ? '8vw' : '4vw',
+                          height: screen.width < 640 ? '8vw' : '4vw'
+                        }}
+                      />
+                      <div className={``}>{data.chair + ' chỗ'}</div>
+                      {screen.width > 640 && (
+                        <div className='flex gap-x-2'>
+                          <div className='text-green-500'>{'x' + data.table}</div>
+                          <div>bàn</div>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-                {screen.width <= 640 && (
-                  <div className='flex gap-x-2 justify-center'>
-                    <div className='text-green-500'>{'x' + data.table}</div>
-                    <div>bàn</div>
+                    {screen.width <= 640 && (
+                      <div className='flex gap-x-2 justify-center'>
+                        <div className='text-green-500'>{'x' + data.table}</div>
+                        <div>bàn</div>
+                      </div>
+                    )}
                   </div>
+                </div>
+              )
+            })}
+          </div>
+          <div>
+            <div className='mt-[1rem] flex items-center justify-between sm:gap-x-[3rem] gap-x-[1rem]'>
+              <div className='flex gap-x-1'>
+                <div>Hẹn đặt:</div>
+                <div className='text-orange-500 italic'>{VNDate(order.date)}</div>
+              </div>
+              <div className='text-right flex items-center justify-between sm:gap-x-[3rem] gap-x-[1rem]'>
+                {order.status === 1 ? (
+                  <>
+                    <button
+                      className=' sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg text-white 
+          bg-orange-500 hover:bg-green-500 sm:rounded-xl'
+                      onClick={() => setCompleteOrderTableModal(true)}
+                    >
+                      Hoàn thành
+                    </button>
+                    <button
+                      className=' sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg text-white 
+        bg-red-500 hover:bg-red-700 sm:rounded-xl'
+                      onClick={() => setCancelOrderTableModal(true)}
+                    >
+                      Huỷ
+                    </button>
+                  </>
+                ) : order.status === 2 ? (
+                  <button
+                    disabled
+                    className=' sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg 
+      bg-gray-200 text-black text-opacity-50 sm:rounded-xl'
+                  >
+                    Đã bị huỷ
+                  </button>
+                ) : (
+                  <button
+                    disabled
+                    className='sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg
+  bg-gray-200 text-black text-opacity-50 text-sm sm:rounded-xl'
+                  >
+                    Đã hoàn thành
+                  </button>
                 )}
               </div>
             </div>
-          )
-        })}
-      </div>
-      <hr className='h-[0.2rem] mt-[0.4rem] z-10 border-none bg-gray-400' />
-      <div>
-        <div className='mt-[1rem] flex items-center justify-between sm:gap-x-[3rem] gap-x-[1rem]'>
-          <div className='flex gap-x-1'>
-            <div>Hẹn đặt:</div>
-            <div className='text-orange-500 italic'>{VNDate(order.date)}</div>
           </div>
-          <div className='text-right flex items-center justify-between sm:gap-x-[3rem] gap-x-[1rem]'>
-            {order.status === 1 ? (
-              <>
-                <button
-                  className=' sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg text-white 
-          bg-orange-500 hover:bg-green-500 sm:rounded-xl'
-                  onClick={() => setCompleteOrderTableModal(true)}
-                >
-                  Hoàn thành
-                </button>
-                <button
-                  className=' sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg text-white 
-        bg-red-500 hover:bg-red-700 sm:rounded-xl'
-                  onClick={() => setCancelOrderTableModal(true)}
-                >
-                  Huỷ
-                </button>
-              </>
-            ) : order.status === 2 ? (
-              <button
-                disabled
-                className=' sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg 
-      bg-gray-200 text-black text-opacity-50 sm:rounded-xl'
-              >
-                Đã bị huỷ
-              </button>
-            ) : (
-              <button
-                disabled
-                className='sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg
-  bg-gray-200 text-black text-opacity-50 text-sm sm:rounded-xl'
-              >
-                Đã hoàn thành
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
+        </>
+      )}
       <hr className='h-[0.2rem] mt-[0.4rem] z-10 border-none bg-gray-400' />
       <Modal
         style={{
