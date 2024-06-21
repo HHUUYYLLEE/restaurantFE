@@ -23,7 +23,8 @@ import { AppContext } from '../../contexts/app.context'
 import { envConfig } from '../../utils/env'
 import { getStatusRestaurantFromTime } from '../../utils/utils'
 export default function RestaurantDetail({ setOption, reviews, setReviews, setGetReviewSuccess }) {
-  const { leafletMap } = useContext(AppContext)
+  const { leafletMap, isAuthenticated, setModalLogin } = useContext(AppContext)
+
   const scores = ['Vị trí', 'Giá cả', 'Chất lượng', 'Phục vụ', 'Không gian']
   const { id } = useParams()
   const { data, isLoading, isSuccess } = useQuery({
@@ -158,11 +159,14 @@ export default function RestaurantDetail({ setOption, reviews, setReviews, setGe
                       </div>
                     </div>
                   </div>
-                  <Link to={`/table_order/${id}`}>
+                  <Link to={`${isAuthenticated ? `/table_order/${id}` : ''}`}>
                     <button
                       className={`text-white bg-orange-500 hover:bg-green-500 rounded-lg h-[3vh]
                     sm:h-[6vh]
                     flex items-center px-[0.3rem] sm:px-[1rem]`}
+                      onClick={() => {
+                        if (!isAuthenticated) setModalLogin(true)
+                      }}
                     >
                       {screen.width < 640 ? (
                         <div className='flex'>
