@@ -33,45 +33,15 @@ function UserProtectedRouter() {
   const check = Boolean(info?.role === 0)
   return check ? <Outlet /> : <Navigate to='/' />
 }
+// eslint-disable-next-line react-refresh/only-export-components
+function NonAdminRouter() {
+  const { info } = useContext(AppContext)
+  const check = Boolean(info?.role === 1)
+  return check ? <Navigate to='/' /> : <Outlet />
+}
 
 export default function useRouteElement() {
   const routeElement = useRoutes([
-    {
-      path: '/search_location',
-      index: true,
-      element: (
-        <MainLayout>
-          <SearchByLocation />
-        </MainLayout>
-      )
-    },
-    {
-      path: '/search',
-      index: true,
-      element: (
-        <MainLayout>
-          <Search />
-        </MainLayout>
-      )
-    },
-    {
-      path: '/restaurant/:id',
-      index: true,
-      element: (
-        <MainLayout>
-          <RestaurantDetails />
-        </MainLayout>
-      )
-    },
-    {
-      path: '/find_blogger_restaurants',
-      index: true,
-      element: (
-        <MainLayout>
-          <BloggerRestaurantsResults />
-        </MainLayout>
-      )
-    },
     {
       path: '',
       element: <UserProtectedRouter />,
@@ -202,13 +172,55 @@ export default function useRouteElement() {
       ]
     },
     {
-      path: '/',
-      index: true,
-      element: (
-        <MainLayout>
-          <Home />
-        </MainLayout>
-      )
+      path: '',
+      element: <NonAdminRouter />,
+      children: [
+        {
+          path: '/search_location',
+          index: true,
+          element: (
+            <MainLayout>
+              <SearchByLocation />
+            </MainLayout>
+          )
+        },
+        {
+          path: '/search',
+          index: true,
+          element: (
+            <MainLayout>
+              <Search />
+            </MainLayout>
+          )
+        },
+        {
+          path: '/restaurant/:id',
+          index: true,
+          element: (
+            <MainLayout>
+              <RestaurantDetails />
+            </MainLayout>
+          )
+        },
+        {
+          path: '/find_blogger_restaurants',
+          index: true,
+          element: (
+            <MainLayout>
+              <BloggerRestaurantsResults />
+            </MainLayout>
+          )
+        },
+        {
+          path: '/',
+          index: true,
+          element: (
+            <MainLayout>
+              <Home />
+            </MainLayout>
+          )
+        }
+      ]
     }
   ])
   return routeElement
