@@ -6,13 +6,14 @@ import { FaAngleDown, FaAngleUp, FaImages, FaRegStar, FaStar } from 'react-icons
 import { GrUpload } from 'react-icons/gr'
 import { Oval } from 'react-loader-spinner'
 import Modal from 'react-modal'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { createReview } from '../../api/review.api'
 import { getAccessTokenFromLS, getInfoFromLS } from '../../utils/auth'
 import { reviewSchema } from '../../utils/rules'
 import { isAxiosUnprocessableEntityError } from '../../utils/utils'
 import Review from './Review/Review'
 export default function ReviewList({ reviews, getReviewSuccess }) {
+  const navigate = useNavigate()
   const info = getInfoFromLS()
   const token = getAccessTokenFromLS()
   const { id: restaurant_id } = useParams()
@@ -72,7 +73,7 @@ export default function ReviewList({ reviews, getReviewSuccess }) {
     console.log(data)
     createAReview.mutate(data, {
       onSuccess: () => {
-        window.location.reload()
+        navigate(0)
       },
       onError: (error) => {
         console.log(error)

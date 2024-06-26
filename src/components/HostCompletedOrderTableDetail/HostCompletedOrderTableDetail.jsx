@@ -9,7 +9,7 @@ import { MdOutlineTableRestaurant } from 'react-icons/md'
 import { MapContainer, TileLayer, useMap } from 'react-leaflet'
 import { Oval } from 'react-loader-spinner'
 import Modal from 'react-modal'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { cancelOrderTable, getOrderTable } from '../../api/order_table.api'
 import diningIcon from '../../asset/img/dining.png'
 import humanIcon from '../../asset/img/human.png'
@@ -20,6 +20,7 @@ import { envConfig } from '../../utils/env'
 import { VNDate, isAxiosUnprocessableEntityError } from '../../utils/utils'
 
 export default function HostCompletedOrderTableDetail() {
+  const navigate = useNavigate()
   const { id } = useParams()
   const { leafletMap } = useContext(AppContext)
   const { username, phone_number } = getInfoFromLS()
@@ -97,7 +98,7 @@ export default function HostCompletedOrderTableDetail() {
     data.order_table_id = id
     cancelOrderTableMutation.mutate(data, {
       onSuccess: () => {
-        window.location.reload()
+        navigate(0)
       },
       onError: (error) => {
         console.log(error)

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query'
 import { getRestaurant } from '../../../api/restaurants.api'
 import { cancelOrderTable } from '../../../api/order_table.api'
@@ -21,6 +21,7 @@ export default function OrderRestaurant({
   date,
   updatedAt
 }) {
+  const navigate = useNavigate()
   const [cancelOrderTableModal, setCancelOrderTableModal] = useState(false)
   const {
     data: restaurant_data,
@@ -40,7 +41,7 @@ export default function OrderRestaurant({
     data.order_table_id = id
     cancelOrderTableMutation.mutate(data, {
       onSuccess: () => {
-        window.location.reload()
+        navigate(0)
       },
       onError: (error) => {
         console.log(error)

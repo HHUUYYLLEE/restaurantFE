@@ -9,8 +9,10 @@ import Modal from 'react-modal'
 import { addFood } from '../../../api/food.api'
 import { schemaFood } from '../../../utils/rules'
 import { isAxiosUnprocessableEntityError } from '../../../utils/utils'
+import { useNavigate } from 'react-router-dom'
 
 export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -36,7 +38,7 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
     console.log(data)
     addFoodMutation.mutate(data, {
       onSuccess: () => {
-        window.location.reload()
+        navigate(0)
       },
       onError: (error) => {
         console.log(error)

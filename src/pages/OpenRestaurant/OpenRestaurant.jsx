@@ -17,8 +17,10 @@ import diningIcon from '../../asset/img/dining.png'
 import { envConfig } from '../../utils/env'
 import { schemaRestaurantProfile } from '../../utils/rules'
 import { convertTime, isAxiosUnprocessableEntityError } from '../../utils/utils'
+import { useNavigate } from 'react-router-dom'
 
 export default function OpenRestaurant() {
+  const navigate = useNavigate()
   const [enableSearchResults, setEnableSearchResults] = useState(false)
   const [latLng, setLatLng] = useState(null)
   const [addressValue, setAddressValue] = useState('')
@@ -134,7 +136,7 @@ export default function OpenRestaurant() {
 
     createARestaurantMutation.mutate(data, {
       onSuccess: () => {
-        window.location.reload()
+        navigate(0)
       },
       onError: (error) => {
         console.log(error)

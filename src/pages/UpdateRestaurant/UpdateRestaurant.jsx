@@ -11,7 +11,7 @@ import { GrUpload } from 'react-icons/gr'
 import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from 'react-leaflet'
 import { Oval, TailSpin } from 'react-loader-spinner'
 import Modal from 'react-modal'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { getSearchLocation } from '../../api/openstreetmap.api'
 import { getRestaurant, updateARestaurant } from '../../api/restaurants.api'
 import diningIcon from '../../asset/img/dining.png'
@@ -21,7 +21,7 @@ import { convertTime, isAxiosUnprocessableEntityError } from '../../utils/utils'
 export default function UpdateRestaurant() {
   const [enableSearchResults, setEnableSearchResults] = useState(false)
   const [latLng, setLatLng] = useState(null)
-
+  const navigate = useNavigate()
   const [addressValue, setAddressValue] = useState('')
   const [latLngValueInput, setLatLngValueInput] = useState(['', ''])
   const [tableChair, setTableChair] = useState([])
@@ -152,7 +152,7 @@ export default function UpdateRestaurant() {
 
     updateARestaurantMutation.mutate(data, {
       onSuccess: () => {
-        window.location.reload()
+        navigate(0)
       },
       onError: (error) => {
         console.log(error)

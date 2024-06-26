@@ -9,6 +9,7 @@ import Modal from 'react-modal'
 import { updateFood } from '../../../api/food.api'
 import { schemaFood } from '../../../utils/rules'
 import { isAxiosUnprocessableEntityError } from '../../../utils/utils'
+import { useNavigate } from 'react-router-dom'
 
 export default function EditFoodModal({
   closeEditFoodModal,
@@ -18,6 +19,7 @@ export default function EditFoodModal({
   desc,
   image_url
 }) {
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -42,8 +44,7 @@ export default function EditFoodModal({
     console.log(data)
     updateFoodMutation.mutate(data, {
       onSuccess: () => {
-        // toast.success('Tạo món ăn thành công!') //。(20)
-        window.location.reload()
+        navigate(0)
       },
       onError: (error) => {
         console.log(error)

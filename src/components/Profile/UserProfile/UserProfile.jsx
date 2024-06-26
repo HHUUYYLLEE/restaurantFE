@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query'
-import { useRef } from 'react'
+import { useRef, useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { FaCheckCircle } from 'react-icons/fa'
 import { GrUpload } from 'react-icons/gr'
@@ -12,11 +12,15 @@ import {
   editUserProfile,
   getUserProfile
 } from '../../../api/user.api'
-import { getInfoFromLS } from '../../../utils/auth'
+import { getInfoFromLS, saveInfoToLS } from '../../../utils/auth'
 import { schemaEditUserProfile } from '../../../utils/rules'
 import { isAxiosUnprocessableEntityError } from '../../../utils/utils'
+import { AppContext } from '../../../contexts/app.context'
+import { useNavigate } from 'react-router-dom'
 
 export default function UserProfile() {
+  const { setInfo } = useContext(AppContext)
+  const navigate = useNavigate()
   const user_id = getInfoFromLS()._id
   const {
     register,
@@ -55,8 +59,10 @@ export default function UserProfile() {
   const previewImageElement = useRef()
   const onSubmit = handleSubmit((data) => {
     editUserProfileMutation.mutate(data, {
-      onSuccess: () => {
-        window.location.reload()
+      onSuccess: (res) => {
+        saveInfoToLS(res.data.user)
+        setInfo(getInfoFromLS())
+        navigate(0)
       },
       onError: (error) => {
         console.log(error)
@@ -76,8 +82,10 @@ export default function UserProfile() {
   const onSubmitAvatar = handleSubmitAvatar((data) => {
     data.avatar = data.avatar[0]
     editUserAvatarMutation.mutate(data, {
-      onSuccess: () => {
-        window.location.reload()
+      onSuccess: (res) => {
+        saveInfoToLS(res.data.user)
+        setInfo(getInfoFromLS())
+        navigate(0)
       },
       onError: (error) => {
         console.log(error)

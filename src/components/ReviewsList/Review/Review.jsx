@@ -19,8 +19,10 @@ import {
 import { getAccessTokenFromLS, getInfoFromLS } from '../../../utils/auth'
 import { reviewSchema } from '../../../utils/rules'
 import { isAxiosUnprocessableEntityError } from '../../../utils/utils'
+import { useNavigate } from 'react-router-dom'
 
 export default function Review({ review }) {
+  const navigate = useNavigate()
   useEffect(() => {
     Modal.setAppElement('body')
   }, [])
@@ -206,7 +208,7 @@ export default function Review({ review }) {
     deleteAReview.mutate(data, {
       onSuccess: () => {
         setVerifyDelete(true)
-        window.location.reload()
+        navigate(0)
       },
       onError: (error) => {
         console.log(error)
@@ -238,7 +240,7 @@ export default function Review({ review }) {
     console.log(data)
     updateAReview.mutate(data, {
       onSuccess: () => {
-        window.location.reload()
+        navigate(0)
       },
       onError: (error) => {
         console.log(error)

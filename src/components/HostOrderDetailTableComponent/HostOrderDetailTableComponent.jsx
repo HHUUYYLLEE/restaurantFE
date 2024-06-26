@@ -7,13 +7,14 @@ import { FaCalendarAlt, FaChair, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/
 import { MdOutlineTableRestaurant } from 'react-icons/md'
 import { Oval } from 'react-loader-spinner'
 import Modal from 'react-modal'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { getOrderTableHost, updateOrderTableHost } from '../../api/order_table.api'
 import { getRestaurant } from '../../api/restaurants.api'
 import tableChairIcon from '../../asset/img/table_chair.png'
 import { VNDate, isAxiosUnprocessableEntityError } from '../../utils/utils'
 
 export default function HostOrderDetailTableComponent() {
+  const navigate = useNavigate()
   const { id } = useParams()
   const [cancelOrderTableModal, setCancelOrderTableModal] = useState(false)
   const [completeOrderTableModal, setCompleteOrderTableModal] = useState(false)
@@ -49,7 +50,7 @@ export default function HostOrderDetailTableComponent() {
     data.status = status
     updateOrderTableMutation.mutate(data, {
       onSuccess: () => {
-        window.location.reload()
+        navigate(0)
       },
       onError: (error) => {
         console.log(error)
