@@ -10,14 +10,14 @@ import {
 import { envConfig } from './env'
 
 const applicationJSONInstance = axios.create({
-  baseURL: envConfig.baseURL,
+  baseURL: envConfig.deployURL,
   headers: {
     'Content-Type': 'application/json'
   }
 })
 
 const multipartFormInstance = axios.create({
-  baseURL: envConfig.baseURL,
+  baseURL: envConfig.deployURL,
   headers: {
     'Content-Type': 'multipart/form-data'
   }
