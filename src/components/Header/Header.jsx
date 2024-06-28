@@ -31,6 +31,7 @@ export default function Header() {
     queryKey: ['userProfile', info?._id],
     queryFn: () => {
       if (info?._id) return getUserProfile(info?._id)
+      else return null
     }
   })
   useEffect(() => {
