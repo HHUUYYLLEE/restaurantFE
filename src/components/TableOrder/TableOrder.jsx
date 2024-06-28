@@ -19,6 +19,8 @@ import tableChairIcon from '../../asset/img/table_chair.png'
 import { AppContext } from '../../contexts/app.context'
 import { envConfig } from '../../utils/env'
 import { isAxiosUnprocessableEntityError } from '../../utils/utils'
+import { ImCross } from 'react-icons/im'
+
 export default function TableOrder() {
   const navigate = useNavigate()
   const { id } = useParams()
@@ -213,106 +215,115 @@ export default function TableOrder() {
             </div>
             <hr className='h-[0.1rem] border-none bg-gray-400' />
 
-            <div className='mx-[0.4rem] sm:mx-[1.3rem] grid grid-cols-3 sm:gap-x-4 sm:grid-cols-5'>
-              {restaurantData.table_chair.map((data, id) => {
-                return (
-                  <div
-                    key={id}
-                    className={`sm:flex sm:items-center sm:gap-x-10 rounded-md border-[0.2rem] sm:border-[0.3rem] 
+            {restaurantData.table_chair.length > 0 ? (
+              <div className='mx-[0.4rem] sm:mx-[1.3rem] grid grid-cols-3 sm:gap-x-4 sm:grid-cols-5'>
+                {restaurantData.table_chair.map((data, id) => {
+                  return (
+                    <div
+                      key={id}
+                      className={`sm:flex sm:items-center sm:gap-x-10 rounded-md border-[0.2rem] sm:border-[0.3rem] 
                     ${selectTable[id].checked ? ' border-orange-500 ' : ' border-slate-200 '}`}
-                  >
-                    <div className='mx-[0.2rem]'>
-                      <div className='flex items-center gap-x-2'>
-                        <MdOutlineTableRestaurant
-                          style={{
-                            color: selectTable[id].checked ? 'orange' : 'black',
-                            width: screen.width < 640 ? '10vw' : '4vw',
-                            height: screen.width < 640 ? '10vw' : '4vw'
-                          }}
-                        />
-                        <div className={``}>{data.chair + ' chỗ'}</div>
-                      </div>
-                      <div className='flex gap-x-2 sm:mb-[0.2rem]'>
-                        <input
-                          type='number'
-                          className={`priceInput w-[7vw]  border-orange-500 rounded-md flex text-right sm:px-[1rem] px-[0.2rem]
+                    >
+                      <div className='mx-[0.2rem]'>
+                        <div className='flex items-center gap-x-2'>
+                          <MdOutlineTableRestaurant
+                            style={{
+                              color: selectTable[id].checked ? 'orange' : 'black',
+                              width: screen.width < 640 ? '10vw' : '4vw',
+                              height: screen.width < 640 ? '10vw' : '4vw'
+                            }}
+                          />
+                          <div className={``}>{data.chair + ' chỗ'}</div>
+                        </div>
+                        <div className='flex gap-x-2 sm:mb-[0.2rem]'>
+                          <input
+                            type='number'
+                            className={`priceInput w-[7vw]  border-orange-500 rounded-md flex text-right sm:px-[1rem] px-[0.2rem]
                           ${
                             selectTable[id].checked
                               ? ' border border-orange-500 '
                               : ' border-[0.1rem] border-slate-200 '
                           }`}
-                          defaultValue={selectTable[id].table}
-                          onInput={(e) => {
-                            if (parseInt(e.target.value) <= 0) {
-                              e.target.value = 1
-                            }
-                            setSelectTable(
-                              selectTable.map((tempdata, index) => {
-                                if (index === id) tempdata.table = e.target.value
-                                return tempdata
-                              })
-                            )
-                          }}
-                        />
-                        <div>bàn</div>
-                        {screen.width < 640 && (
-                          <Checkbox
-                            icon={
-                              <FaCheckCircle
-                                color='#F97316'
-                                style={{
-                                  width: 20,
-                                  height: 20
-                                }}
-                              />
-                            }
-                            name='my-input'
-                            checked={selectTable[id].checked}
-                            borderColor='#F97316'
-                            onChange={(value) => {
+                            defaultValue={selectTable[id].table}
+                            onInput={(e) => {
+                              if (parseInt(e.target.value) <= 0) {
+                                e.target.value = 1
+                              }
                               setSelectTable(
                                 selectTable.map((tempdata, index) => {
-                                  if (index === id) tempdata.checked = value
+                                  if (index === id) tempdata.table = e.target.value
                                   return tempdata
                                 })
                               )
                             }}
-                            borderRadius={9999}
-                            size={20}
                           />
-                        )}
+                          <div>bàn</div>
+                          {screen.width < 640 && (
+                            <Checkbox
+                              icon={
+                                <FaCheckCircle
+                                  color='#F97316'
+                                  style={{
+                                    width: 20,
+                                    height: 20
+                                  }}
+                                />
+                              }
+                              name='my-input'
+                              checked={selectTable[id].checked}
+                              borderColor='#F97316'
+                              onChange={(value) => {
+                                setSelectTable(
+                                  selectTable.map((tempdata, index) => {
+                                    if (index === id) tempdata.checked = value
+                                    return tempdata
+                                  })
+                                )
+                              }}
+                              borderRadius={9999}
+                              size={20}
+                            />
+                          )}
+                        </div>
                       </div>
+                      {screen.width > 640 && (
+                        <Checkbox
+                          icon={
+                            <FaCheckCircle
+                              color='#F97316'
+                              style={{
+                                width: 30,
+                                height: 30
+                              }}
+                            />
+                          }
+                          name='my-input'
+                          checked={data.checked}
+                          borderColor='#F97316'
+                          onChange={(value) => {
+                            setSelectTable(
+                              selectTable.map((tempdata, index) => {
+                                if (index === id) tempdata.checked = value
+                                return tempdata
+                              })
+                            )
+                          }}
+                          borderRadius={9999}
+                          size={30}
+                        />
+                      )}
                     </div>
-                    {screen.width > 640 && (
-                      <Checkbox
-                        icon={
-                          <FaCheckCircle
-                            color='#F97316'
-                            style={{
-                              width: 30,
-                              height: 30
-                            }}
-                          />
-                        }
-                        name='my-input'
-                        checked={data.checked}
-                        borderColor='#F97316'
-                        onChange={(value) => {
-                          setSelectTable(
-                            selectTable.map((tempdata, index) => {
-                              if (index === id) tempdata.checked = value
-                              return tempdata
-                            })
-                          )
-                        }}
-                        borderRadius={9999}
-                        size={30}
-                      />
-                    )}
-                  </div>
-                )
-              })}
-            </div>
+                  )
+                })}
+              </div>
+            ) : (
+              <div className='mx-[0.4rem] sm:mx-[1.3rem] py-[0.2rem] flex sm:py-[1rem] items-center gap-x-1'>
+                <ImCross style={{ color: 'red' }} />
+                <div className='text-sm italic'>
+                  Rất tiếc, nhà hàng này chưa có thông tin bàn ghế.
+                </div>
+              </div>
+            )}
           </div>
           <div className='mt-[1.2rem] sm:mt-[1.5rem] bg-white'>
             <div className='flex mx-[1rem] py-[0.4rem] sm:mx-[1.3rem] items-center gap-x-2'>
@@ -340,11 +351,24 @@ export default function TableOrder() {
           </div>
           <div className=''>
             <button
-              className='my-[3rem] hover:bg-orange-500 
-            bg-green-500  text-white py-[1.2rem] px-[1rem] font-ibm-plex-serif-700 rounded-lg'
-              onClick={() => setOrderTableModal(true)}
+              className={`my-[3rem]  py-[1.2rem] px-[1rem] font-ibm-plex-serif-700 rounded-lg
+            ${
+              restaurantData.table_chair.length === 0
+                ? ' hover:bg-red-700 bg-red-500 text-white '
+                : selectTable.findIndex((element) => element.checked) === -1
+                ? ' bg-gray-200 text-black text-opacity-50 '
+                : ' hover:bg-orange-500 bg-green-500 text-white '
+            }`}
+              onClick={() => {
+                setOrderTableModal(true)
+              }}
+              disabled={
+                restaurantData.table_chair.length === 0
+                  ? false
+                  : selectTable.findIndex((element) => element.checked) === -1
+              }
             >
-              Xác nhận
+              {restaurantData.table_chair.length === 0 ? 'Quay lại' : 'Xác nhận'}
             </button>
           </div>
         </div>

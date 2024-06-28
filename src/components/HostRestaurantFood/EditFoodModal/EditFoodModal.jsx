@@ -148,7 +148,7 @@ export default function EditFoodModal({
                   type='file'
                   id='image'
                   name='image'
-                  accept='image/*'
+                  accept='image/png, image/jpg'
                   {...register('image')}
                   className='absolute z-[-1000] text-transparent left-0'
                   onChange={(e) => {

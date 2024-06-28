@@ -842,7 +842,7 @@ export default function UpdateRestaurant() {
                 type='file'
                 id='images'
                 name='images'
-                accept='image/*'
+                accept='image/png, image/jpg'
                 {...register('images')}
                 className='absolute z-[-1000] left-0'
                 multiple

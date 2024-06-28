@@ -8,10 +8,15 @@ import Modal from 'react-modal'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { simpleSearchRestaurantsAndFood } from '../../api/restaurants.api'
 import { AppContext } from '../../contexts/app.context'
-import { clearAccessTokenFromLS, getAccessTokenFromLS, getInfoFromLS } from '../../utils/auth'
+import {
+  clearAccessTokenFromLS,
+  getAccessTokenFromLS,
+  getInfoFromLS,
+  saveInfoToLS
+} from '../../utils/auth'
 import LoginModal from '../LoginModal'
 import SignupModal from '../SignupModal/SignupModal'
-
+import { getUserProfile } from '../../api/user.api'
 export default function Header() {
   useEffect(() => {
     Modal.setAppElement('body')
@@ -22,6 +27,18 @@ export default function Header() {
   const [signupModal, setSignupModal] = useState(false)
   const { isAuthenticated, setIsAuthenticated, info, setInfo, modalLogin, setModalLogin } =
     useContext(AppContext)
+  const { data: userData } = useQuery({
+    queryKey: ['userProfile', info?._id],
+    queryFn: () => {
+      if (info?._id) return getUserProfile(info?._id)
+    }
+  })
+  useEffect(() => {
+    if (userData) {
+      setInfo(userData?.data.user)
+      saveInfoToLS(userData?.data.user)
+    }
+  }, [setInfo, userData])
   const [search, setSearch] = useState('')
   const [searchParams] = useDebounce([search], 1000)
   const [showSearchResults, setShowSearchResults] = useState(false)

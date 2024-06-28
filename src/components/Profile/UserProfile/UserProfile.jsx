@@ -147,7 +147,7 @@ export default function UserProfile() {
                     type='file'
                     id='avatar'
                     name='avatar'
-                    accept='image/*'
+                    accept='image/png, image/jpg'
                     {...registerAvatar('avatar')}
                     className='absolute z-[-1000] left-0'
                     onChange={(e) => {
@@ -209,8 +209,8 @@ export default function UserProfile() {
                   {...register('username')}
                   className='sm:w-[35vw] w-[55vw] focus:outline-none  placeholder:text-[#ee4c0c7e] 
                    placeholder:font-inter-400 border font-inter-500 border-[#ff822e] text-lg 
-                   focus:placeholder:text-transparent
-                   rounded-xl py-2 px-[1rem] placeholder:text-[0.7rem]'
+                   
+                   rounded-xl py-2 px-[1rem] placeholder:text-[0.7rem] sm:placeholder:text-[1rem]'
                 />
               </div>
 

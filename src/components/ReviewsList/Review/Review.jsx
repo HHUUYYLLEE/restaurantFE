@@ -466,7 +466,7 @@ export default function Review({ review }) {
                     type='file'
                     id='updateImages'
                     name='updateImages'
-                    accept='image/*'
+                    accept='image/png, image/jpg'
                     {...register('images')}
                     className='z-[-1000] left-0 absolute'
                     multiple
