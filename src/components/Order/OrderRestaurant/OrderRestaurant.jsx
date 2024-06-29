@@ -80,7 +80,15 @@ export default function OrderRestaurant({
                 </div>
               </Link>
               <div className='text-red-500 sm:text-2xl text-xs'>
-                {{ 0: 'CHỜ XÁC NHẬN ĐẶT', 1: 'ĐÃ ĐẶT', 2: 'ĐÃ BỊ HUỶ', 3: 'ĐÃ HOÀN THÀNH' }[status]}
+                {
+                  {
+                    0: 'CHỜ XÁC NHẬN ĐẶT',
+                    1: 'ĐÃ ĐẶT',
+                    2: 'ĐÃ BỊ HUỶ',
+                    3: 'ĐÃ HOÀN THÀNH',
+                    4: 'ĐÃ BỊ HUỶ'
+                  }[status]
+                }
               </div>
             </div>
             <hr className='h-[0.1rem] mt-[0.4rem] border-none bg-gray-400' />
@@ -167,7 +175,7 @@ export default function OrderRestaurant({
                   >
                     Đã đặt
                   </button>
-                ) : status === 2 ? (
+                ) : status === 2 || status === 4 ? (
                   <button
                     disabled
                     className=' px-[2rem] py-[1rem] sm:text-3xl 

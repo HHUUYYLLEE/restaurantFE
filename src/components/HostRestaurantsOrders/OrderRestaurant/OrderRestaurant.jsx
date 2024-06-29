@@ -42,7 +42,7 @@ export default function OrderRestaurant({ option, restaurant, refetch }) {
             </div>
             <hr className='h-[0.1rem] mt-[0.4rem] border-none bg-gray-400' />
             {restaurant.orders.map((data, id) => {
-              if (option === 0 || option === data.status)
+              if (option === 0 || option === data.status || (option === 2 && data.status === 4))
                 return (
                   <div key={id}>
                     <Order order={data} refetch={refetch} />

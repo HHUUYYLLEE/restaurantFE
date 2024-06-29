@@ -248,7 +248,7 @@ export default function CompletedOrderDetail() {
                     >
                       Huỷ
                     </button>
-                  ) : orderFood.status === 2 ? (
+                  ) : orderFood.status === 2 || orderFood.status === 4 ? (
                     <button
                       disabled
                       className=' px-[2rem] py-[1rem] text-3xl 

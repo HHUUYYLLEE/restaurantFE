@@ -55,7 +55,7 @@ export default function Order() {
         {isSuccess &&
           data &&
           orderData.map((data, id) => {
-            if (data.status + 1 === option || option === 0)
+            if (data.status + 1 === option || option === 0 || (data.status === 4 && option === 3))
               return (
                 <OrderRestaurant
                   key={id}

@@ -154,6 +154,17 @@ export default function Order({ order, refetch }) {
                     : diffHours + ' giờ trước'
                   : diffDays + ' ngày trước'}
               </div>
+              <div className='text-red-500 sm:text-2xl text-xs'>
+                {
+                  {
+                    0: 'CHỜ XÁC NHẬN ĐẶT',
+                    1: 'ĐÃ ĐẶT',
+                    2: 'ĐÃ BỊ KHÁCH HUỶ',
+                    3: 'ĐÃ HOÀN THÀNH',
+                    4: 'ĐÃ BỊ BẠN HUỶ'
+                  }[order.status]
+                }
+              </div>
               <div className='text-right flex items-center justify-between sm:gap-x-[3rem] gap-x-[1rem]'>
                 <div className='mr-0 sm:text-3xl text-xl text-emerald-600'>
                   <div className='flex sm:gap-x-3 items-center gap-x-6'>
@@ -161,28 +172,28 @@ export default function Order({ order, refetch }) {
                   </div>
                 </div>
 
-                {order.status === 1 ? (
-                  <>
+                {order.status === 1 || order.status === 2 ? (
+                  <div className='flex gap-x-3'>
                     <button
                       className=' sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg text-white 
-          bg-orange-500 hover:bg-green-500 sm:rounded-xl'
+                bg-orange-500 hover:bg-green-500 sm:rounded-xl'
                       onClick={() => setCompleteOrderModal(true)}
                     >
                       Hoàn thành
                     </button>
                     <button
                       className=' sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg text-white 
-        bg-red-500 hover:bg-red-700 sm:rounded-xl'
+              bg-red-500 hover:bg-red-700 sm:rounded-xl'
                       onClick={() => setCancelOrderModal(true)}
                     >
                       Huỷ
                     </button>
-                  </>
-                ) : order.status === 2 ? (
+                  </div>
+                ) : order.status === 4 ? (
                   <button
                     disabled
                     className=' sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg 
-      bg-gray-200 text-black text-opacity-50 sm:rounded-xl'
+              bg-gray-200 text-black text-opacity-50 sm:rounded-xl'
                   >
                     Đã bị huỷ
                   </button>
@@ -190,7 +201,7 @@ export default function Order({ order, refetch }) {
                   <button
                     disabled
                     className='sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg
-  bg-gray-200 text-black text-opacity-50 text-sm sm:rounded-xl'
+          bg-gray-200 text-black text-opacity-50 text-sm sm:rounded-xl'
                   >
                     Đã hoàn thành
                   </button>
@@ -288,7 +299,7 @@ export default function Order({ order, refetch }) {
         <div className='sm:mt-[8vh] mt-[2vh] flex gap-x-4 sm:gap-x-12'>
           <button
             onClick={() => {
-              submitUpdateOrderHost(2)
+              submitUpdateOrderHost(4)
               setCancelOrderModal(false)
             }}
             className='flex justify-center items-center 

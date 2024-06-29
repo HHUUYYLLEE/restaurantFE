@@ -201,6 +201,17 @@ export default function HostOrderDetailComponent() {
                       <div className='sm:text-2xl'>{restaurantData?.name}</div>
                     </div>
                   </Link>
+                  <div className='text-red-500 sm:text-2xl text-xs'>
+                    {
+                      {
+                        0: 'CHỜ XÁC NHẬN ĐẶT',
+                        1: 'ĐÃ ĐẶT',
+                        2: 'ĐÃ BỊ KHÁCH HUỶ',
+                        3: 'ĐÃ HOÀN THÀNH',
+                        4: 'ĐÃ BỊ BẠN HUỶ'
+                      }[orderFood.status]
+                    }
+                  </div>
                 </div>
                 <hr className='h-[0.2rem] mt-[0.4rem] z-10 border-none bg-gray-400' />
                 {order_detail &&
@@ -220,7 +231,7 @@ export default function HostOrderDetailComponent() {
                     >
                       {displayNum(orderFood?.total_price) + 'đ'}
                     </div>
-                    {orderFood.status === 1 ? (
+                    {orderFood.status === 1 || orderFood.status === 2 ? (
                       <div className='flex gap-x-3'>
                         <button
                           className=' sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg text-white 
@@ -237,7 +248,7 @@ export default function HostOrderDetailComponent() {
                           Huỷ
                         </button>
                       </div>
-                    ) : orderFood.status === 2 ? (
+                    ) : orderFood.status === 4 ? (
                       <button
                         disabled
                         className=' sm:px-[1rem] sm:py-[0.5rem] sm:text-xl px-[0.3rem] rounded-lg 
@@ -347,7 +358,7 @@ export default function HostOrderDetailComponent() {
         <div className='sm:mt-[8vh] mt-[2vh] flex gap-x-4 sm:gap-x-12'>
           <button
             onClick={() => {
-              submitUpdateOrderHost(2)
+              submitUpdateOrderHost(4)
               setCancelOrderModal(false)
             }}
             className='flex justify-center items-center 
