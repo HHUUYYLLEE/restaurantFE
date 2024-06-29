@@ -238,7 +238,7 @@ export default function SearchLocationResults() {
   }, [])
   return (
     <>
-      <div className={`mt-[7rem] w-[90%] mx-auto`}>
+      <div className={`mt-[7rem] w-[90%] mx-auto pb-[2rem]`}>
         <div className='text-orange-500 italic text-[1.3rem] sm:text-[1.6rem] flex justify-center'>
           Chọn điểm xuất phát trên bản đồ
         </div>
@@ -467,7 +467,7 @@ export default function SearchLocationResults() {
           </MapContainer>
         </div>
 
-        <div className={`w-full flex gap-x-3 sm:gap-x-8`}>
+        <div className={`w-full flex gap-x-3 sm:gap-x-8 mt-[1rem]`}>
           <div className='mt-[2.6rem] sm:mt-[3.7rem] 2xl:mt-[4.3rem]'>
             {categories.map((option, id) => {
               if (id !== categories.length - 1)
@@ -863,7 +863,39 @@ export default function SearchLocationResults() {
               className='flex justify-center items-center py-[0.6rem] hover:bg-orange-500
                bg-green-500 w-full sm:py-[1rem]
               rounded-lg '
-              onClick={refetch}
+              onClick={() => {
+                if (latLngValueInput[0] === '' || radius === '') return
+                refetch()
+                setDisplayRadius(radius)
+                setDisplayUnit(unit)
+                if (!redrawCircles) {
+                  const clickCircle = L.circle(
+                    { lat: latLngValueInput[0], lng: latLngValueInput[1] },
+                    {
+                      color: 'orange',
+                      fillColor: 'orange',
+                      fillOpacity: 0.3,
+                      radius: unit === 'km' ? radius * 1000 : radius
+                    }
+                  ).addTo(leafletMap)
+                  clickCircle.addTo(leafletMap)
+                  setMapDraw(clickCircle)
+                  setRedrawCircles(true)
+                } else {
+                  leafletMap.removeControl(mapDraw)
+                  const clickCircle = L.circle(
+                    { lat: latLngValueInput[0], lng: latLngValueInput[1] },
+                    {
+                      color: 'orange',
+                      fillColor: 'orange',
+                      fillOpacity: 0.3,
+                      radius: unit === 'km' ? radius * 1000 : radius
+                    }
+                  ).addTo(leafletMap)
+                  clickCircle.addTo(leafletMap)
+                  setMapDraw(clickCircle)
+                }
+              }}
             >
               <FaSearch
                 style={{
