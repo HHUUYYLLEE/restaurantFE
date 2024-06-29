@@ -154,6 +154,7 @@ export default function Header() {
                 onFocus={() => {
                   setShowSearchResults(true)
                   setExpandingSearchBar(true)
+                  if (search !== '') setAllResultsToggle(true)
                 }}
               ></input>
               <div className='absolute sm:ml-0 ml-[-5.4rem] w-[93vw] mt-[1.3rem] sm:mt-0 max-h-[50vh] overflow-y-scroll'>
