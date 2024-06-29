@@ -188,51 +188,6 @@ export default function UpdateRestaurant() {
   if (isSuccess3)
     return (
       <>
-        {updateARestaurantMutation.isPending ? (
-          <>
-            <Modal
-              style={{
-                overlay: {
-                  position: 'fixed',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                  zIndex: 20
-                },
-                content: {
-                  top: '50%',
-                  left: '50%',
-                  right: 'auto',
-                  bottom: 'auto',
-                  marginRight: '-50%',
-                  transform: 'translate(-50%, -50%)',
-                  paddingLeft: '3vw',
-                  paddingRight: '3vw',
-                  paddingTop: '2vw',
-                  paddingBottom: '4vw',
-                  borderWidth: '0px',
-                  borderRadius: '1rem'
-                }
-              }}
-              isOpen={true}
-            >
-              <div className='text-[#4FA94D] font-dmsans-700 mb-[5vh] text-3xl'>Đang cập nhật</div>
-              <TailSpin
-                height='200'
-                width='200'
-                color='#4fa94d'
-                ariaLabel='tail-spin-loading'
-                radius='5'
-                visible={true}
-                wrapperStyle={{ display: 'flex', justifyContent: 'center' }}
-              />
-            </Modal>
-          </>
-        ) : (
-          <></>
-        )}
         <form onSubmit={onSubmit}>
           <div className='mt-32 mx-auto sm:grid sm:grid-cols-15 w-[90vw] gap-x-4'>
             <div className='sm:col-span-9'>
