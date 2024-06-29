@@ -115,7 +115,12 @@ export default function SearchLocationResults() {
         leafletMap.removeLayer(markersGroup)
         const layerGroup = new L.LayerGroup()
         for (const restaurant of data.data.restaurants) {
-          const marker = L.marker([restaurant.lat, restaurant.lng])
+          const marker = L.marker([restaurant.lat, restaurant.lng], {
+            icon: new L.Icon({
+              iconUrl: diningIcon,
+              iconSize: [80, 80]
+            })
+          })
           marker.addTo(layerGroup).bindPopup(
             `<div>
             <a href="./restaurant/${restaurant._id}">
