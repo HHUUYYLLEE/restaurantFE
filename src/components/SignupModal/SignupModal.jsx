@@ -163,7 +163,7 @@ export default function SignupModal({ closeModalSignup }) {
             <div>
               <input
                 id='confirm_password'
-                type='confirm_password'
+                type='password'
                 name='confirm_password'
                 placeholder='Xác nhận mật khẩu'
                 autoComplete='on'
