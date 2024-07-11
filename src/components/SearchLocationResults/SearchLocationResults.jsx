@@ -817,7 +817,7 @@ export default function SearchLocationResults() {
                       </div>
                     </div>
                     {dropDown2State && (
-                      <div className='absolute w-[12vw] sm:w-[8vw]'>
+                      <div className='absolute w-[12vw] sm:w-[6.2vw]'>
                         <div
                           className='border-[0.09rem] border-slate-400
                          rounded max-h-[20vh] sm:max-h-[32vh] overflow-scroll'
