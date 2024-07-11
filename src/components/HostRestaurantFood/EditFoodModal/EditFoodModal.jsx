@@ -126,6 +126,7 @@ export default function EditFoodModal({
                 type='text'
                 id='desc'
                 name='desc'
+                placeholder='Giới thiệu'
                 autoComplete='off'
                 defaultValue={desc}
                 {...register('desc')}

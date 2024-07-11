@@ -118,6 +118,7 @@ export default function AddFoodModal({ closeAddFoodModal, restaurant_id }) {
                 type='text'
                 id='desc'
                 name='desc'
+                placeholder='Giới thiệu'
                 autoComplete='off'
                 {...register('desc')}
                 className='resize-none h-[18vh] w-full 
