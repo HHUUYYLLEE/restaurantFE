@@ -35,21 +35,26 @@ export default function TableOrder() {
   }, [])
   const [orderTableModal, setOrderTableModal] = useState(false)
   const [selectTable, setSelectTable] = useState([])
+  const [querySuccess, setQuerySuccess] = useState(false)
   const { data, isSuccess } = useQuery({
     queryKey: ['restaurantDetail', id],
     queryFn: async () => {
       const data = await getRestaurant(id)
-      setSelectTable(
-        data?.data.restaurant.table_chair.map((data) => {
-          data = { ...data, checked: false }
-          return data
-        })
-      )
+
       // window.scrollTo(0, 0)
       return data
     },
     placeholderData: keepPreviousData
   })
+  useEffect(() => {
+    setSelectTable(
+      data?.data.restaurant.table_chair.map((temp) => {
+        temp = { ...temp, checked: false }
+        return temp
+      })
+    )
+    if (isSuccess) setQuerySuccess(true)
+  }, [data?.data.restaurant.table_chair, isSuccess])
   const restaurantData = data?.data.restaurant
   function Routing() {
     const map = useMap()
@@ -132,7 +137,7 @@ export default function TableOrder() {
 
   return (
     <>
-      {isSuccess && (
+      {querySuccess && (
         <div className=''>
           <div className='flex bg-white gap-x-[2vw] sm:gap-x-0'>
             {screen.width > 640 && (
