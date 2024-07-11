@@ -108,15 +108,48 @@ export default function RestaurantDetail({ setOption, reviews, setReviews, setGe
                 showArrows={true}
                 width={screen.width >= 1536 ? 500 : screen.width >= 640 ? 450 : 300}
                 thumbWidth={screen.width < 640 ? 46 : 80}
+                dynamicHeight={false}
+                renderThumbs={() => {
+                  let arr = [...restaurantData.images]
+                  arr.unshift(data?.data.restaurant.main_avatar_url)
+                  return arr.map((image, key) => {
+                    return (
+                      <div key={key} className={`${screen.width >= 640 ? 'h-[3rem]' : 'h-[2rem]'}`}>
+                        <img referrerPolicy='no-referrer' className='h-full' src={image} />
+                      </div>
+                    )
+                  })
+                }}
               >
-                <div>
-                  <img referrerPolicy='no-referrer' src={data?.data.restaurant.main_avatar_url} />
+                <div
+                  className={`${
+                    screen.width >= 1536
+                      ? 'h-[15rem]'
+                      : screen.width >= 640
+                      ? 'h-[15rem]'
+                      : 'h-[13rem]'
+                  }`}
+                >
+                  <img
+                    referrerPolicy='no-referrer'
+                    className='h-full'
+                    src={data?.data.restaurant.main_avatar_url}
+                  />
                 </div>
                 {data &&
                   restaurantData.images.map((image, key) => {
                     return (
-                      <div key={key}>
-                        <img referrerPolicy='no-referrer' src={image} />
+                      <div
+                        key={key}
+                        className={`${
+                          screen.width >= 1536
+                            ? 'h-[15rem]'
+                            : screen.width >= 640
+                            ? 'h-[15rem]'
+                            : 'h-[13rem]'
+                        }`}
+                      >
+                        <img referrerPolicy='no-referrer' className='h-full' src={image} />
                       </div>
                     )
                   })}
