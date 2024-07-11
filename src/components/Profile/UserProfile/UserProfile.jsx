@@ -147,7 +147,7 @@ export default function UserProfile() {
                     type='file'
                     id='avatar'
                     name='avatar'
-                    accept='image/png, image/jpg'
+                    accept='.png, .jpg'
                     {...registerAvatar('avatar')}
                     className='absolute z-[-1000] left-0'
                     onChange={(e) => {

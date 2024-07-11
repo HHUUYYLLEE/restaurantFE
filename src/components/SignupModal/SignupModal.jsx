@@ -184,7 +184,7 @@ export default function SignupModal({ closeModalSignup }) {
                   type='file'
                   id='avatar'
                   name='avatar'
-                  accept='image/png, image/jpg'
+                  accept='.png, .jpg'
                   {...register('avatar')}
                   className='absolute z-[-1000] text-transparent left-0'
                   onChange={(e) => {

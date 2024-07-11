@@ -275,7 +275,7 @@ export default function ReviewList({ reviews, getReviewSuccess }) {
                         type='file'
                         id='images'
                         name='images'
-                        accept='image/png, image/jpg'
+                        accept='.png, .jpg'
                         {...register('images')}
                         className='z-[-1000] absolute left-0'
                         multiple
