@@ -10,7 +10,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google'
 import { envConfig } from './utils/env.js'
 import { useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
-export const queryClient = new QueryClient({
+const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false
