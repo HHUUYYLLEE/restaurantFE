@@ -8,12 +8,7 @@ import Modal from 'react-modal'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { simpleSearchRestaurantsAndFood } from '../../api/restaurants.api'
 import { AppContext } from '../../contexts/app.context'
-import {
-  clearAccessTokenFromLS,
-  getAccessTokenFromLS,
-  getInfoFromLS,
-  saveInfoToLS
-} from '../../utils/auth'
+import { clearAccessTokenFromLS, getAccessTokenFromLS, getInfoFromLS, saveInfoToLS } from '../../utils/auth'
 import LoginModal from '../LoginModal'
 import SignupModal from '../SignupModal/SignupModal'
 import { getUserProfile } from '../../api/user.api'
@@ -25,8 +20,7 @@ export default function Header() {
   const navigate = useNavigate()
   const [logoutModal, setLogoutModal] = useState(false)
   const [signupModal, setSignupModal] = useState(false)
-  const { isAuthenticated, setIsAuthenticated, info, setInfo, modalLogin, setModalLogin } =
-    useContext(AppContext)
+  const { isAuthenticated, setIsAuthenticated, info, setInfo, modalLogin, setModalLogin } = useContext(AppContext)
   const { data: userData } = useQuery({
     queryKey: ['userProfile', info?._id],
     queryFn: () => {
@@ -92,7 +86,10 @@ export default function Header() {
     <>
       <header className='fixed flex top-0 w-full h-20 shadow-lg items-center transition duration-300 z-[20] bg-orange-600'>
         <div className='ml-[0.7rem] sm:text-3xl text-xl italic text-white'>
-          <Link to='/' className='focus:outline-none'>
+          <Link
+            to='/'
+            className='focus:outline-none'
+          >
             vnFood
           </Link>
         </div>
@@ -100,16 +97,12 @@ export default function Header() {
           <div className='relative sm:ml-10 ml-5 sm:w-[50vw]'>
             <div
               className={`${
-                expandingSearchBar && screen.width < 640
-                  ? 'fixed left-3 top-8 z-[2]  '
-                  : 'absolute mt-3 ml-2 '
+                expandingSearchBar && screen.width < 640 ? 'fixed left-3 top-8 z-[2]  ' : 'absolute mt-3 ml-2 '
               }  pointer-events-none`}
             >
               <svg
                 aria-hidden='true'
-                className={`${
-                  expandingSearchBar && screen.width < 640 ? 'text-black ' : 'text-white '
-                } w-5 h-5`}
+                className={`${expandingSearchBar && screen.width < 640 ? 'text-black ' : 'text-white '} w-5 h-5`}
                 fill='none'
                 stroke='currentColor'
                 viewBox='0 0 24 24'
@@ -256,13 +249,18 @@ export default function Header() {
             className={`relative cursor-pointer font-poppins-600 ${!isAuthenticated && 'hidden'}`}
             ref={refDropDown}
           >
-            <div onClick={toggleMenu} className='flex items-center'>
+            <div
+              onClick={toggleMenu}
+              className='flex items-center'
+            >
               <div className='bg-gray-300 rounded-full w-[3rem] h-[3rem] flex items-center overflow-hidden justify-center'>
-                <img referrerPolicy='no-referrer' src={info?.avatar_url} className='' />
+                <img
+                  referrerPolicy='no-referrer'
+                  src={info?.avatar_url}
+                  className=''
+                />
               </div>
-              {screen.width > 640 && (
-                <div className='font-semibold ml-2 text-white'>{info?.username}</div>
-              )}
+              {screen.width > 640 && <div className='font-semibold ml-2 text-white'>{info?.username}</div>}
             </div>
             {isOpen && (
               <div

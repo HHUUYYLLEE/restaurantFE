@@ -26,8 +26,9 @@ module.exports = {
         endOfLine: 'auto',
         useTabs: false,
         singleQuote: true,
-        printWidth: 120,
-        jsxSingleQuote: true
+        printWidth: 140,
+        jsxSingleQuote: true,
+        singleAttributePerLine: true
       }
     ]
   },
