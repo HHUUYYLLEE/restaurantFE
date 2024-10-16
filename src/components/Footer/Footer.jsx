@@ -12,16 +12,26 @@ export default function Footer() {
             <div className=' text-white italic text-lg'>Liên lạc qua</div>
             <div className='flex items-center gap-x-3 sm:mt-[1.5rem]'>
               <a href='https://www.facebook.com/huy.leba.75'>
-                <img className='w-[10vw] sm:w-[3vw]' src={facebook} alt='' />
+                <img
+                  className='w-[10vw] sm:w-[3vw]'
+                  src={facebook}
+                  alt=''
+                />
               </a>
               <div>Huy Lê</div>
             </div>
             <div className='flex mt-[0.5rem] items-center gap-x-3'>
-              <img src={email} className='w-[10vw] sm:w-[3vw]' />
+              <img
+                src={email}
+                className='w-[10vw] sm:w-[3vw]'
+              />
               <div>huy.lb194586@sis.hust.edu.vn</div>
             </div>
             <div className='flex mt-[0.5rem] items-center gap-x-3'>
-              <img src={phone} className='w-[10vw] sm:w-[3vw]' />
+              <img
+                src={phone}
+                className='w-[10vw] sm:w-[3vw]'
+              />
               <div>0833471885</div>
             </div>
           </div>
@@ -29,14 +39,14 @@ export default function Footer() {
             <div className=' sm:text-white sm:italic sm:text-lg'>Địa chỉ</div>
             <a href='https://maps.app.goo.gl/sgkvz8YxsUW29rSi8'>
               <div className='sm:flex sm:mt-[1.5rem] sm:items-center sm:gap-x-3'>
-                <img src={pinlocation} className='sm:w-[3vw]' />
-                <div className='sm:text-[0.9rem]'>
-                  204-K1, Nguyễn Hiền. Bách Khoa, Hai Bà Trưng, Hà Nội
-                </div>
+                <img
+                  src={pinlocation}
+                  className='sm:w-[3vw]'
+                />
+                <div className='sm:text-[0.9rem]'>204-K1, Nguyễn Hiền. Bách Khoa, Hai Bà Trưng, Hà Nội</div>
               </div>
             </a>
           </div>
-          <img src={logobk} className='hidden sm:block sm:w-[12vw] sm:py-[2rem]' />
         </div>
         <hr className='h-[0.1rem] border-none bg-white' />
         <div className='flex justify-center py-[1rem] '>

@@ -15,7 +15,7 @@ import SearchByLocation from './components/SearchLocationResults/SearchLocationR
 import UpdateRestaurant from './pages/UpdateRestaurant'
 import BloggerRestaurantsResults from './pages/BloggerRestaurantsResults/BloggerRestaurantsResults'
 import HostOrderDetail from './pages/HostOrderDetail/HostOrderDetail'
-import HostOrderTableDetail from './pages/HostOrderDetail/HostOrderDetail'
+import HostOrderTableDetail from './pages/HostOrderTableDetail/HostOrderTableDetail'
 import CompletedOrder from './pages/CompletedOrder/CompletedOrder'
 import TableOrderForm from './pages/TableOrderForm'
 import TableOrder from './pages/TableOrder'
@@ -48,7 +48,7 @@ export default function useRouteElement() {
       children: [
         {
           path: '/table_order/:id',
-          index: true,
+
           element: (
             <MainLayout>
               <TableOrderForm />
@@ -57,7 +57,7 @@ export default function useRouteElement() {
         },
         {
           path: '/table_order',
-          index: true,
+
           element: (
             <MainLayout>
               <TableOrder />
@@ -66,7 +66,7 @@ export default function useRouteElement() {
         },
         {
           path: '/host_order_detail/:id',
-          index: true,
+
           element: (
             <MainLayout>
               <HostOrderDetail />
@@ -75,7 +75,7 @@ export default function useRouteElement() {
         },
         {
           path: '/host_order_table_detail/:id',
-          index: true,
+
           element: (
             <MainLayout>
               <HostOrderTableDetail />
@@ -84,7 +84,7 @@ export default function useRouteElement() {
         },
         {
           path: '/place_order/:id',
-          index: true,
+
           element: (
             <MainLayout>
               <PlaceOrder />
@@ -93,7 +93,7 @@ export default function useRouteElement() {
         },
         {
           path: '/completed_order/:id',
-          index: true,
+
           element: (
             <MainLayout>
               <CompletedOrder />
@@ -102,7 +102,7 @@ export default function useRouteElement() {
         },
         {
           path: '/order_food',
-          index: true,
+
           element: (
             <MainLayout>
               <OrderList />
@@ -111,7 +111,7 @@ export default function useRouteElement() {
         },
         {
           path: '/completed_table_order/:id',
-          index: true,
+
           element: (
             <MainLayout>
               <CompletedTableOrder />
@@ -120,7 +120,7 @@ export default function useRouteElement() {
         },
         {
           path: '/profile',
-          index: true,
+
           element: (
             <MainLayout>
               <Profile />
@@ -129,7 +129,7 @@ export default function useRouteElement() {
         },
         {
           path: '/open_restaurant',
-          index: true,
+
           element: (
             <MainLayout>
               <OpenRestaurant />
@@ -138,7 +138,7 @@ export default function useRouteElement() {
         },
         {
           path: '/host_restaurant/:id',
-          index: true,
+
           element: (
             <MainLayout>
               <HostRestaurantDetails />
@@ -147,7 +147,7 @@ export default function useRouteElement() {
         },
         {
           path: '/update_restaurant/:id',
-          index: true,
+
           element: (
             <MainLayout>
               <UpdateRestaurant />
@@ -162,7 +162,7 @@ export default function useRouteElement() {
       children: [
         {
           path: '/admin',
-          index: true,
+
           element: (
             <Adminlayout>
               <Admin />
@@ -177,7 +177,7 @@ export default function useRouteElement() {
       children: [
         {
           path: '/search_location',
-          index: true,
+
           element: (
             <MainLayout>
               <SearchByLocation />
@@ -186,7 +186,7 @@ export default function useRouteElement() {
         },
         {
           path: '/search',
-          index: true,
+
           element: (
             <MainLayout>
               <Search />
@@ -195,7 +195,7 @@ export default function useRouteElement() {
         },
         {
           path: '/restaurant/:id',
-          index: true,
+
           element: (
             <MainLayout>
               <RestaurantDetails />
@@ -204,7 +204,7 @@ export default function useRouteElement() {
         },
         {
           path: '/find_blogger_restaurants',
-          index: true,
+
           element: (
             <MainLayout>
               <BloggerRestaurantsResults />

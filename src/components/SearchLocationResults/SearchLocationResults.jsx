@@ -167,10 +167,7 @@ export default function SearchLocationResults() {
     useEffect(() => {
       if (isSuccess3) {
         setDisplayAddressValue(data3?.data.results[0].formatted)
-        setLatLngValueInput([
-          data3?.data.results[0].geometry.lat,
-          data3?.data.results[0].geometry.lng
-        ])
+        setLatLngValueInput([data3?.data.results[0].geometry.lat, data3?.data.results[0].geometry.lng])
       }
     }, [isSuccess3, data3?.data.results])
   }
@@ -239,9 +236,7 @@ export default function SearchLocationResults() {
   return (
     <>
       <div className={`mt-[7rem] w-[90%] mx-auto pb-[2rem]`}>
-        <div className='text-orange-500 italic text-[1.3rem] sm:text-[1.6rem] flex justify-center'>
-          Chọn điểm xuất phát trên bản đồ
-        </div>
+        <div className='text-orange-500 italic text-[1.3rem] sm:text-[1.6rem] flex justify-center'>Chọn điểm xuất phát trên bản đồ</div>
         <div>
           <input
             type='text'
@@ -297,7 +292,10 @@ export default function SearchLocationResults() {
                 placeholder:text-[#777070] placeholder:font-inter-400 border 
                 font-inter-500 rounded-xl px-[0.5rem] py-[0.2rem]'
             />
-            <div className='relative' ref={refDropDown3}>
+            <div
+              className='relative'
+              ref={refDropDown3}
+            >
               <div
                 className=' w-[13.5vw] bg-orange-500 h-[3vh] mt-[1.1rem] 
             rounded-lg cursor-pointer sm:w-[5vw] sm:h-[4.8vh] flex items-center
@@ -311,11 +309,7 @@ export default function SearchLocationResults() {
                 flex items-center justify-between'
                 >
                   <div className='text-white'>{unit}</div>
-                  {dropDown3State ? (
-                    <FaAngleUp style={{ color: 'white' }} />
-                  ) : (
-                    <FaAngleDown style={{ color: 'white' }} />
-                  )}
+                  {dropDown3State ? <FaAngleUp style={{ color: 'white' }} /> : <FaAngleDown style={{ color: 'white' }} />}
                 </div>
               </div>
               {dropDown3State && (
@@ -501,9 +495,7 @@ export default function SearchLocationResults() {
                           borderRadius={9999}
                           size={screen.width < 640 ? 10 : 30}
                         />
-                        <div className='text-[0.5rem] sm:text-[0.8rem] 2xl:text-[0.5rem] sm:w-full sm:flex sm:justify-center'>
-                          {option}
-                        </div>
+                        <div className='text-[0.5rem] sm:text-[0.8rem] 2xl:text-[1rem] sm:w-full sm:flex sm:justify-center'>{option}</div>
                       </div>
                     </button>
                     <hr
@@ -543,9 +535,7 @@ export default function SearchLocationResults() {
                           borderRadius={9999}
                           size={screen.width < 640 ? 10 : 30}
                         />
-                        <div className='text-[0.5rem] sm:text-[0.8rem] 2xl:text-[0.5rem] sm:w-full sm:flex sm:justify-center'>
-                          {option}
-                        </div>
+                        <div className='text-[0.5rem] sm:text-[0.8rem] 2xl:text-[1rem] sm:w-full sm:flex sm:justify-center'>{option}</div>
                       </div>
                     </button>
                   </div>
@@ -611,7 +601,10 @@ export default function SearchLocationResults() {
                       </div>
                     )
                   })}
-                  <div className='relative' ref={refDropDown}>
+                  <div
+                    className='relative'
+                    ref={refDropDown}
+                  >
                     <div
                       onClick={() => {
                         setDropDownState(!dropDownState)
@@ -637,14 +630,8 @@ export default function SearchLocationResults() {
                               e.stopPropagation()
                             }}
                             onInput={(e) => {
-                              if (option === 0)
-                                setHNfilter(
-                                  HN.filter((str) => str.toLowerCase().includes(e.target.value))
-                                )
-                              else
-                                setTPHCMfilter(
-                                  TPHCM.filter((str) => str.toLowerCase().includes(e.target.value))
-                                )
+                              if (option === 0) setHNfilter(HN.filter((str) => str.toLowerCase().includes(e.target.value)))
+                              else setTPHCMfilter(TPHCM.filter((str) => str.toLowerCase().includes(e.target.value)))
                             }}
                           ></input>
                         ) : (
@@ -780,7 +767,10 @@ export default function SearchLocationResults() {
                   />
                   <div className='text-[0.4rem] sm:text-[1.3rem] italic'>Điểm đánh giá:</div>
 
-                  <div className='relative' ref={refDropDown2}>
+                  <div
+                    className='relative'
+                    ref={refDropDown2}
+                  >
                     <div
                       onClick={() => {
                         setDropDown2State(!dropDown2State)
@@ -792,9 +782,7 @@ export default function SearchLocationResults() {
                     `}
                       >
                         <div className='flex justify-center w-full'>
-                          <div className={`text-[0.5rem] sm:text-xl text-white`}>
-                            {displayOption2}
-                          </div>
+                          <div className={`text-[0.5rem] sm:text-xl text-white`}>{displayOption2}</div>
                         </div>
 
                         {dropDown2State ? (
@@ -911,7 +899,10 @@ export default function SearchLocationResults() {
               <div className='flex justify-center items-center mt-[0.5rem]'>
                 <div className=''>
                   <div className='flex justify-center'>
-                    <img className='w-[20vw] sm:w-[11vw]' src={nothingIcon}></img>
+                    <img
+                      className='w-[20vw] sm:w-[11vw]'
+                      src={nothingIcon}
+                    ></img>
                   </div>
                   <div>
                     <span>Không tìm thấy nhà hàng nào trong phạm vi&nbsp;</span>
@@ -923,23 +914,26 @@ export default function SearchLocationResults() {
                 </div>
               </div>
             )}
-            <div
-              className={`grid ${
-                displayType === 0
-                  ? ' gap-y-[0.6rem] '
-                  : ' grid-cols-3 sm:grid-cols-4 gap-x-2 gap-y-3  '
-              } mt-[1rem]`}
-            >
+            <div className={`grid ${displayType === 0 ? ' gap-y-[0.6rem] ' : ' grid-cols-3 sm:grid-cols-4 gap-x-2 gap-y-3  '} mt-[1rem]`}>
               {(isLoading || isFetching) && (
                 <div className='flex items-center justify-center'>
-                  <img className='w-[20vw] sm:w-[11vw]' src={spinningload}></img>
+                  <img
+                    className='w-[20vw] sm:w-[11vw]'
+                    src={spinningload}
+                  ></img>
                 </div>
               )}
               {searchData &&
                 !isLoading &&
                 !isFetching &&
                 searchData.restaurants.map((restaurant, id) => {
-                  return <Restaurant key={id} displayType={displayType} restaurant={restaurant} />
+                  return (
+                    <Restaurant
+                      key={id}
+                      displayType={displayType}
+                      restaurant={restaurant}
+                    />
+                  )
                 })}
             </div>
             {searchData && (

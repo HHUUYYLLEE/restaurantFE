@@ -50,16 +50,7 @@ export default function HomeRestaurant() {
   }, [])
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: [
-      'searchAllRestaurants',
-      addressValue,
-      page,
-      limit,
-      category,
-      sortByScore,
-      chair,
-      table
-    ],
+    queryKey: ['searchAllRestaurants', addressValue, page, limit, category, sortByScore, chair, table],
     queryFn: () => {
       return getAllRestaurants({
         page: page,
@@ -113,7 +104,7 @@ export default function HomeRestaurant() {
                         size={screen.width < 640 ? 10 : 30}
                       />
                       <div
-                        className='text-[0.5rem] sm:text-[0.8rem] 2xl:text-[0.5rem] 
+                        className='text-[0.5rem] sm:text-[0.8rem] 2xl:text-[1rem] 
                       sm:w-full sm:flex sm:justify-center'
                       >
                         {option}
@@ -158,7 +149,7 @@ export default function HomeRestaurant() {
                         size={screen.width < 640 ? 10 : 30}
                       />
                       <div
-                        className='text-[0.5rem] sm:text-[0.8rem] 2xl:text-[0.5rem] 
+                        className='text-[0.5rem] sm:text-[0.8rem] 2xl:text-[1rem] 
                       sm:w-full sm:flex sm:justify-center'
                       >
                         {option}
@@ -245,7 +236,10 @@ export default function HomeRestaurant() {
                     </div>
                   )
                 })}
-                <div className='relative' ref={refDropDown}>
+                <div
+                  className='relative'
+                  ref={refDropDown}
+                >
                   <div
                     onClick={() => {
                       setDropDownState(!dropDownState)
@@ -271,14 +265,8 @@ export default function HomeRestaurant() {
                             e.stopPropagation()
                           }}
                           onInput={(e) => {
-                            if (option === 0)
-                              setHNfilter(
-                                HN.filter((str) => str.toLowerCase().includes(e.target.value))
-                              )
-                            else
-                              setTPHCMfilter(
-                                TPHCM.filter((str) => str.toLowerCase().includes(e.target.value))
-                              )
+                            if (option === 0) setHNfilter(HN.filter((str) => str.toLowerCase().includes(e.target.value)))
+                            else setTPHCMfilter(TPHCM.filter((str) => str.toLowerCase().includes(e.target.value)))
                           }}
                         ></input>
                       ) : (
@@ -414,7 +402,10 @@ export default function HomeRestaurant() {
                 />
                 <div className='text-[0.4rem] sm:text-[1.3rem] italic'>Điểm đánh giá:</div>
 
-                <div className='relative' ref={refDropDown2}>
+                <div
+                  className='relative'
+                  ref={refDropDown2}
+                >
                   <div
                     onClick={() => {
                       setDropDown2State(!dropDown2State)
@@ -426,9 +417,7 @@ export default function HomeRestaurant() {
                     `}
                     >
                       <div className='flex justify-center w-full'>
-                        <div className={`text-[0.5rem] sm:text-xl text-white`}>
-                          {displayOption2}
-                        </div>
+                        <div className={`text-[0.5rem] sm:text-xl text-white`}>{displayOption2}</div>
                       </div>
 
                       {dropDown2State ? (
@@ -494,26 +483,32 @@ export default function HomeRestaurant() {
             </div>
           </div>
 
-          <div
-            className={`grid ${
-              displayType === 0
-                ? ' gap-y-[0.6rem] '
-                : ' grid-cols-3 sm:grid-cols-4 gap-x-2 gap-y-3  '
-            } mt-[1rem]`}
-          >
+          <div className={`grid ${displayType === 0 ? ' gap-y-[0.6rem] ' : ' grid-cols-3 sm:grid-cols-4 gap-x-2 gap-y-3  '} mt-[1rem]`}>
             {isError && (
               <div className='flex items-center justify-center'>
-                <img className='w-[20vw] sm:w-[11vw]' src={nothingIcon}></img>
+                <img
+                  className='w-[20vw] sm:w-[11vw]'
+                  src={nothingIcon}
+                ></img>
               </div>
             )}
             {isLoading && (
               <div className='flex items-center justify-center'>
-                <img className='w-[20vw] sm:w-[11vw]' src={spinningload}></img>
+                <img
+                  className='w-[20vw] sm:w-[11vw]'
+                  src={spinningload}
+                ></img>
               </div>
             )}
             {searchData &&
               searchData.restaurants.map((restaurant, id) => {
-                return <Restaurant key={id} displayType={displayType} restaurant={restaurant} />
+                return (
+                  <Restaurant
+                    key={id}
+                    displayType={displayType}
+                    restaurant={restaurant}
+                  />
+                )
               })}
           </div>
           {searchData && (

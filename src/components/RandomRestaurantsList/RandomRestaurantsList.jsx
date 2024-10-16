@@ -32,7 +32,10 @@ export default function RandomRestaurantsList() {
             {isLoading ||
               (isFetching && (
                 <div className='flex items-center justify-center'>
-                  <img className='w-[20vw] sm:w-[11vw]' src={spinningload}></img>
+                  <img
+                    className='w-[20vw] sm:w-[11vw]'
+                    src={spinningload}
+                  ></img>
                 </div>
               ))}
             <div className='grid grid-cols-3 md:sm:grid-cols-5 grid-rows-2 gap-y-3 gap-x-2'>
@@ -41,7 +44,12 @@ export default function RandomRestaurantsList() {
                 dataRestaurants &&
                 dataRestaurants?.map((restaurant, id) => {
                   if (id < 6 || screen.width >= 640)
-                    return <Restaurant key={restaurant._id} restaurant={restaurant} />
+                    return (
+                      <Restaurant
+                        key={restaurant._id}
+                        restaurant={restaurant}
+                      />
+                    )
                 })}
             </div>
           </div>

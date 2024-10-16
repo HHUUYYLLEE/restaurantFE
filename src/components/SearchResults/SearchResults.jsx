@@ -60,19 +60,7 @@ export default function SearchResults() {
   }, [])
   // console.log(params)
   const { data, isSuccess, isLoading, isError } = useQuery({
-    queryKey: [
-      'searchRestaurantsAndFood',
-      params,
-      mode,
-      addressValue,
-      page,
-      limit,
-      category,
-      sortByScore,
-      sortByPrice,
-      chair,
-      table
-    ],
+    queryKey: ['searchRestaurantsAndFood', params, mode, addressValue, page, limit, category, sortByScore, sortByPrice, chair, table],
     queryFn: () => {
       return searchRestaurantsAndFood({
         ...params,
@@ -131,7 +119,7 @@ export default function SearchResults() {
                         />
                         <div
                           className='text-[0.5rem] sm:text-[0.8rem] 
-                        2xl:text-[0.5rem] sm:w-full sm:flex sm:justify-center'
+                        2xl:text-[1rem] sm:w-full sm:flex sm:justify-center'
                         >
                           {option}
                         </div>
@@ -139,7 +127,7 @@ export default function SearchResults() {
                     </button>
                     <hr
                       className='h-[0.06rem] sm:h-[0.15rem] sm:mt-[-0.23rem] 
-                  2xl:mt-[-0.1rem] sm:w-[15vw] border-none bg-orange-500'
+                  2xl:mt-[-0.1rem] sm:w-[15vw] border-none bg-orange-500 2xl:text-[1rem]'
                     />
                   </div>
                 )
@@ -174,9 +162,7 @@ export default function SearchResults() {
                           borderRadius={9999}
                           size={screen.width < 640 ? 10 : 30}
                         />
-                        <div className='text-[0.5rem] sm:text-[0.8rem] 2xl:text-[0.5rem] sm:w-full sm:flex sm:justify-center'>
-                          {option}
-                        </div>
+                        <div className='text-[0.5rem] sm:text-[0.8rem] 2xl:text-[1rem] sm:w-full sm:flex sm:justify-center'>{option}</div>
                       </div>
                     </button>
                   </div>
@@ -192,12 +178,15 @@ export default function SearchResults() {
                 className=' w-[20vw] sm:w-full text-[0.7rem] sm:text-[1.3rem] h-[5vh] 
             flex justify-center'
               >
-                <div className='text-center text-white italic'>
+                <div className='text-center text-white italic 2xl:text-[1rem]'>
                   Không tìm thấy gì ưng ý? Thử tìm kiếm theo phạm vi quanh nhà bạn!
                 </div>
               </div>
               <div className='w-[20vw] sm:w-full sm:h-[20vw] flex justify-center'>
-                <img className='mt-[4.5rem] sm:mt-[6rem]' src={mapround} />
+                <img
+                  className='mt-[4.5rem] sm:mt-[6rem]'
+                  src={mapround}
+                />
               </div>
             </div>
           </Link>
@@ -213,9 +202,7 @@ export default function SearchResults() {
                     {isSuccess && !isError ? searchData?.restaurants?.length : '0'}&nbsp;
                   </span>
                   <span>nhà hàng&nbsp;</span>
-                  <span className='italic font-bold text-orange-500'>
-                    &quot;{params.search}&quot;:&nbsp;
-                  </span>
+                  <span className='italic font-bold text-orange-500'>&quot;{params.search}&quot;:&nbsp;</span>
                 </>
               )}
               {mode === 2 && (
@@ -225,9 +212,7 @@ export default function SearchResults() {
                     {isSuccess && !isError ? searchData?.allFood?.length : '0'}&nbsp;
                   </span>
                   <span>món ăn&nbsp;</span>
-                  <span className='italic font-bold text-orange-500'>
-                    &quot;{params.search}&quot;:&nbsp;
-                  </span>
+                  <span className='italic font-bold text-orange-500'>&quot;{params.search}&quot;:&nbsp;</span>
                 </>
               )}
             </div>
@@ -324,7 +309,10 @@ export default function SearchResults() {
                       </div>
                     )
                   })}
-                  <div className='relative' ref={refDropDown}>
+                  <div
+                    className='relative'
+                    ref={refDropDown}
+                  >
                     <div
                       onClick={() => {
                         setDropDownState(!dropDownState)
@@ -350,14 +338,8 @@ export default function SearchResults() {
                               e.stopPropagation()
                             }}
                             onInput={(e) => {
-                              if (option === 0)
-                                setHNfilter(
-                                  HN.filter((str) => str.toLowerCase().includes(e.target.value))
-                                )
-                              else
-                                setTPHCMfilter(
-                                  TPHCM.filter((str) => str.toLowerCase().includes(e.target.value))
-                                )
+                              if (option === 0) setHNfilter(HN.filter((str) => str.toLowerCase().includes(e.target.value)))
+                              else setTPHCMfilter(TPHCM.filter((str) => str.toLowerCase().includes(e.target.value)))
                             }}
                           ></input>
                         ) : (
@@ -493,7 +475,10 @@ export default function SearchResults() {
                   />
                   <div className='text-[0.4rem] sm:text-[1.3rem] italic'>Điểm đánh giá:</div>
 
-                  <div className='relative' ref={refDropDown2}>
+                  <div
+                    className='relative'
+                    ref={refDropDown2}
+                  >
                     <div
                       onClick={() => {
                         setDropDown2State(!dropDown2State)
@@ -505,9 +490,7 @@ export default function SearchResults() {
                     `}
                       >
                         <div className='flex justify-center w-full'>
-                          <div className={`text-[0.5rem] sm:text-xl text-white`}>
-                            {displayOption2}
-                          </div>
+                          <div className={`text-[0.5rem] sm:text-xl text-white`}>{displayOption2}</div>
                         </div>
 
                         {dropDown2State ? (
@@ -578,7 +561,10 @@ export default function SearchResults() {
               <div className='flex items-center sm:mx-[1.5rem] sm:my-[1.2rem] mx-[0.3rem] my-[0.5rem] gap-x-2 sm:gap-x-3'>
                 <div className='text-[0.8rem] sm:text-[1.3rem] italic'>Giá:</div>
 
-                <div className='relative' ref={refDropDown2}>
+                <div
+                  className='relative'
+                  ref={refDropDown2}
+                >
                   <div
                     onClick={() => {
                       setDropDown2State(!dropDown2State)
@@ -591,9 +577,7 @@ export default function SearchResults() {
   `}
                     >
                       <div className='flex justify-center w-full'>
-                        <div className={`text-[0.8rem] sm:text-xl text-white`}>
-                          {displayOption2}
-                        </div>
+                        <div className={`text-[0.8rem] sm:text-xl text-white`}>{displayOption2}</div>
                       </div>
 
                       {dropDown2State ? (
@@ -651,24 +635,24 @@ export default function SearchResults() {
           )}
           {isLoading && (
             <div className='flex items-center justify-center'>
-              <img className='w-[20vw] sm:w-[11vw]' src={spinningload}></img>
+              <img
+                className='w-[20vw] sm:w-[11vw]'
+                src={spinningload}
+              ></img>
             </div>
           )}
           {isError && (
             <div className='flex items-center justify-center'>
-              <img className='w-[20vw] sm:w-[11vw]' src={nothingIcon}></img>
+              <img
+                className='w-[20vw] sm:w-[11vw]'
+                src={nothingIcon}
+              ></img>
             </div>
           )}
-          <div
-            className={`grid ${
-              displayType === 0
-                ? ' gap-y-[0.6rem] '
-                : ' grid-cols-3 sm:grid-cols-4 gap-x-2 gap-y-3  '
-            } mt-[1rem]`}
-          >
+          <div className={`grid ${displayType === 0 ? ' gap-y-[0.6rem] ' : ' grid-cols-3 sm:grid-cols-4 gap-x-2 gap-y-3  '} mt-[1rem]`}>
             {mode === 1 &&
               isSuccess &&
-              searchData.restaurants.map((restaurant, id) => {
+              searchData.restaurants.map((restaurant) => {
                 return (
                   <Restaurant
                     key={restaurant._id}
@@ -681,7 +665,13 @@ export default function SearchResults() {
             {mode === 2 &&
               isSuccess &&
               searchData.allFood.map((food, id) => {
-                return <Food key={id} displayType={displayType} food={food} />
+                return (
+                  <Food
+                    key={id}
+                    displayType={displayType}
+                    food={food}
+                  />
+                )
               })}
           </div>
           {isSuccess && (
